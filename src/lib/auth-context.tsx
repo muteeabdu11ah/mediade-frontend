@@ -21,6 +21,7 @@ interface AuthContextType {
     login: (data: LoginRequest) => Promise<void>;
     register: (data: RegisterRequest) => Promise<void>;
     logout: () => void;
+    refreshProfile: () => Promise<void>;
     getDashboardRoute: () => string;
 }
 
@@ -98,6 +99,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         router.push('/login');
     };
 
+    const refreshProfile = async () => {
+        try {
+            const response = await api.get<ProfileResponse>('/auth/profile');
+            setUser(response.data);
+        } catch (error) {
+            console.error('Failed to refresh profile:', error);
+        }
+    };
+
     return (
         <AuthContext.Provider
             value={{
@@ -108,6 +118,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 login,
                 register,
                 logout,
+                refreshProfile,
                 getDashboardRoute,
             }}
         >

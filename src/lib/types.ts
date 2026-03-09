@@ -167,6 +167,7 @@ export interface ProfileResponse {
     phone: string | null;
     isActive: boolean;
     clinicId: string | null;
+    profileImageUrl?: string | null;
     createdAt: string;
 }
 

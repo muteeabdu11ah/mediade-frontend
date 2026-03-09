@@ -328,17 +328,10 @@ export default function DashboardLayout({ children, navItems, title }: Dashboard
                                             },
                                         }}
                                     >
-                                        <MenuItem component={Link} href="/profile" onClick={() => setAnchorEl(null)}>
+                                        <MenuItem component={Link} href={user.role === Role.DOCTOR ? "/dashboard/doctor/settings" : "/profile"} onClick={() => setAnchorEl(null)}>
                                             <PersonIcon fontSize="small" sx={{ mr: 1.5, color: 'primary.main' }} />
                                             Profile
                                         </MenuItem>
-                                        {user.role === Role.DOCTOR && (
-                                            <MenuItem component={Link} href="/dashboard/doctor/schedule" onClick={() => setAnchorEl(null)}>
-                                                <CalendarMonthIcon fontSize="small" sx={{ mr: 1.5, color: 'primary.main' }} />
-                                                My Schedule
-                                            </MenuItem>
-                                        )}
-                                        <Divider />
                                         <MenuItem onClick={logout}>
                                             <LogoutIcon fontSize="small" sx={{ mr: 1.5, color: 'error.main' }} />
                                             Logout
