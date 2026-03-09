@@ -27,11 +27,8 @@ import { Role, DayOfWeek, DoctorSchedule } from '@/lib/types';
 import api from '@/lib/api';
 
 const navItems = [
-    { label: 'Overview', href: '/dashboard/doctor', icon: <DashboardIcon /> },
-    { label: 'My Schedule', href: '/dashboard/doctor/schedule', icon: <CalendarMonthIcon /> },
-    { label: 'My Appointments', href: '/dashboard/doctor/appointments', icon: <EventIcon /> },
-    { label: 'Patients', href: '/dashboard/doctor/patients', icon: <PeopleIcon /> },
-    { label: 'Settings', href: '/dashboard/doctor/settings', icon: <SettingsIcon /> },
+    { label: 'Dashboard', href: '/dashboard/doctor', icon: <DashboardIcon /> },
+    { label: 'Appointments', href: '/dashboard/doctor/appointments', icon: <EventIcon /> },
 ];
 
 const DAYS_ORDER: DayOfWeek[] = [
@@ -48,7 +45,6 @@ interface ScheduleFormData {
     dayOfWeek: DayOfWeek;
     startTime: string;
     endTime: string;
-    slotDurationMinutes: number;
     isAvailable: boolean;
 }
 
@@ -56,7 +52,6 @@ const defaultScheduleRow = (day: DayOfWeek): ScheduleFormData => ({
     dayOfWeek: day,
     startTime: '09:00:00',
     endTime: '17:00:00',
-    slotDurationMinutes: 30,
     isAvailable: false,
 });
 
@@ -84,7 +79,6 @@ export default function DoctorSchedulePage() {
                         dayOfWeek: day,
                         startTime: existing.startTime,
                         endTime: existing.endTime,
-                        slotDurationMinutes: existing.slotDurationMinutes,
                         isAvailable: existing.isAvailable,
                     };
                 } else {
@@ -176,27 +170,6 @@ export default function DoctorSchedulePage() {
                     ) : (
                         <Card sx={{ borderRadius: 3, boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
                             <CardContent sx={{ p: 0 }}>
-                                {/* Header Row */}
-                                <Box sx={{ display: { xs: 'none', md: 'flex' }, px: 4, py: 2, bgcolor: 'rgba(0,188,212,0.04)', borderBottom: '1px solid rgba(0,188,212,0.1)' }}>
-                                    <Grid container spacing={2} alignItems="center">
-                                        <Grid size={{ xs: 2 }}>
-                                            <Typography variant="overline" fontWeight={700} color="text.secondary">Day</Typography>
-                                        </Grid>
-                                        <Grid size={{ xs: 3 }}>
-                                            <Typography variant="overline" fontWeight={700} color="text.secondary">Start Time</Typography>
-                                        </Grid>
-                                        <Grid size={{ xs: 3 }}>
-                                            <Typography variant="overline" fontWeight={700} color="text.secondary">End Time</Typography>
-                                        </Grid>
-                                        <Grid size={{ xs: 2 }}>
-                                            <Typography variant="overline" fontWeight={700} color="text.secondary">Duration (m)</Typography>
-                                        </Grid>
-                                        <Grid size={{ xs: 2 }} sx={{ textAlign: 'center' }}>
-                                            <Typography variant="overline" fontWeight={700} color="text.secondary">Available</Typography>
-                                        </Grid>
-                                    </Grid>
-                                </Box>
-
                                 {/* Days Rows */}
                                 <Box sx={{ p: 2 }}>
                                     {DAYS_ORDER.map((day, index) => {
@@ -230,7 +203,6 @@ export default function DoctorSchedulePage() {
                                                             }}
                                                         />
                                                     </Grid>
-
                                                     <Grid size={{ xs: 6, md: 3 }}>
                                                         <TextField
                                                             type="time"
@@ -248,22 +220,6 @@ export default function DoctorSchedulePage() {
                                                             }}
                                                         />
                                                     </Grid>
-
-                                                    <Grid size={{ xs: 6, md: 2 }}>
-                                                        <TextField
-                                                            type="number"
-                                                            fullWidth
-                                                            size="small"
-                                                            label="Duration (min)"
-                                                            disabled={!rowData.isAvailable}
-                                                            value={rowData.slotDurationMinutes}
-                                                            onChange={(e) => handleChange(day, 'slotDurationMinutes', parseInt(e.target.value, 10) || 0)}
-                                                            slotProps={{
-                                                                htmlInput: { min: 5, max: 1440, step: 5 },
-                                                            }}
-                                                        />
-                                                    </Grid>
-
                                                     <Grid size={{ xs: 6, md: 2 }} sx={{ textAlign: { xs: 'left', md: 'center' } }}>
                                                         <FormControlLabel
                                                             control={

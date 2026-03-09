@@ -99,7 +99,6 @@ export interface DoctorSchedule {
     dayOfWeek: DayOfWeek;
     startTime: string;
     endTime: string;
-    slotDurationMinutes: number;
     isAvailable: boolean;
     createdAt: string;
     updatedAt: string;
@@ -115,6 +114,10 @@ export interface Appointment {
     endTime: string;
     status: AppointmentStatus;
     notes: string | null;
+    isEmergency: boolean;
+    symptoms: string | null;
+    escalatedBy: string | null;
+    type: string;
     patient?: User;
     doctor?: User;
     clinic?: Clinic;
@@ -176,3 +179,15 @@ export const ROLE_DASHBOARD_ROUTES: Record<Role, string> = {
     [Role.RECEPTIONIST]: '/dashboard/receptionist',
     [Role.PATIENT]: '/dashboard/patient',
 };
+export interface OnsiteConsultation {
+    id: string;
+    doctorId: string;
+    clinicId: string;
+    firstName: string;
+    lastName: string;
+    phone: string | null;
+    notes: string | null;
+    status: AppointmentStatus;
+    createdAt: string;
+    updatedAt: string;
+}
