@@ -11,13 +11,6 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { Role } from '@/lib/types';
 import { useAuth } from '@/lib/auth-context';
 
-const navItems = [
-    { label: 'Overview', href: '/dashboard/receptionist', icon: <DashboardIcon /> },
-    { label: 'Appointments', href: '/dashboard/receptionist/appointments', icon: <EventIcon /> },
-    { label: 'Patients', href: '/dashboard/receptionist/patients', icon: <PeopleIcon /> },
-    { label: 'Settings', href: '/dashboard/receptionist/settings', icon: <SettingsIcon /> },
-];
-
 const statCards = [
     { title: 'Today\'s Appointments', value: '—', color: '#00BCD4', icon: <EventIcon /> },
     { title: 'Walk-ins Today', value: '—', color: '#FFA726', icon: <PeopleIcon /> },
@@ -30,7 +23,7 @@ export default function ReceptionistDashboard() {
 
     return (
         <ProtectedRoute allowedRoles={[Role.RECEPTIONIST]}>
-            <DashboardLayout navItems={navItems} title="Reception Dashboard">
+            <DashboardLayout title="Reception Dashboard">
                 <Box sx={{ mb: 4 }}>
                     <Typography variant="h4" fontWeight={800} sx={{ mb: 1 }}>
                         Welcome, {user?.firstName}! 📋

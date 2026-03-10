@@ -28,14 +28,6 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { Role, AppointmentStatus, Appointment } from '@/lib/types';
 import api from '@/lib/api';
 
-const navItems = [
-    { label: 'Overview', href: '/dashboard/patient', icon: <DashboardIcon /> },
-    { label: 'My Appointments', href: '/dashboard/patient/appointments', icon: <EventIcon /> },
-    { label: 'Book Appointment', href: '/dashboard/patient/book', icon: <CalendarMonthIcon /> },
-    { label: 'My Profile', href: '/dashboard/patient/profile', icon: <PersonIcon /> },
-    { label: 'Settings', href: '/dashboard/patient/settings', icon: <SettingsIcon /> },
-];
-
 export default function PatientAppointmentsPage() {
     const [appointments, setAppointments] = useState<Appointment[]>([]);
     const [loading, setLoading] = useState(true);
@@ -76,17 +68,17 @@ export default function PatientAppointmentsPage() {
 
     const getStatusColor = (status: AppointmentStatus) => {
         switch (status) {
-            case AppointmentStatus.SCHEDULED: return { bg: 'rgba(66,165,245,0.1)', color: '#42A5F5' };
+            case AppointmentStatus.UPCOMING: return { bg: 'rgba(66,165,245,0.1)', color: '#42A5F5' };
             case AppointmentStatus.COMPLETED: return { bg: 'rgba(102,187,106,0.1)', color: '#66BB6A' };
             case AppointmentStatus.CANCELLED: return { bg: 'rgba(239,83,80,0.1)', color: '#EF5350' };
-            case AppointmentStatus.NO_SHOW: return { bg: 'rgba(171,71,188,0.1)', color: '#AB47BC' };
+            case AppointmentStatus.MISSED: return { bg: 'rgba(171,71,188,0.1)', color: '#AB47BC' };
             default: return { bg: 'rgba(0,0,0,0.05)', color: 'text.secondary' };
         }
     };
 
     return (
         <ProtectedRoute allowedRoles={[Role.PATIENT]}>
-            <DashboardLayout navItems={navItems} title="My Appointments">
+            <DashboardLayout title="My Appointments">
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
                     <Box>
                         <Typography variant="h4" fontWeight={800} sx={{ mb: 1 }}>
@@ -162,7 +154,7 @@ export default function PatientAppointmentsPage() {
                                                         />
                                                     </TableCell>
                                                     <TableCell align="right">
-                                                        {appointment.status === AppointmentStatus.SCHEDULED && (
+                                                        {appointment.status === AppointmentStatus.UPCOMING && (
                                                             <Tooltip title="Cancel Appointment">
                                                                 <IconButton color="error" onClick={() => handleCancel(appointment.id)}>
                                                                     <CancelIcon fontSize="small" />

@@ -4,6 +4,7 @@ import React from 'react';
 import { Typography, Grid, Card, CardContent, Box, Avatar, Divider, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import EventIcon from '@mui/icons-material/Event';
+import SettingsIcon from '@mui/icons-material/Settings';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
@@ -13,11 +14,6 @@ import DashboardLayout from '@/components/DashboardLayout';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { Role } from '@/lib/types';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip as RechartsTooltip, BarChart, Bar, Cell } from 'recharts';
-
-const navItems = [
-    { label: 'Dashboard', href: '/dashboard/doctor', icon: <DashboardIcon /> },
-    { label: 'Appointments', href: '/dashboard/doctor/appointments', icon: <EventIcon /> },
-];
 
 const statCards = [
     { title: "Today's Appointments", value: '12', trend: '+2 vs yesterday', icon: <CalendarTodayIcon sx={{ fontSize: 20 }} />, color: '#00BCD4' },
@@ -54,7 +50,7 @@ const recentActivity = [
 export default function DoctorDashboard() {
     return (
         <ProtectedRoute allowedRoles={[Role.DOCTOR]}>
-            <DashboardLayout navItems={navItems} title="Dashboard">
+            <DashboardLayout title="Dashboard">
 
                 {/* Top Stat Cards */}
                 <Grid container spacing={3} sx={{ mb: 3 }}>

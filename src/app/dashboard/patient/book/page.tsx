@@ -23,14 +23,6 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { Role } from '@/lib/types';
 import api from '@/lib/api';
 
-const navItems = [
-    { label: 'Overview', href: '/dashboard/patient', icon: <DashboardIcon /> },
-    { label: 'My Appointments', href: '/dashboard/patient/appointments', icon: <EventIcon /> },
-    { label: 'Book Appointment', href: '/dashboard/patient/book', icon: <CalendarMonthIcon /> },
-    { label: 'My Profile', href: '/dashboard/patient/profile', icon: <PersonIcon /> },
-    { label: 'Settings', href: '/dashboard/patient/settings', icon: <SettingsIcon /> },
-];
-
 export default function BookAppointmentPage() {
     const [doctorId, setDoctorId] = useState('');
     const [appointmentDate, setAppointmentDate] = useState('');
@@ -75,7 +67,7 @@ export default function BookAppointmentPage() {
 
     return (
         <ProtectedRoute allowedRoles={[Role.PATIENT]}>
-            <DashboardLayout navItems={navItems} title="Book Appointment">
+            <DashboardLayout title="Book Appointment">
                 <Box sx={{ maxWidth: 600, mx: 'auto', mb: 4 }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
                         <Box>

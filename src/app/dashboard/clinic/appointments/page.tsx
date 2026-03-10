@@ -46,28 +46,6 @@ export default function ClinicAppointmentsPage() {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
 
-    const navItems = currentUserRole === Role.RECEPTIONIST ? [
-        { label: 'Overview', href: '/dashboard/receptionist', icon: <DashboardIcon /> },
-        { label: 'Appointments', href: '/dashboard/clinic/appointments', icon: <EventIcon /> },
-        { label: 'Patients', href: '/dashboard/clinic/patients', icon: <PeopleIcon /> },
-    ] : [
-        { label: 'Overview', href: '/dashboard/clinic', icon: <DashboardIcon /> },
-        { label: 'Staff', href: '/dashboard/clinic/staff', icon: <PeopleIcon /> },
-        { label: 'Schedules', href: '/dashboard/clinic/schedules', icon: <CalendarMonthIcon /> },
-        { label: 'Appointments', href: '/dashboard/clinic/appointments', icon: <EventIcon /> },
-        { label: 'Settings', href: '/dashboard/clinic/settings', icon: <SettingsIcon /> },
-    ];
-
-    useEffect(() => {
-        const token = Cookies.get('jwt');
-        if (token) {
-            try {
-                const decoded: any = jwtDecode(token);
-                setCurrentUserRole(decoded.role as Role);
-            } catch (e) { /* ignore */ }
-        }
-    }, []);
-
     const fetchAppointments = async () => {
         try {
             setLoading(true);
@@ -115,17 +93,17 @@ export default function ClinicAppointmentsPage() {
 
     const getStatusColor = (status: AppointmentStatus) => {
         switch (status) {
-            case AppointmentStatus.SCHEDULED: return { bg: 'rgba(66,165,245,0.1)', color: '#42A5F5', icon: <ScheduleIcon fontSize="small" /> };
+            case AppointmentStatus.UPCOMING: return { bg: 'rgba(66,165,245,0.1)', color: '#42A5F5', icon: <ScheduleIcon fontSize="small" /> };
             case AppointmentStatus.COMPLETED: return { bg: 'rgba(102,187,106,0.1)', color: '#66BB6A', icon: <CheckCircleIcon fontSize="small" /> };
             case AppointmentStatus.CANCELLED: return { bg: 'rgba(239,83,80,0.1)', color: '#EF5350', icon: <CancelIcon fontSize="small" /> };
-            case AppointmentStatus.NO_SHOW: return { bg: 'rgba(171,71,188,0.1)', color: '#AB47BC', icon: <HelpOutlineIcon fontSize="small" /> };
+            case AppointmentStatus.MISSED: return { bg: 'rgba(171,71,188,0.1)', color: '#AB47BC', icon: <HelpOutlineIcon fontSize="small" /> };
             default: return { bg: 'rgba(0,0,0,0.05)', color: 'text.secondary', icon: <HelpOutlineIcon fontSize="small" /> };
         }
     };
 
     return (
         <ProtectedRoute allowedRoles={[Role.CLINIC_ADMIN, Role.RECEPTIONIST]}>
-            <DashboardLayout navItems={navItems} title="Clinic Appointments">
+            <DashboardLayout title="Clinic Appointments">
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
                     <Box>
                         <Typography variant="h4" fontWeight={800} sx={{ mb: 1 }}>
@@ -211,7 +189,7 @@ export default function ClinicAppointmentsPage() {
                                                         />
                                                     </TableCell>
                                                     <TableCell align="right">
-                                                        {appointment.status === AppointmentStatus.SCHEDULED && (
+                                                        {appointment.status === AppointmentStatus.UPCOMING && (
                                                             <Tooltip title="Update Status">
                                                                 <IconButton onClick={(e) => handleMenuOpen(e, appointment)}>
                                                                     <MoreVertIcon />
@@ -241,7 +219,7 @@ export default function ClinicAppointmentsPage() {
                     <MenuItem onClick={() => handleUpdateStatus(AppointmentStatus.COMPLETED)} sx={{ color: '#66BB6A', fontWeight: 600 }}>
                         <CheckCircleIcon fontSize="small" sx={{ mr: 1 }} /> Mark Completed
                     </MenuItem>
-                    <MenuItem onClick={() => handleUpdateStatus(AppointmentStatus.NO_SHOW)} sx={{ color: '#AB47BC', fontWeight: 600 }}>
+                    <MenuItem onClick={() => handleUpdateStatus(AppointmentStatus.MISSED)} sx={{ color: '#AB47BC', fontWeight: 600 }}>
                         <HelpOutlineIcon fontSize="small" sx={{ mr: 1 }} /> Mark No-Show
                     </MenuItem>
                     <MenuItem onClick={() => handleUpdateStatus(AppointmentStatus.CANCELLED)} sx={{ color: '#EF5350', fontWeight: 600 }}>

@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
 import ThemeProvider from "@/theme/ThemeProvider";
 import { AuthProvider } from "@/lib/auth-context";
+import Providers from "@/components/Providers";
 
 export const metadata: Metadata = {
   title: "Aeyron Medical - Modern Healthcare Management",
   description: "Connect with top doctors, book appointments seamlessly, and manage your healthcare journey with Aeyron Medical's intelligent platform.",
   keywords: "healthcare, medical, appointments, doctors, clinic management, patient portal",
+  icons: {
+    icon: '/logo.svg',
+  },
 };
 
 export default function RootLayout({
@@ -22,11 +26,13 @@ export default function RootLayout({
         />
       </head>
       <body style={{ margin: 0 }}>
-        <ThemeProvider>
-          <AuthProvider>
-            {children}
-          </AuthProvider>
-        </ThemeProvider>
+        <Providers>
+          <ThemeProvider>
+            <AuthProvider>
+              {children}
+            </AuthProvider>
+          </ThemeProvider>
+        </Providers>
       </body>
     </html>
   );

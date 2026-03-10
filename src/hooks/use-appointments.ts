@@ -1,0 +1,35 @@
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import api from '@/lib/api';
+import { API_ENDPOINTS, QUERY_KEYS } from '@/lib/constants/api-endpoints';
+import { Appointment, AppointmentStatus } from '@/lib/types';
+
+export interface AppointmentsParams {
+    page?: number;
+    limit?: number;
+    date?: string;
+    type?: string;
+}
+
+export function useAppointments(params: AppointmentsParams) {
+    return useQuery({
+        queryKey: [...QUERY_KEYS.APPOINTMENTS, params],
+        queryFn: async () => {
+            const { data } = await api.get(API_ENDPOINTS.APPOINTMENTS.DOCTOR_ME, { params });
+            return data;
+        },
+    });
+}
+
+export function useUpdateAppointmentStatus() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async ({ id, status }: { id: string; status: AppointmentStatus }) => {
+            const { data } = await api.patch(API_ENDPOINTS.APPOINTMENTS.UPDATE_STATUS(id), { status });
+            return data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: QUERY_KEYS.APPOINTMENTS });
+        },
+    });
+}

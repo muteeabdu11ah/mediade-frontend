@@ -41,14 +41,6 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { Role, User } from '@/lib/types';
 import api from '@/lib/api';
 
-const navItems = [
-    { label: 'Overview', href: '/dashboard/clinic', icon: <DashboardIcon /> },
-    { label: 'Staff', href: '/dashboard/clinic/staff', icon: <PeopleIcon /> },
-    { label: 'Schedules', href: '/dashboard/clinic/schedules', icon: <CalendarMonthIcon /> },
-    { label: 'Appointments', href: '/dashboard/clinic/appointments', icon: <EventIcon /> },
-    { label: 'Settings', href: '/dashboard/clinic/settings', icon: <SettingsIcon /> },
-];
-
 interface StaffFormData {
     email: string;
     password?: string;
@@ -201,7 +193,7 @@ export default function ClinicStaffManagementPage() {
 
     return (
         <ProtectedRoute allowedRoles={[Role.CLINIC_ADMIN]}>
-            <DashboardLayout navItems={navItems} title="Staff Management">
+            <DashboardLayout title="Staff Management">
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
                     <Box>
                         <Typography variant="h4" fontWeight={800} sx={{ mb: 1 }}>

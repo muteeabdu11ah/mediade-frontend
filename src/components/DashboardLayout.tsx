@@ -25,35 +25,30 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import LogoutIcon from '@mui/icons-material/Logout';
-import PersonIcon from '@mui/icons-material/Person';
-import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import SearchIcon from '@mui/icons-material/Search';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 import { Role } from '@/lib/types';
+import { getNavItemsByRole } from '@/lib/constants/navigation';
+import Image from 'next/image';
+import GridViewIcon from '@mui/icons-material/GridView';
+import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
+import SmartToyOutlinedIcon from '@mui/icons-material/SmartToyOutlined';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 
-const DRAWER_WIDTH = 260;
-
-interface NavItem {
-    label: string;
-    href: string;
-    icon: React.ReactNode;
-}
+const DRAWER_WIDTH = 320;
 
 interface DashboardLayoutProps {
     children: React.ReactNode;
-    navItems: NavItem[];
     title: string;
 }
 
 const roleColors: Record<string, string> = {
     [Role.SUPER_ADMIN]: '#EF5350',
     [Role.CLINIC_ADMIN]: '#AB47BC',
-    [Role.DOCTOR]: '#42A5F5',
+    [Role.DOCTOR]: '#1fb2ba',
     [Role.RECEPTIONIST]: '#FFA726',
     [Role.PATIENT]: '#66BB6A',
 };
@@ -66,76 +61,76 @@ const roleLabels: Record<string, string> = {
     [Role.PATIENT]: 'Patient',
 };
 
-export default function DashboardLayout({ children, navItems, title }: DashboardLayoutProps) {
+// Map icons to labels for custom styling if needed
+const navIconMap: Record<string, React.ReactNode> = {
+    'Dashboard': <GridViewIcon />,
+    'Appointments': <CalendarTodayOutlinedIcon />,
+    'Onsite Appointments': <CalendarTodayOutlinedIcon />,
+    'AI Assistant': <SmartToyOutlinedIcon />,
+    'Settings': <SettingsOutlinedIcon />,
+};
+
+export default function DashboardLayout({ children, title }: DashboardLayoutProps) {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
     const [mobileOpen, setMobileOpen] = useState(false);
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const pathname = usePathname();
     const { user, logout } = useAuth();
 
+    const navItems = user ? getNavItemsByRole(user.role) : [];
+
     const drawerContent = (
-        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', bgcolor: 'white' }}
+        >
             {/* Brand */}
-            <Box sx={{ p: 2.5, display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>
-                <Box sx={{ color: 'primary.main', display: 'flex', alignItems: 'center' }}>
-                    <LocalHospitalIcon sx={{ fontSize: 36 }} />
-                </Box>
-                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                    <Typography
-                        variant="h6"
-                        sx={{
-                            fontWeight: 800,
-                            fontSize: '1.4rem',
-                            color: 'primary.main',
-                            lineHeight: 1.1,
-                            letterSpacing: '-0.5px'
-                        }}
-                    >
-                        MedAide
-                    </Typography>
-                    <Typography variant="caption" sx={{ fontSize: '0.45rem', fontWeight: 700, letterSpacing: '1px', color: 'text.secondary', textTransform: 'uppercase' }}>
-                        Listen. Note. Care.
-                    </Typography>
-                </Box>
+            <Box sx={{ p: 4, display: 'flex', justifyContent: 'center', mb: 2 }}>
+                <Image
+                    src="/logo.svg"
+                    alt="Medaide Logo"
+                    width={180}
+                    height={60}
+                    priority
+                    style={{ objectFit: 'contain' }}
+                />
             </Box>
 
-            <Divider sx={{ borderColor: 'rgba(0,188,212,0.08)' }} />
-
             {/* Navigation */}
-            <List sx={{ px: 1.5, py: 2, flex: 1 }}>
+            <List sx={{ px: 2, flex: 1 }}>
                 {navItems.map((item) => {
                     const isActive = pathname === item.href;
                     return (
-                        <ListItem key={item.href} disablePadding sx={{ mb: 0.5 }}>
+                        <ListItem key={item.href} disablePadding sx={{ mb: 1.5 }}>
                             <ListItemButton
                                 component={Link}
                                 href={item.href}
                                 onClick={() => isMobile && setMobileOpen(false)}
                                 sx={{
                                     borderRadius: 2,
-                                    px: 2,
-                                    py: 1.2,
-                                    bgcolor: isActive ? 'primary.main' : 'transparent',
-                                    color: isActive ? 'white' : 'text.secondary',
+                                    px: 2.5,
+                                    py: 1.5,
+                                    background: isActive ? 'linear-gradient(135deg, #2EC2C9 0%, #35C8C8 100%)' : 'transparent',
+                                    color: isActive ? 'white' : '#64748B',
+                                    transition: 'all 0.2s',
+                                    boxShadow: isActive ? '0 4px 12px rgba(46, 194, 201, 0.3)' : 'none',
                                     '&:hover': {
-                                        bgcolor: isActive ? 'primary.main' : 'rgba(31,178,186,0.08)',
+                                        background: isActive ? 'linear-gradient(135deg, #2EC2C9 0%, #35C8C8 100%)' : 'rgba(46, 194, 201, 0.05)',
+                                        color: isActive ? 'white' : '#1fb2ba',
                                     },
                                 }}
                             >
                                 <ListItemIcon
                                     sx={{
-                                        minWidth: 40,
-                                        color: isActive ? 'white' : 'text.secondary',
+                                        minWidth: 42,
+                                        color: 'inherit',
                                     }}
                                 >
-                                    {item.icon}
+                                    {navIconMap[item.label] || item.icon}
                                 </ListItemIcon>
                                 <ListItemText
                                     primary={item.label}
                                     primaryTypographyProps={{
-                                        fontWeight: isActive ? 600 : 500,
-                                        fontSize: '0.95rem',
+                                        fontWeight: isActive ? 700 : 500,
+                                        fontSize: '1rem',
                                     }}
                                 />
                             </ListItemButton>
@@ -144,49 +139,37 @@ export default function DashboardLayout({ children, navItems, title }: Dashboard
                 })}
             </List>
 
-            {/* User Info */}
-            {user && (
-                <Box sx={{ p: 2 }}>
-                    <Divider sx={{ mb: 2, borderColor: 'rgba(0,188,212,0.08)' }} />
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                        <Avatar
-                            sx={{
-                                width: 40,
-                                height: 40,
-                                bgcolor: roleColors[user.role] || 'primary.main',
-                                fontSize: '0.875rem',
-                                fontWeight: 700,
-                            }}
-                        >
-                            {user.firstName[0]}{user.lastName[0]}
-                        </Avatar>
-                        <Box sx={{ flex: 1, minWidth: 0 }}>
-                            <Typography variant="body2" fontWeight={600} noWrap>
-                                {user.firstName} {user.lastName}
-                            </Typography>
-                            <Chip
-                                label={roleLabels[user.role] || user.role}
-                                size="small"
-                                sx={{
-                                    height: 20,
-                                    fontSize: '0.65rem',
-                                    fontWeight: 600,
-                                    bgcolor: `${roleColors[user.role]}14`,
-                                    color: roleColors[user.role],
-                                    mt: 0.5,
-                                }}
-                            />
-                        </Box>
-                    </Box>
-                </Box>
-            )}
+            {/* Logout Section */}
+            <Box sx={{ p: 2.5, borderTop: '1px solid rgba(0,0,0,0.04)' }}>
+                <ListItem disablePadding>
+                    <ListItemButton
+                        onClick={logout}
+                        sx={{
+                            borderRadius: 3,
+                            px: 2.5,
+                            py: 1.5,
+                            color: '#64748B',
+                            '&:hover': {
+                                bgcolor: 'rgba(239,83,80,0.05)',
+                                color: 'error.main',
+                                '& .MuiListItemIcon-root': { color: 'error.main' }
+                            },
+                        }}
+                    >
+                        <ListItemIcon sx={{ minWidth: 42, color: 'inherit' }}>
+                            <LogoutIcon />
+                        </ListItemIcon>
+                        <ListItemText primary="Logout" primaryTypographyProps={{ fontSize: '1rem', fontWeight: 600 }} />
+                    </ListItemButton>
+                </ListItem>
+            </Box>
         </Box>
     );
 
     return (
-        <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#F5FFFE' }}>
+        <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: 'background.default' }}>
             {/* Sidebar */}
-            <Box component="nav" sx={{ width: { md: DRAWER_WIDTH }, flexShrink: { md: 0 } }}>
+            <Box component="nav" sx={{ width: { md: DRAWER_WIDTH + 32 }, flexShrink: { md: 0 } }}>
                 {isMobile ? (
                     <Drawer
                         variant="temporary"
@@ -197,7 +180,8 @@ export default function DashboardLayout({ children, navItems, title }: Dashboard
                             sx: {
                                 width: DRAWER_WIDTH,
                                 bgcolor: '#FFFFFF',
-                                borderRight: '1px solid rgba(0,188,212,0.08)',
+                                borderRight: 'none',
+                                boxShadow: '0 4px 24px rgba(0,0,0,0.04)',
                             },
                         }}
                     >
@@ -208,143 +192,113 @@ export default function DashboardLayout({ children, navItems, title }: Dashboard
                         variant="permanent"
                         sx={{
                             display: { xs: 'none', md: 'block' },
-                            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: DRAWER_WIDTH },
-                        }}
-                        PaperProps={{
-                            sx: {
+                            '& .MuiDrawer-paper': {
+                                boxSizing: 'border-box',
                                 width: DRAWER_WIDTH,
-                                bgcolor: '#FFFFFF',
-                                borderRight: '1px solid rgba(0,188,212,0.08)',
+                                borderRight: 'none',
+                                bgcolor: 'transparent',
                             },
                         }}
+                        open
                     >
-                        {drawerContent}
+                        <Box sx={{ p: 2, height: '100%' }}>
+                            <Box sx={{
+                                height: '100%',
+                                bgcolor: 'white',
+                                borderRadius: 2,
+                                boxShadow: '0 4px 24px rgba(0,0,0,0.02)',
+                                overflow: 'hidden',
+                                border: '2px solid #2f96ca3b'
+                            }}>
+                                {drawerContent}
+                            </Box>
+                        </Box>
                     </Drawer>
                 )}
             </Box>
 
             {/* Main Content */}
-            <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-                {/* Top Bar */}
-                <AppBar
-                    position="sticky"
-                    elevation={0}
-                    sx={{
-                        bgcolor: 'rgba(245,255,254,0.9)',
-                        backdropFilter: 'blur(20px)',
-                        borderBottom: '1px solid rgba(0,188,212,0.08)',
-                        color: 'text.primary',
-                    }}
-                >
-                    <Toolbar sx={{ py: 1 }}>
-                        {isMobile && (
-                            <IconButton onClick={() => setMobileOpen(true)} sx={{ mr: 1 }}>
-                                <MenuIcon />
-                            </IconButton>
-                        )}
-                        <Typography variant="h5" fontWeight={700} sx={{ flex: 1, color: '#1A2B3C' }}>
-                            {title}
-                        </Typography>
+            <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, height: '100vh', overflow: 'hidden' }}>
+                <Box sx={{ py: 2, pr: 2, pl: 0, pb: 0 }}>
+                    <AppBar
+                        position="static"
+                        elevation={0}
+                        sx={{
+                            bgcolor: 'white',
+                            borderRadius: 1,
+                            border: 'none',
+                            color: 'text.primary',
+                            boxShadow: '0 4px 20px rgba(0,0,0,0.02)',
+                        }}
+                    >
+                        <Toolbar sx={{ py: 1.5, pr: { xs: 1, sm: 2 }, pl: 0 }}>
+                            {isMobile && (
+                                <IconButton onClick={() => setMobileOpen(true)} sx={{ mr: 1 }}>
+                                    <MenuIcon />
+                                </IconButton>
+                            )}
+                            <Typography variant="h6" fontWeight={700} sx={{ flex: 1, color: '#1A2B3C', fontSize: '1.25rem' }}>
+                                {title}
+                            </Typography>
 
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                            {/* Search Bar */}
-                            <Box sx={{
-                                display: { xs: 'none', md: 'flex' },
-                                alignItems: 'center',
-                                bgcolor: '#F5F7FA',
-                                borderRadius: 8,
-                                px: 2,
-                                py: 0.75,
-                                width: { md: 240, lg: 320 },
-                            }}>
-                                <SearchIcon sx={{ color: 'text.secondary', fontSize: 20 }} />
-                                <InputBase
-                                    placeholder="Search..."
-                                    sx={{ ml: 1, flex: 1, fontSize: '0.9rem' }}
-                                />
-                            </Box>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                                {/* Notifications */}
+                                <IconButton sx={{ color: '#64748B' }}>
+                                    <Badge
+                                        color="error"
+                                        variant="dot"
+                                        overlap="circular"
+                                        sx={{ '& .MuiBadge-badge': { border: '2px solid white' } }}
+                                    >
+                                        <NotificationsIcon sx={{ fontSize: 22 }} />
+                                    </Badge>
+                                </IconButton>
 
-                            {/* Notifications */}
-                            <IconButton sx={{ color: 'text.secondary' }}>
-                                <Badge color="error" variant="dot">
-                                    <NotificationsIcon />
-                                </Badge>
-                            </IconButton>
+                                <Divider orientation="vertical" flexItem sx={{ mx: 0.5, height: 32, alignSelf: 'center', borderColor: '#E2E8F0' }} />
 
-                            <Divider orientation="vertical" variant="middle" flexItem sx={{ mx: 0.5, height: 32, alignSelf: 'center' }} />
-
-                            {/* User Profile */}
-                            {user && (
-                                <>
+                                {/* User Profile */}
+                                {user && (
                                     <Box
-                                        onClick={(e) => setAnchorEl(e.currentTarget)}
                                         sx={{
                                             display: 'flex',
                                             alignItems: 'center',
-                                            gap: 1.5,
-                                            cursor: 'pointer',
-                                            py: 0.5,
-                                            px: 1,
-                                            borderRadius: 2,
-                                            '&:hover': { bgcolor: 'rgba(31,178,186,0.04)' },
+                                            gap: 1.2,
+                                            pl: 0.5
                                         }}
                                     >
                                         <Avatar
+                                            src={user.profileImageUrl || undefined}
                                             sx={{
-                                                width: 36,
-                                                height: 36,
-                                                bgcolor: 'primary.main',
-                                                fontSize: '0.9rem',
-                                                fontWeight: 700,
+                                                width: 40,
+                                                height: 40,
+                                                background: 'linear-gradient(135deg, #2EC2C9 0%, #35C8C8 100%)',
+                                                fontSize: '0.85rem',
+                                                fontWeight: 800,
+                                                color: 'white',
+                                                boxShadow: '0 2px 8px rgba(46, 194, 201, 0.2)'
                                             }}
                                         >
-                                            {user.firstName[0]}
+                                            {user.profileImageUrl ? null : (user.role === Role.DOCTOR ? 'DR' : user.firstName[0])}
                                         </Avatar>
                                         {!isMobile && (
-                                            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                                                <Typography variant="body2" fontWeight={700} sx={{ lineHeight: 1.2 }}>
-                                                    Dr. {user.firstName} {user.lastName}
+                                            <Box sx={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+                                                <Typography variant="body2" fontWeight={700} sx={{ lineHeight: 1.1, color: '#1A2B3C', fontSize: '0.9rem' }}>
+                                                    {user.role === Role.DOCTOR ? `Dr. ${user.firstName} ${user.lastName}` : `${user.firstName} ${user.lastName}`}
                                                 </Typography>
-                                                <Typography variant="caption" color="text.secondary" fontWeight={500}>
+                                                <Typography variant="caption" color="text.secondary" fontWeight={500} sx={{ fontSize: '0.75rem' }}>
                                                     {user.role === Role.DOCTOR ? 'Cardiologist' : roleLabels[user.role]}
                                                 </Typography>
                                             </Box>
                                         )}
-                                        <KeyboardArrowDownIcon sx={{ fontSize: 20, color: 'text.secondary' }} />
                                     </Box>
-                                    <Menu
-                                        anchorEl={anchorEl}
-                                        open={Boolean(anchorEl)}
-                                        onClose={() => setAnchorEl(null)}
-                                        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                                        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-                                        slotProps={{
-                                            paper: {
-                                                sx: {
-                                                    mt: 1,
-                                                    minWidth: 180,
-                                                    boxShadow: '0 8px 32px rgba(0,188,212,0.16)',
-                                                },
-                                            },
-                                        }}
-                                    >
-                                        <MenuItem component={Link} href={user.role === Role.DOCTOR ? "/dashboard/doctor/settings" : "/profile"} onClick={() => setAnchorEl(null)}>
-                                            <PersonIcon fontSize="small" sx={{ mr: 1.5, color: 'primary.main' }} />
-                                            Profile
-                                        </MenuItem>
-                                        <MenuItem onClick={logout}>
-                                            <LogoutIcon fontSize="small" sx={{ mr: 1.5, color: 'error.main' }} />
-                                            Logout
-                                        </MenuItem>
-                                    </Menu>
-                                </>
-                            )}
-                        </Box>
-                    </Toolbar>
-                </AppBar>
+                                )}
+                            </Box>
+                        </Toolbar>
+                    </AppBar>
+                </Box>
 
                 {/* Page Content */}
-                <Box sx={{ flex: 1, p: { xs: 2, sm: 3 } }}>
+                <Box sx={{ flex: 1, py: 2, pr: 2, pl: 0, overflowY: 'auto' }}>
                     {children}
                 </Box>
             </Box>

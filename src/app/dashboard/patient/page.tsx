@@ -12,14 +12,6 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { Role } from '@/lib/types';
 import { useAuth } from '@/lib/auth-context';
 
-const navItems = [
-    { label: 'Overview', href: '/dashboard/patient', icon: <DashboardIcon /> },
-    { label: 'My Appointments', href: '/dashboard/patient/appointments', icon: <EventIcon /> },
-    { label: 'Book Appointment', href: '/dashboard/patient/book', icon: <CalendarMonthIcon /> },
-    { label: 'My Profile', href: '/dashboard/patient/profile', icon: <PersonIcon /> },
-    { label: 'Settings', href: '/dashboard/patient/settings', icon: <SettingsIcon /> },
-];
-
 const statCards = [
     { title: 'Upcoming Appointments', value: '—', color: '#00BCD4', icon: <EventIcon /> },
     { title: 'Completed Visits', value: '—', color: '#66BB6A', icon: <EventIcon /> },
@@ -32,7 +24,7 @@ export default function PatientDashboard() {
 
     return (
         <ProtectedRoute allowedRoles={[Role.PATIENT]}>
-            <DashboardLayout navItems={navItems} title="Patient Dashboard">
+            <DashboardLayout title="Patient Dashboard">
                 <Box sx={{ mb: 4 }}>
                     <Typography variant="h4" fontWeight={800} sx={{ mb: 1 }}>
                         Welcome, {user?.firstName}! 💊

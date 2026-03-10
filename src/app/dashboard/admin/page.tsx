@@ -12,14 +12,6 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { Role } from '@/lib/types';
 import { useAuth } from '@/lib/auth-context';
 
-const navItems = [
-    { label: 'Overview', href: '/dashboard/admin', icon: <DashboardIcon /> },
-    { label: 'Clinics', href: '/dashboard/admin/clinics', icon: <BusinessIcon /> },
-    { label: 'Users', href: '/dashboard/admin/users', icon: <PeopleIcon /> },
-    { label: 'Analytics', href: '/dashboard/admin/analytics', icon: <BarChartIcon /> },
-    { label: 'Settings', href: '/dashboard/admin/settings', icon: <SettingsIcon /> },
-];
-
 const statCards = [
     { title: 'Total Clinics', value: '—', color: '#00BCD4', icon: <BusinessIcon /> },
     { title: 'Total Users', value: '—', color: '#AB47BC', icon: <PeopleIcon /> },
@@ -32,7 +24,7 @@ export default function AdminDashboard() {
 
     return (
         <ProtectedRoute allowedRoles={[Role.SUPER_ADMIN]}>
-            <DashboardLayout navItems={navItems} title="Super Admin Dashboard">
+            <DashboardLayout title="Admin Dashboard">
                 <Box sx={{ mb: 4 }}>
                     <Typography variant="h4" fontWeight={800} sx={{ mb: 1 }}>
                         Welcome back, {user?.firstName}! 👋

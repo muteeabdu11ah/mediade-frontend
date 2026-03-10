@@ -22,8 +22,7 @@ import PersonIcon from '@mui/icons-material/Person';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import LockIcon from '@mui/icons-material/Lock';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import CameraAltIcon from '@mui/icons-material/CameraAlt';
-
+import SettingsIcon from '@mui/icons-material/Settings';
 import DashboardLayout from '@/components/DashboardLayout';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { Role } from '@/lib/types';
@@ -34,11 +33,6 @@ import PersonalInfoTab from './components/PersonalInfoTab';
 import WorkingHoursTab from './components/WorkingHoursTab';
 import ChangePasswordTab from './components/ChangePasswordTab';
 import IntakeQuestionsTab from './components/IntakeQuestionsTab';
-
-const navItems = [
-    { label: 'Dashboard', href: '/dashboard/doctor', icon: <DashboardIcon /> },
-    { label: 'Appointments', href: '/dashboard/doctor/appointments', icon: <EventIcon /> },
-];
 
 type SettingsTab = 'personal' | 'hours' | 'password' | 'questions';
 
@@ -55,7 +49,7 @@ export default function DoctorSettingsPage() {
 
     return (
         <ProtectedRoute allowedRoles={[Role.DOCTOR]}>
-            <DashboardLayout navItems={navItems} title="Settings">
+            <DashboardLayout title="Settings">
                 <Box sx={{ display: 'flex', gap: 4, mt: 2, alignItems: 'flex-start' }}>
 
                     {/* Inner Sidebar */}

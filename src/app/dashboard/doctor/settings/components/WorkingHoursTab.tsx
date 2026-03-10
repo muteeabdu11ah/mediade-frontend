@@ -14,8 +14,8 @@ import {
     Divider,
 } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
-import { DayOfWeek, DoctorSchedule } from '@/lib/types';
-import api from '@/lib/api';
+import { DayOfWeek } from '@/lib/types';
+import { useSchedules, ScheduleFormData } from '@/hooks/use-schedules';
 
 const DAYS_ORDER: DayOfWeek[] = [
     DayOfWeek.MONDAY,
@@ -27,13 +27,6 @@ const DAYS_ORDER: DayOfWeek[] = [
     DayOfWeek.SUNDAY,
 ];
 
-interface ScheduleFormData {
-    dayOfWeek: DayOfWeek;
-    startTime: string;
-    endTime: string;
-    isAvailable: boolean;
-}
-
 const defaultScheduleRow = (day: DayOfWeek): ScheduleFormData => ({
     dayOfWeek: day,
     startTime: '09:00:00',
@@ -42,24 +35,16 @@ const defaultScheduleRow = (day: DayOfWeek): ScheduleFormData => ({
 });
 
 export default function WorkingHoursTab() {
-    const [schedules, setSchedules] = useState<Record<DayOfWeek, ScheduleFormData>>({} as any);
-    const [loading, setLoading] = useState(true);
-    const [saving, setSaving] = useState(false);
+    const { schedules: serverSchedules, isLoading, updateSchedules, isSaving } = useSchedules();
+    const [localSchedules, setLocalSchedules] = useState<Record<DayOfWeek, ScheduleFormData>>({} as any);
     const [error, setError] = useState('');
     const [successMsg, setSuccessMsg] = useState('');
 
-    const fetchSchedules = async () => {
-        try {
-            setLoading(true);
-            setError('');
-            const res = await api.get<DoctorSchedule[]>('/schedules/me');
-
-            const serverData = res.data;
+    useEffect(() => {
+        if (serverSchedules) {
             const initial: Record<string, ScheduleFormData> = {};
-
-            // Initialize all days
             DAYS_ORDER.forEach((day) => {
-                const existing = serverData.find((s) => s.dayOfWeek === day);
+                const existing = serverSchedules.find((s) => s.dayOfWeek === day);
                 if (existing) {
                     initial[day] = {
                         dayOfWeek: day,
@@ -71,22 +56,12 @@ export default function WorkingHoursTab() {
                     initial[day] = defaultScheduleRow(day);
                 }
             });
-
-            setSchedules(initial as Record<DayOfWeek, ScheduleFormData>);
-        } catch (err: unknown) {
-            console.error(err);
-            setError('Failed to load schedule. Please try again.');
-        } finally {
-            setLoading(false);
+            setLocalSchedules(initial as Record<DayOfWeek, ScheduleFormData>);
         }
-    };
-
-    useEffect(() => {
-        fetchSchedules();
-    }, []);
+    }, [serverSchedules]);
 
     const handleChange = (day: DayOfWeek, field: keyof ScheduleFormData, value: any) => {
-        setSchedules((prev) => ({
+        setLocalSchedules((prev) => ({
             ...prev,
             [day]: {
                 ...prev[day],
@@ -96,29 +71,23 @@ export default function WorkingHoursTab() {
     };
 
     const handleSave = async () => {
-        setSaving(true);
         setError('');
         setSuccessMsg('');
 
         try {
-            const payload = {
-                schedules: Object.values(schedules),
-            };
-
-            await api.post('/schedules/me', payload);
+            await updateSchedules({
+                schedules: Object.values(localSchedules),
+            });
             setSuccessMsg('Schedule updated successfully!');
-            await fetchSchedules(); // Reload to get confirmed DB state
         } catch (err: unknown) {
             const errorMessage =
                 (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
                 'Failed to save schedule.';
             setError(errorMessage);
-        } finally {
-            setSaving(false);
         }
     };
 
-    if (loading && !Object.keys(schedules).length) {
+    if (isLoading && !Object.keys(localSchedules).length) {
         return (
             <Box sx={{ display: 'flex', justifyContent: 'center', p: 5 }}>
                 <CircularProgress />
@@ -140,7 +109,7 @@ export default function WorkingHoursTab() {
 
             <Box sx={{ p: 0 }}>
                 {DAYS_ORDER.map((day, index) => {
-                    const rowData = schedules[day];
+                    const rowData = localSchedules[day];
                     if (!rowData) return null;
 
                     return (
@@ -231,9 +200,9 @@ export default function WorkingHoursTab() {
                 </Button>
                 <Button
                     variant="contained"
-                    startIcon={saving ? <CircularProgress size={20} color="inherit" /> : <SaveIcon />}
+                    startIcon={isSaving ? <CircularProgress size={20} color="inherit" /> : <SaveIcon />}
                     onClick={handleSave}
-                    disabled={loading || saving}
+                    disabled={isLoading || isSaving}
                     sx={{
                         px: 4,
                         py: 1,

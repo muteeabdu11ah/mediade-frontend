@@ -158,7 +158,7 @@ export default function ClinicsManagementPage() {
 
     return (
         <ProtectedRoute allowedRoles={[Role.SUPER_ADMIN]}>
-            <DashboardLayout navItems={navItems} title="Clinics Management">
+            <DashboardLayout title="Clinics Management">
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
                     <Box>
                         <Typography variant="h4" fontWeight={800} sx={{ mb: 1 }}>

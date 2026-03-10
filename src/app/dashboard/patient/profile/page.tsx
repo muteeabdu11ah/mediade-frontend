@@ -27,14 +27,6 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { Role, Gender, PatientProfile } from '@/lib/types';
 import api from '@/lib/api';
 
-const navItems = [
-    { label: 'Overview', href: '/dashboard/patient', icon: <DashboardIcon /> },
-    { label: 'My Appointments', href: '/dashboard/patient/appointments', icon: <EventIcon /> },
-    { label: 'Book Appointment', href: '/dashboard/patient/book', icon: <CalendarMonthIcon /> },
-    { label: 'My Profile', href: '/dashboard/patient/profile', icon: <PersonIcon /> },
-    { label: 'Settings', href: '/dashboard/patient/settings', icon: <SettingsIcon /> },
-];
-
 const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
 export default function PatientProfilePage() {
@@ -109,7 +101,7 @@ export default function PatientProfilePage() {
 
     return (
         <ProtectedRoute allowedRoles={[Role.PATIENT]}>
-            <DashboardLayout navItems={navItems} title="My Profile">
+            <DashboardLayout title="My Profile">
                 <Box sx={{ maxWidth: 800, mx: 'auto', mb: 4 }}>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
                         <Box>

@@ -41,14 +41,6 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { Role, User, Clinic } from '@/lib/types';
 import api from '@/lib/api';
 
-const navItems = [
-    { label: 'Overview', href: '/dashboard/admin', icon: <DashboardIcon /> },
-    { label: 'Clinics', href: '/dashboard/admin/clinics', icon: <BusinessIcon /> },
-    { label: 'Users', href: '/dashboard/admin/users', icon: <PeopleIcon /> },
-    { label: 'Analytics', href: '/dashboard/admin/analytics', icon: <BarChartIcon /> },
-    { label: 'Settings', href: '/dashboard/admin/settings', icon: <SettingsIcon /> },
-];
-
 interface UserFormData {
     email: string;
     password?: string;
@@ -212,7 +204,7 @@ export default function UsersManagementPage() {
 
     return (
         <ProtectedRoute allowedRoles={[Role.SUPER_ADMIN]}>
-            <DashboardLayout navItems={navItems} title="Users Management">
+            <DashboardLayout title="User Management">
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
                     <Box>
                         <Typography variant="h4" fontWeight={800} sx={{ mb: 1 }}>
