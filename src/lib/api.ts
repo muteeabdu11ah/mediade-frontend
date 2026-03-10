@@ -30,6 +30,7 @@ api.interceptors.response.use(
     (error) => {
         if (error.response?.status === 401) {
             Cookies.remove('accessToken');
+            Cookies.remove('userRole');
             if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
                 window.location.href = '/login';
             }

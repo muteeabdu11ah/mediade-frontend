@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Box, CircularProgress, Typography } from '@mui/material';
 import { useAuth } from '@/lib/auth-context';
 import { Role } from '@/lib/types';
+import { ROLE_DASHBOARD_ROUTES } from '@/lib/constants/navigation';
 
 interface ProtectedRouteProps {
     children: React.ReactNode;
@@ -23,7 +24,9 @@ export default function ProtectedRoute({ children, allowedRoles }: ProtectedRout
             }
 
             if (allowedRoles && user && !allowedRoles.includes(user.role as Role)) {
-                router.push('/unauthorized');
+                // Redirect to the user's own dashboard instead of a non-existent /unauthorized route
+                const correctRoute = ROLE_DASHBOARD_ROUTES[user.role as Role] || '/dashboard';
+                router.replace(correctRoute);
             }
         }
     }, [isLoading, isAuthenticated, user, allowedRoles, router]);

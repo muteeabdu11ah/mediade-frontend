@@ -173,13 +173,6 @@ export interface ProfileResponse {
 
 // ─── Route Mapping ──────────────────────────────────────────────────────────
 
-export const ROLE_DASHBOARD_ROUTES: Record<Role, string> = {
-    [Role.SUPER_ADMIN]: '/dashboard/super-admin',
-    [Role.CLINIC_ADMIN]: '/dashboard/clinic',
-    [Role.DOCTOR]: '/dashboard/doctor',
-    [Role.RECEPTIONIST]: '/dashboard/receptionist',
-    [Role.PATIENT]: '/dashboard/patient',
-};
 export interface OnsiteConsultation {
     id: string;
     doctorId: string;

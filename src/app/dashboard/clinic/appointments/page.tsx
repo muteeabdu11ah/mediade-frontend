@@ -1,74 +1,53 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
     Box,
     Typography,
-    Card,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Chip,
-    IconButton,
     Menu,
     MenuItem,
-    CircularProgress,
-    Alert,
+    IconButton,
     Tooltip,
 } from '@mui/material';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import EventIcon from '@mui/icons-material/Event';
-import PeopleIcon from '@mui/icons-material/People';
-import SettingsIcon from '@mui/icons-material/Settings';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import ScheduleIcon from '@mui/icons-material/Schedule';
 import DashboardLayout from '@/components/DashboardLayout';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import DataTable, { ColumnDef } from '@/components/DataTable';
+import StatusChip from '@/components/StatusChip';
+import PageHeader from '@/components/PageHeader';
+import { useClinicAppointments, useUpdateAppointmentStatus } from '@/hooks/use-appointments';
 import { Role, AppointmentStatus, Appointment } from '@/lib/types';
-import api from '@/lib/api';
-import { jwtDecode } from 'jwt-decode';
-import Cookies from 'js-cookie';
+
+// ─── Status preset mapping ─────────────────────────────────────────────────
+
+const statusPresetMap: Record<string, string> = {
+    [AppointmentStatus.UPCOMING]: 'upcoming',
+    [AppointmentStatus.COMPLETED]: 'completed',
+    [AppointmentStatus.CANCELLED]: 'cancelled',
+    [AppointmentStatus.MISSED]: 'missed',
+};
+
+// ─── Page Component ─────────────────────────────────────────────────────────
 
 export default function ClinicAppointmentsPage() {
-    const [appointments, setAppointments] = useState<Appointment[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
-    const [currentUserRole, setCurrentUserRole] = useState<Role | null>(null);
+    const { data: appointments = [], isLoading } = useClinicAppointments();
+    const updateStatus = useUpdateAppointmentStatus();
 
-    // Actions menu state
+    // Sort by date/time ascending
+    const sorted = useMemo(() => {
+        return [...appointments].sort((a, b) => {
+            const dateA = new Date(`${a.appointmentDate}T${a.startTime}`);
+            const dateB = new Date(`${b.appointmentDate}T${b.startTime}`);
+            return dateA.getTime() - dateB.getTime();
+        });
+    }, [appointments]);
+
+    // Menu state
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
-
-    const fetchAppointments = async () => {
-        try {
-            setLoading(true);
-            const res = await api.get<Appointment[]>('/appointments/clinic');
-            // Sort by date/time ascending
-            const sorted = res.data.sort((a, b) => {
-                const dateA = new Date(`${a.appointmentDate}T${a.startTime}`);
-                const dateB = new Date(`${b.appointmentDate}T${b.startTime}`);
-                return dateA.getTime() - dateB.getTime();
-            });
-            setAppointments(sorted);
-            setError('');
-        } catch (err) {
-            setError('Failed to load appointments.');
-            console.error(err);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchAppointments();
-    }, []);
 
     const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, appointment: Appointment) => {
         setAnchorEl(event.currentTarget);
@@ -82,150 +61,116 @@ export default function ClinicAppointmentsPage() {
 
     const handleUpdateStatus = async (status: AppointmentStatus) => {
         if (!selectedAppointment) return;
-        try {
-            await api.patch(`/appointments/${selectedAppointment.id}/status`, { status });
-            await fetchAppointments();
-        } catch (err: any) {
-            alert(err.response?.data?.message || 'Failed to update status');
-        }
+        await updateStatus.mutateAsync({ id: selectedAppointment.id, status });
         handleMenuClose();
     };
 
-    const getStatusColor = (status: AppointmentStatus) => {
-        switch (status) {
-            case AppointmentStatus.UPCOMING: return { bg: 'rgba(66,165,245,0.1)', color: '#42A5F5', icon: <ScheduleIcon fontSize="small" /> };
-            case AppointmentStatus.COMPLETED: return { bg: 'rgba(102,187,106,0.1)', color: '#66BB6A', icon: <CheckCircleIcon fontSize="small" /> };
-            case AppointmentStatus.CANCELLED: return { bg: 'rgba(239,83,80,0.1)', color: '#EF5350', icon: <CancelIcon fontSize="small" /> };
-            case AppointmentStatus.MISSED: return { bg: 'rgba(171,71,188,0.1)', color: '#AB47BC', icon: <HelpOutlineIcon fontSize="small" /> };
-            default: return { bg: 'rgba(0,0,0,0.05)', color: 'text.secondary', icon: <HelpOutlineIcon fontSize="small" /> };
-        }
-    };
+    // ── Column Definitions ──────────────────────────────────────────────────
+
+    const columns: ColumnDef<Appointment>[] = [
+        {
+            header: 'Date & Time',
+            render: (appt) => (
+                <Box>
+                    <Typography variant="body2" fontWeight={700}>
+                        {new Date(appt.appointmentDate).toLocaleDateString()}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary" fontWeight={600}>
+                        {appt.startTime.substring(0, 5)} - {appt.endTime.substring(0, 5)}
+                    </Typography>
+                </Box>
+            ),
+        },
+        {
+            header: 'Doctor',
+            render: (appt) => (
+                <Typography variant="body2" fontWeight={600} color="primary.dark">
+                    {appt.doctor ? `Dr. ${appt.doctor.firstName} ${appt.doctor.lastName}` : 'Unknown Doctor'}
+                </Typography>
+            ),
+        },
+        {
+            header: 'Patient',
+            render: (appt) => (
+                <Box>
+                    <Typography variant="body2" fontWeight={600}>
+                        {appt.patient ? `${appt.patient.firstName} ${appt.patient.lastName}` : 'Unknown Patient'}
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                        {appt.patient?.phone || appt.patient?.email}
+                    </Typography>
+                </Box>
+            ),
+        },
+        {
+            header: 'Status',
+            render: (appt) => (
+                <StatusChip status={statusPresetMap[appt.status] || appt.status} />
+            ),
+        },
+        {
+            header: 'Actions',
+            align: 'right',
+            render: (appt) =>
+                appt.status === AppointmentStatus.UPCOMING ? (
+                    <Tooltip title="Update Status">
+                        <IconButton onClick={(e) => handleMenuOpen(e, appt)}>
+                            <MoreVertIcon />
+                        </IconButton>
+                    </Tooltip>
+                ) : null,
+        },
+    ];
+
+    // ── Render ───────────────────────────────────────────────────────────────
 
     return (
         <ProtectedRoute allowedRoles={[Role.CLINIC_ADMIN, Role.RECEPTIONIST]}>
             <DashboardLayout title="Clinic Appointments">
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-                    <Box>
-                        <Typography variant="h4" fontWeight={800} sx={{ mb: 1 }}>
-                            Clinic Appointments
-                        </Typography>
-                        <Typography variant="body1" color="text.secondary">
-                            View and manage all appointments across your clinic.
-                        </Typography>
-                    </Box>
+                <Box sx={{ p: 4 }}>
+                    <PageHeader
+                        title="Clinic Appointments"
+                        subtitle="View and manage all appointments across your clinic."
+                    />
+
+                    <DataTable<Appointment>
+                        columns={columns}
+                        data={sorted}
+                        isLoading={isLoading}
+                        emptyMessage="No appointments found."
+                        rowKey={(a) => a.id}
+                    />
+
+                    {/* Status Update Menu */}
+                    <Menu
+                        anchorEl={anchorEl}
+                        open={Boolean(anchorEl)}
+                        onClose={handleMenuClose}
+                        PaperProps={{
+                            elevation: 3,
+                            sx: { borderRadius: 2, minWidth: 150, mt: 1 },
+                        }}
+                    >
+                        <MenuItem
+                            onClick={() => handleUpdateStatus(AppointmentStatus.COMPLETED)}
+                            sx={{ color: '#66BB6A', fontWeight: 600 }}
+                        >
+                            <CheckCircleIcon fontSize="small" sx={{ mr: 1 }} /> Mark Completed
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => handleUpdateStatus(AppointmentStatus.MISSED)}
+                            sx={{ color: '#AB47BC', fontWeight: 600 }}
+                        >
+                            <HelpOutlineIcon fontSize="small" sx={{ mr: 1 }} /> Mark No-Show
+                        </MenuItem>
+                        <MenuItem
+                            onClick={() => handleUpdateStatus(AppointmentStatus.CANCELLED)}
+                            sx={{ color: '#EF5350', fontWeight: 600 }}
+                        >
+                            <CancelIcon fontSize="small" sx={{ mr: 1 }} /> Cancel Appointment
+                        </MenuItem>
+                    </Menu>
                 </Box>
-
-                {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
-
-                <Card sx={{ bgcolor: 'white', borderRadius: 3, boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
-                    {loading ? (
-                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', p: 5 }}>
-                            <CircularProgress />
-                        </Box>
-                    ) : (
-                        <TableContainer>
-                            <Table sx={{ minWidth: 650 }}>
-                                <TableHead sx={{ bgcolor: 'rgba(0,188,212,0.04)' }}>
-                                    <TableRow>
-                                        <TableCell sx={{ fontWeight: 700, color: 'text.secondary' }}>Date & Time</TableCell>
-                                        <TableCell sx={{ fontWeight: 700, color: 'text.secondary' }}>Doctor</TableCell>
-                                        <TableCell sx={{ fontWeight: 700, color: 'text.secondary' }}>Patient</TableCell>
-                                        <TableCell sx={{ fontWeight: 700, color: 'text.secondary' }}>Status</TableCell>
-                                        <TableCell sx={{ fontWeight: 700, color: 'text.secondary', textAlign: 'right' }}>Actions</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {appointments.length === 0 ? (
-                                        <TableRow>
-                                            <TableCell colSpan={5} sx={{ textAlign: 'center', py: 4, color: 'text.secondary' }}>
-                                                No appointments found.
-                                            </TableCell>
-                                        </TableRow>
-                                    ) : (
-                                        appointments.map((appointment) => {
-                                            const statusProps = getStatusColor(appointment.status);
-                                            const patientName = appointment.patient
-                                                ? `${appointment.patient!.firstName} ${appointment.patient.lastName}`
-                                                : 'Unknown Patient';
-                                            const doctorName = appointment.doctor
-                                                ? `Dr. ${appointment.doctor.firstName} ${appointment.doctor.lastName}`
-                                                : 'Unknown Doctor';
-
-                                            return (
-                                                <TableRow key={appointment.id} hover sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                                                    <TableCell>
-                                                        <Typography variant="body2" fontWeight={700}>
-                                                            {new Date(appointment.appointmentDate).toLocaleDateString()}
-                                                        </Typography>
-                                                        <Typography variant="caption" color="text.secondary" fontWeight={600}>
-                                                            {appointment.startTime.substring(0, 5)} - {appointment.endTime.substring(0, 5)}
-                                                        </Typography>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Typography variant="body2" fontWeight={600} color="primary.dark">
-                                                            {doctorName}
-                                                        </Typography>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Typography variant="body2" fontWeight={600}>
-                                                            {patientName}
-                                                        </Typography>
-                                                        <Typography variant="caption" color="text.secondary">
-                                                            {appointment.patient?.phone || appointment.patient?.email}
-                                                        </Typography>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Chip
-                                                            label={appointment.status}
-                                                            size="small"
-                                                            icon={statusProps.icon}
-                                                            sx={{
-                                                                bgcolor: statusProps.bg,
-                                                                color: statusProps.color,
-                                                                fontWeight: 700,
-                                                                fontSize: '0.7rem',
-                                                                '& .MuiChip-icon': { color: 'inherit' }
-                                                            }}
-                                                        />
-                                                    </TableCell>
-                                                    <TableCell align="right">
-                                                        {appointment.status === AppointmentStatus.UPCOMING && (
-                                                            <Tooltip title="Update Status">
-                                                                <IconButton onClick={(e) => handleMenuOpen(e, appointment)}>
-                                                                    <MoreVertIcon />
-                                                                </IconButton>
-                                                            </Tooltip>
-                                                        )}
-                                                    </TableCell>
-                                                </TableRow>
-                                            );
-                                        })
-                                    )}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    )}
-                </Card>
-
-                <Menu
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={handleMenuClose}
-                    PaperProps={{
-                        elevation: 3,
-                        sx: { borderRadius: 2, minWidth: 150, mt: 1 }
-                    }}
-                >
-                    <MenuItem onClick={() => handleUpdateStatus(AppointmentStatus.COMPLETED)} sx={{ color: '#66BB6A', fontWeight: 600 }}>
-                        <CheckCircleIcon fontSize="small" sx={{ mr: 1 }} /> Mark Completed
-                    </MenuItem>
-                    <MenuItem onClick={() => handleUpdateStatus(AppointmentStatus.MISSED)} sx={{ color: '#AB47BC', fontWeight: 600 }}>
-                        <HelpOutlineIcon fontSize="small" sx={{ mr: 1 }} /> Mark No-Show
-                    </MenuItem>
-                    <MenuItem onClick={() => handleUpdateStatus(AppointmentStatus.CANCELLED)} sx={{ color: '#EF5350', fontWeight: 600 }}>
-                        <CancelIcon fontSize="small" sx={{ mr: 1 }} /> Cancel Appointment
-                    </MenuItem>
-                </Menu>
             </DashboardLayout>
         </ProtectedRoute>
     );

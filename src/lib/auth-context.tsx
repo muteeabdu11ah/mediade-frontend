@@ -4,9 +4,10 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import api from './api';
+import { API_ENDPOINTS } from './constants/api-endpoints';
+import { ROLE_DASHBOARD_ROUTES } from './constants/navigation';
 import {
     Role,
-    ROLE_DASHBOARD_ROUTES,
     type AuthResponse,
     type ProfileResponse,
     type LoginRequest,
@@ -45,10 +46,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             if (savedToken) {
                 try {
                     setToken(savedToken);
-                    const response = await api.get<ProfileResponse>('/auth/profile');
+                    const response = await api.get<ProfileResponse>(API_ENDPOINTS.AUTH.ME);
                     setUser(response.data);
                 } catch {
                     Cookies.remove('accessToken');
+                    Cookies.remove('userRole');
                     setToken(null);
                     setUser(null);
                 }
@@ -59,7 +61,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }, []);
 
     const login = async (data: LoginRequest) => {
-        const response = await api.post<AuthResponse>('/auth/login', data);
+        const response = await api.post<AuthResponse>(API_ENDPOINTS.AUTH.LOGIN, data);
         const { accessToken, user: userData } = response.data;
 
         Cookies.set('accessToken', accessToken, { expires: 7 });
@@ -67,7 +69,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setToken(accessToken);
 
         // Fetch full profile
-        const profileResponse = await api.get<ProfileResponse>('/auth/profile', {
+        const profileResponse = await api.get<ProfileResponse>(API_ENDPOINTS.AUTH.ME, {
             headers: { Authorization: `Bearer ${accessToken}` },
         });
         setUser(profileResponse.data);
@@ -78,7 +80,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
 
     const register = async (data: RegisterRequest) => {
-        const response = await api.post<AuthResponse>('/auth/register', data);
+        const response = await api.post<AuthResponse>(API_ENDPOINTS.AUTH.REGISTER, data);
         const { accessToken } = response.data;
 
         Cookies.set('accessToken', accessToken, { expires: 7 });
@@ -86,7 +88,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setToken(accessToken);
 
         // Fetch full profile
-        const profileResponse = await api.get<ProfileResponse>('/auth/profile', {
+        const profileResponse = await api.get<ProfileResponse>(API_ENDPOINTS.AUTH.ME, {
             headers: { Authorization: `Bearer ${accessToken}` },
         });
         setUser(profileResponse.data);
@@ -104,7 +106,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const refreshProfile = async () => {
         try {
-            const response = await api.get<ProfileResponse>('/auth/profile');
+            const response = await api.get<ProfileResponse>(API_ENDPOINTS.AUTH.ME);
             setUser(response.data);
         } catch (error) {
             console.error('Failed to refresh profile:', error);

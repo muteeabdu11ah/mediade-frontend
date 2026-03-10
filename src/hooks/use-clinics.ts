@@ -5,6 +5,23 @@ import api from '@/lib/api';
 import { API_ENDPOINTS, QUERY_KEYS } from '@/lib/constants/api-endpoints';
 import { Clinic, PaginatedResponse } from '@/lib/types';
 
+export interface ClinicStats {
+    doctors: number;
+    receptionists: number;
+    appointmentsToday: number;
+    patientsSeen: number;
+}
+
+export interface CreateClinicDto {
+    name: string;
+    address: string;
+    phone: string;
+    email: string;
+    isActive?: boolean;
+}
+
+export type UpdateClinicDto = Partial<CreateClinicDto>;
+
 export interface ClinicParams {
     page?: number;
     limit?: number;
@@ -22,11 +39,22 @@ export function useClinics(params?: ClinicParams) {
     });
 }
 
+export function useClinicStats(clinicId?: string) {
+    return useQuery<ClinicStats>({
+        queryKey: [...QUERY_KEYS.CLINICS, clinicId, 'stats'],
+        queryFn: async () => {
+            const { data } = await api.get(API_ENDPOINTS.CLINICS.STATS(clinicId!));
+            return data;
+        },
+        enabled: !!clinicId,
+    });
+}
+
 export function useCreateClinic() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async (payload: any) => {
+        mutationFn: async (payload: CreateClinicDto) => {
             const { data } = await api.post(API_ENDPOINTS.CLINICS.BASE, payload);
             return data;
         },
@@ -40,7 +68,7 @@ export function useUpdateClinic() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async ({ id, payload }: { id: string; payload: any }) => {
+        mutationFn: async ({ id, payload }: { id: string; payload: UpdateClinicDto }) => {
             const { data } = await api.patch(API_ENDPOINTS.CLINICS.ONE(id), payload);
             return data;
         },

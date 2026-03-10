@@ -2,10 +2,8 @@
 
 import React from 'react';
 import { Typography, Grid, Card, CardContent, Box, Avatar, Chip } from '@mui/material';
-import DashboardIcon from '@mui/icons-material/Dashboard';
 import EventIcon from '@mui/icons-material/Event';
 import PeopleIcon from '@mui/icons-material/People';
-import SettingsIcon from '@mui/icons-material/Settings';
 import DashboardLayout from '@/components/DashboardLayout';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { Role } from '@/lib/types';

@@ -61,15 +61,6 @@ const roleLabels: Record<string, string> = {
     [Role.PATIENT]: 'Patient',
 };
 
-// Map icons to labels for custom styling if needed
-const navIconMap: Record<string, React.ReactNode> = {
-    'Dashboard': <GridViewIcon />,
-    'Appointments': <CalendarTodayOutlinedIcon />,
-    'Onsite Appointments': <CalendarTodayOutlinedIcon />,
-    'AI Assistant': <SmartToyOutlinedIcon />,
-    'Settings': <SettingsOutlinedIcon />,
-};
-
 export default function DashboardLayout({ children, title }: DashboardLayoutProps) {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -124,7 +115,7 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
                                         color: 'inherit',
                                     }}
                                 >
-                                    {navIconMap[item.label] || item.icon}
+                                    {item.icon}
                                 </ListItemIcon>
                                 <ListItemText
                                     primary={item.label}
@@ -286,7 +277,7 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
                                                     {user.role === Role.DOCTOR ? `Dr. ${user.firstName} ${user.lastName}` : `${user.firstName} ${user.lastName}`}
                                                 </Typography>
                                                 <Typography variant="caption" color="text.secondary" fontWeight={500} sx={{ fontSize: '0.75rem' }}>
-                                                    {user.role === Role.DOCTOR ? 'Cardiologist' : roleLabels[user.role]}
+                                                    {roleLabels[user.role] || user.role}
                                                 </Typography>
                                             </Box>
                                         )}

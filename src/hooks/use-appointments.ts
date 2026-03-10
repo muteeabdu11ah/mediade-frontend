@@ -20,6 +20,20 @@ export function useAppointments(params: AppointmentsParams) {
     });
 }
 
+export interface ClinicAppointmentsParams {
+    date?: string;
+}
+
+export function useClinicAppointments(params?: ClinicAppointmentsParams) {
+    return useQuery<Appointment[]>({
+        queryKey: [...QUERY_KEYS.CLINIC_APPOINTMENTS, params],
+        queryFn: async () => {
+            const { data } = await api.get(API_ENDPOINTS.APPOINTMENTS.CLINIC, { params });
+            return data;
+        },
+    });
+}
+
 export function useUpdateAppointmentStatus() {
     const queryClient = useQueryClient();
 
@@ -30,6 +44,7 @@ export function useUpdateAppointmentStatus() {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: QUERY_KEYS.APPOINTMENTS });
+            queryClient.invalidateQueries({ queryKey: QUERY_KEYS.CLINIC_APPOINTMENTS });
         },
     });
 }

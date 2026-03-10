@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Box, Grid, Card, CardContent, Typography, useTheme } from '@mui/material';
+import { Box, Grid, Card, CardContent, Typography } from '@mui/material';
 import BusinessIcon from '@mui/icons-material/Business';
 import PeopleIcon from '@mui/icons-material/People';
 import { useClinics } from '@/hooks/use-clinics';
@@ -11,7 +11,6 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import { Role } from '@/lib/types';
 
 export default function SuperAdminDashboard() {
-    const theme = useTheme();
     const { data: clinics, isLoading: loadingClinics } = useClinics();
     const { data: users, isLoading: loadingUsers } = useUsers();
 

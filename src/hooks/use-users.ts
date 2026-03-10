@@ -5,6 +5,18 @@ import api from '@/lib/api';
 import { API_ENDPOINTS, QUERY_KEYS } from '@/lib/constants/api-endpoints';
 import { Role, User, PaginatedResponse } from '@/lib/types';
 
+export interface CreateUserDto {
+    email: string;
+    firstName: string;
+    lastName: string;
+    password?: string;
+    clinicId?: string;
+    phone?: string;
+    isActive?: boolean;
+}
+
+export type UpdateUserDto = Partial<CreateUserDto>;
+
 export interface UserParams {
     page?: number;
     limit?: number;
@@ -30,8 +42,36 @@ export function useCreateClinicAdmin() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async (payload: any) => {
+        mutationFn: async (payload: CreateUserDto) => {
             const { data } = await api.post(API_ENDPOINTS.USERS.CLINIC_ADMIN, payload);
+            return data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: QUERY_KEYS.USERS });
+        },
+    });
+}
+
+export function useCreateDoctor() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async (payload: CreateUserDto) => {
+            const { data } = await api.post(API_ENDPOINTS.USERS.DOCTOR, payload);
+            return data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: QUERY_KEYS.USERS });
+        },
+    });
+}
+
+export function useCreateReceptionist() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async (payload: CreateUserDto) => {
+            const { data } = await api.post(API_ENDPOINTS.USERS.RECEPTIONIST, payload);
             return data;
         },
         onSuccess: () => {
@@ -44,7 +84,7 @@ export function useUpdateUser() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async ({ id, payload }: { id: string; payload: any }) => {
+        mutationFn: async ({ id, payload }: { id: string; payload: UpdateUserDto }) => {
             const { data } = await api.patch(`${API_ENDPOINTS.USERS.BASE}/${id}`, payload);
             return data;
         },

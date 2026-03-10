@@ -157,10 +157,6 @@ export default function Navbar() {
                                                 <DashboardIcon fontSize="small" sx={{ mr: 1.5, color: 'primary.main' }} />
                                                 Dashboard
                                             </MenuItem>
-                                            <MenuItem onClick={handleMenuClose} component={Link} href="/profile">
-                                                <PersonIcon fontSize="small" sx={{ mr: 1.5, color: 'primary.main' }} />
-                                                Profile
-                                            </MenuItem>
                                             <Divider />
                                             <MenuItem onClick={handleLogout}>
                                                 <LogoutIcon fontSize="small" sx={{ mr: 1.5, color: 'error.main' }} />

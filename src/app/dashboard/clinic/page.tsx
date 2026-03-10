@@ -2,25 +2,24 @@
 
 import React from 'react';
 import { Typography, Grid, Card, CardContent, Box, Avatar, Chip } from '@mui/material';
-import DashboardIcon from '@mui/icons-material/Dashboard';
 import PeopleIcon from '@mui/icons-material/People';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import EventIcon from '@mui/icons-material/Event';
-import SettingsIcon from '@mui/icons-material/Settings';
 import DashboardLayout from '@/components/DashboardLayout';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { Role } from '@/lib/types';
 import { useAuth } from '@/lib/auth-context';
-
-const statCards = [
-    { title: 'Doctors', value: '—', color: '#42A5F5', icon: <PeopleIcon /> },
-    { title: 'Receptionists', value: '—', color: '#FFA726', icon: <PeopleIcon /> },
-    { title: 'Appointments Today', value: '—', color: '#00BCD4', icon: <EventIcon /> },
-    { title: 'Patients Seen', value: '—', color: '#66BB6A', icon: <PeopleIcon /> },
-];
+import { useClinicStats } from '@/hooks/use-clinics';
 
 export default function ClinicDashboard() {
     const { user } = useAuth();
+    const { data: stats, isLoading } = useClinicStats(user?.clinicId || undefined);
+
+    const statCards = [
+        { title: 'Doctors', value: isLoading ? '...' : stats?.doctors ?? '—', color: '#42A5F5', icon: <PeopleIcon /> },
+        { title: 'Receptionists', value: isLoading ? '...' : stats?.receptionists ?? '—', color: '#FFA726', icon: <PeopleIcon /> },
+        { title: 'Appointments Today', value: isLoading ? '...' : stats?.appointmentsToday ?? '—', color: '#00BCD4', icon: <EventIcon /> },
+        { title: 'Patients Seen', value: isLoading ? '...' : stats?.patientsSeen ?? '—', color: '#66BB6A', icon: <PeopleIcon /> },
+    ];
 
     return (
         <ProtectedRoute allowedRoles={[Role.CLINIC_ADMIN]}>
