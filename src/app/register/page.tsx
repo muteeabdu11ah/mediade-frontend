@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import {
     Box,
     Container,
@@ -41,7 +42,15 @@ const steps = ['Account Details', 'Personal Information'];
 const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
 export default function RegisterPage() {
-    const { register } = useAuth();
+    const { register, isAuthenticated, getDashboardRoute } = useAuth();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            router.replace(getDashboardRoute());
+        }
+    }, [isAuthenticated, getDashboardRoute, router]);
+
     const [activeStep, setActiveStep] = useState(0);
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');

@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import {
     Box,
     Container,
@@ -26,7 +27,15 @@ import { useAuth } from '@/lib/auth-context';
 import '@/app/globals.css';
 
 export default function LoginPage() {
-    const { login } = useAuth();
+    const { login, isAuthenticated, getDashboardRoute } = useAuth();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            router.replace(getDashboardRoute());
+        }
+    }, [isAuthenticated, getDashboardRoute, router]);
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);

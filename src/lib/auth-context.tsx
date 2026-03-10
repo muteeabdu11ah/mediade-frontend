@@ -63,6 +63,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const { accessToken, user: userData } = response.data;
 
         Cookies.set('accessToken', accessToken, { expires: 7 });
+        Cookies.set('userRole', userData.role, { expires: 7 });
         setToken(accessToken);
 
         // Fetch full profile
@@ -73,7 +74,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         // Redirect based on role
         const dashboardRoute = ROLE_DASHBOARD_ROUTES[userData.role as Role];
-        router.push(dashboardRoute || '/dashboard/patient');
+        router.replace(dashboardRoute || '/dashboard/patient');
     };
 
     const register = async (data: RegisterRequest) => {
@@ -81,6 +82,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const { accessToken } = response.data;
 
         Cookies.set('accessToken', accessToken, { expires: 7 });
+        Cookies.set('userRole', response.data.user.role, { expires: 7 });
         setToken(accessToken);
 
         // Fetch full profile
@@ -89,11 +91,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         });
         setUser(profileResponse.data);
 
-        router.push('/dashboard/patient');
+        router.replace('/dashboard/patient');
     };
 
     const logout = () => {
         Cookies.remove('accessToken');
+        Cookies.remove('userRole');
         setToken(null);
         setUser(null);
         router.push('/login');
