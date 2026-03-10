@@ -23,7 +23,19 @@ export const API_ENDPOINTS = {
     },
     SCHEDULES: {
         ME: '/schedules/me',
-    }
+    },
+    CLINICS: {
+        BASE: '/clinics',
+        ONE: (id: string) => `/clinics/${id}`,
+        PERMANENT: (id: string) => `/clinics/${id}/permanent`,
+        PROFILE_IMAGE: (id: string) => `/clinics/${id}/profile-image`,
+    },
+    USERS: {
+        BASE: '/users',
+        ONE: (id: string) => `/users/${id}`,
+        PERMANENT: (id: string) => `/users/${id}/permanent`,
+        CLINIC_ADMIN: '/users/clinic-admin',
+    },
 } as const;
 
 export const QUERY_KEYS = {
@@ -33,4 +45,6 @@ export const QUERY_KEYS = {
     APPOINTMENTS: ['appointments'],
     ONSITE_CONSULTATIONS: ['onsite_consultations'],
     DOCTOR_SCHEDULES: ['doctor_schedules'],
+    CLINICS: ['clinics'],
+    USERS: ['users'],
 } as const;

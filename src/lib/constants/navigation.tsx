@@ -10,7 +10,11 @@ export interface NavItem {
     href: string;
     icon: React.ReactNode;
 }
-export const
+export const SUPER_ADMIN_ITEMS: NavItem[] = [
+    { label: 'Dashboard', href: '/dashboard/super-admin', icon: <DashboardIcon /> },
+    { label: 'Clinics', href: '/dashboard/super-admin/clinics', icon: <EventIcon /> },
+    { label: 'Staff', href: '/dashboard/super-admin/staff', icon: <SettingsIcon /> },
+];
 
 
 export const DOCTOR_NAV_ITEMS: NavItem[] = [
@@ -36,6 +40,8 @@ export const PATIENT_NAV_ITEMS: NavItem[] = [
 
 export const getNavItemsByRole = (role: Role): NavItem[] => {
     switch (role) {
+        case Role.SUPER_ADMIN:
+            return SUPER_ADMIN_ITEMS;
         case Role.DOCTOR:
             return DOCTOR_NAV_ITEMS;
         case Role.CLINIC_ADMIN:
