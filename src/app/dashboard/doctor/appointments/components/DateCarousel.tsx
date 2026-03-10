@@ -148,7 +148,7 @@ const DateCarousel: React.FC<DateCarouselProps> = ({ selectedDate, setSelectedDa
                                     color={isSelected ? '#1fb2ba' : '#A0AEC0'}
                                     sx={{ fontSize: '0.9rem', opacity: 0.8 }}
                                 >
-                                    {isSelected ? `${appointmentsCount} appts` : '--'}
+                                    {isSelected ? `${appointmentsCount} appointments` : '--'}
                                 </Typography>
                             </Box>
                         );

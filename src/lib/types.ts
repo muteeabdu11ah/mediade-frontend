@@ -9,10 +9,10 @@ export enum Role {
 }
 
 export enum AppointmentStatus {
-    SCHEDULED = 'scheduled',
+    UPCOMING = 'upcoming',
     COMPLETED = 'completed',
     CANCELLED = 'cancelled',
-    NO_SHOW = 'no_show',
+    MISSED = 'missed',
 }
 
 export enum DayOfWeek {

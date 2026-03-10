@@ -9,13 +9,23 @@ import {
     Divider,
     CircularProgress,
     Alert,
+    IconButton,
+    InputAdornment,
 } from '@mui/material';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import api from '@/lib/api';
+import { useAuth } from '@/lib/auth-context';
 
 export default function ChangePasswordTab() {
+    const { logout } = useAuth();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [showCurrent, setShowCurrent] = useState(false);
+    const [showNew, setShowNew] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
+
     const [formData, setFormData] = useState({
         currentPassword: '',
         newPassword: '',
@@ -42,9 +52,15 @@ export default function ChangePasswordTab() {
                 currentPassword: formData.currentPassword,
                 newPassword: formData.newPassword,
             });
-            setSuccess('Password changed successfully!');
+            setSuccess('Password changed successfully! Logging out...');
             setFormData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+
+            // Clear session (logout) on success as requested
+            setTimeout(() => {
+                logout();
+            }, 2000);
         } catch (err: any) {
+            // Failure case: do not logout, just show error
             setError(err.response?.data?.message || 'Failed to change password');
         } finally {
             setLoading(false);
@@ -70,11 +86,26 @@ export default function ChangePasswordTab() {
                 <TextField
                     fullWidth
                     name="currentPassword"
-                    type="password"
+                    type={showCurrent ? 'text' : 'password'}
                     value={formData.currentPassword}
                     onChange={handleChange}
                     placeholder="Enter current password"
                     sx={{ '& .MuiOutlinedInput-root': { borderRadius: 3, bgcolor: '#F7FAFC' } }}
+                    slotProps={{
+                        input: {
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        onClick={() => setShowCurrent(!showCurrent)}
+                                        onMouseDown={(e) => e.preventDefault()}
+                                        edge="end"
+                                    >
+                                        {showCurrent ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                        },
+                    }}
                 />
             </Box>
 
@@ -85,11 +116,26 @@ export default function ChangePasswordTab() {
                 <TextField
                     fullWidth
                     name="newPassword"
-                    type="password"
+                    type={showNew ? 'text' : 'password'}
                     value={formData.newPassword}
                     onChange={handleChange}
                     placeholder="Enter new password"
                     sx={{ '& .MuiOutlinedInput-root': { borderRadius: 3, bgcolor: '#F7FAFC' } }}
+                    slotProps={{
+                        input: {
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        onClick={() => setShowNew(!showNew)}
+                                        onMouseDown={(e) => e.preventDefault()}
+                                        edge="end"
+                                    >
+                                        {showNew ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                        },
+                    }}
                 />
             </Box>
 
@@ -100,11 +146,26 @@ export default function ChangePasswordTab() {
                 <TextField
                     fullWidth
                     name="confirmPassword"
-                    type="password"
+                    type={showConfirm ? 'text' : 'password'}
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     placeholder="Confirm new password"
                     sx={{ '& .MuiOutlinedInput-root': { borderRadius: 3, bgcolor: '#F7FAFC' } }}
+                    slotProps={{
+                        input: {
+                            endAdornment: (
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        onClick={() => setShowConfirm(!showConfirm)}
+                                        onMouseDown={(e) => e.preventDefault()}
+                                        edge="end"
+                                    >
+                                        {showConfirm ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                            ),
+                        },
+                    }}
                 />
             </Box>
 
@@ -114,6 +175,7 @@ export default function ChangePasswordTab() {
                 <Button
                     variant="outlined"
                     sx={{ px: 4, py: 1, borderRadius: 3, textTransform: 'none', fontWeight: 600 }}
+                    onClick={() => setFormData({ currentPassword: '', newPassword: '', confirmPassword: '' })}
                 >
                     Cancel
                 </Button>

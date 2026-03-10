@@ -47,14 +47,14 @@ const NewOnsiteModal: React.FC<NewOnsiteModalProps> = ({ open, onClose, formData
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     />
-                    <TextField
+                    {/* <TextField
                         label="Initial Notes / Symptoms"
                         fullWidth
                         multiline
                         rows={4}
                         value={formData.notes}
                         onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                    />
+                    /> */}
                 </Box>
             </DialogContent>
             <DialogActions sx={{ p: 2 }}>

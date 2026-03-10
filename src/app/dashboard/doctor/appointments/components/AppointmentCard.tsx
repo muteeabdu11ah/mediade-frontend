@@ -79,13 +79,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment, onMenuOp
                     )}
                 </Box>
 
-                {/* Symptoms Block for Emergency */}
-                {isEmergency && appointment.symptoms && (
-                    <Box sx={{ mb: 2 }}>
-                        <Typography variant="caption" fontWeight={600} color="#1A2B3C">Symptoms: </Typography>
-                        <Typography variant="caption" color="text.secondary">{appointment.symptoms}</Typography>
-                    </Box>
-                )}
+            
 
                 {/* Time Track */}
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
@@ -116,7 +110,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment, onMenuOp
                         startIcon={<VisibilityIcon />}
                         sx={{ borderColor: 'rgba(31,178,186,0.3)', color: '#1fb2ba', borderRadius: 2 }}
                     >
-                        {isEmergency ? 'View Notes' : 'Intake Notes'}
+                        {'Intake Notes'}
                     </Button>
                     <Button
                         variant="contained"

@@ -22,7 +22,7 @@ const StatusUpdateMenu: React.FC<StatusUpdateMenuProps> = ({ anchorEl, onClose, 
             <MenuItem onClick={() => onStatusUpdate(AppointmentStatus.COMPLETED)} sx={{ color: '#10b981', fontWeight: 600 }}>
                 <CheckCircleIcon fontSize="small" sx={{ mr: 1 }} /> Mark Completed
             </MenuItem>
-            <MenuItem onClick={() => onStatusUpdate(AppointmentStatus.NO_SHOW)} sx={{ color: '#f59e0b', fontWeight: 600 }}>
+            <MenuItem onClick={() => onStatusUpdate(AppointmentStatus.MISSED)} sx={{ color: '#f59e0b', fontWeight: 600 }}>
                 <HelpOutlineIcon fontSize="small" sx={{ mr: 1 }} /> Mark No-Show
             </MenuItem>
             <MenuItem onClick={() => onStatusUpdate(AppointmentStatus.CANCELLED)} sx={{ color: '#ef4444', fontWeight: 600 }}>

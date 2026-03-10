@@ -64,20 +64,25 @@ export default function DoctorAppointmentsPage() {
                 const dateStr = selectedDate.toLocaleDateString('en-CA');
                 const queryParams = new URLSearchParams();
                 queryParams.append('date', dateStr);
+                queryParams.append('page', page.toString());
+                queryParams.append('limit', '10'); // Limit set to 2 for testing
                 if (selectedType && selectedType !== 'All') queryParams.append('type', selectedType);
 
-                const res = await api.get<Appointment[]>(`/appointments/doctor/me?${queryParams.toString()}`);
-                const enrichedData = res.data.map(appt => ({
+                const res = await api.get<{ data: Appointment[], meta: any }>(`/appointments/doctor/me?${queryParams.toString()}`);
+                const enrichedData = res.data.data.map(appt => ({
                     ...appt,
                     type: appt.type || 'Consultation'
                 }));
 
+                // No need to sort if backend sorts, but keeping it for safety
                 const sorted = enrichedData.sort((a, b) => {
                     const dateA = new Date(`${a.appointmentDate}T${a.startTime}`);
                     const dateB = new Date(`${b.appointmentDate}T${b.startTime}`);
                     return dateA.getTime() - dateB.getTime();
                 });
+
                 setAppointments(sorted);
+                setTotalPages(res.data.meta.totalPages || 1);
             } else {
                 const queryParams = new URLSearchParams();
                 queryParams.append('page', page.toString());
@@ -173,6 +178,18 @@ export default function DoctorAppointmentsPage() {
                                     ))
                                 )}
                             </Grid>
+                        )}
+                        {totalPages > 1 && (
+                            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+                                <Pagination
+                                    count={totalPages}
+                                    page={page}
+                                    onChange={(_, value) => setPage(value)}
+                                    color="primary"
+                                    size="large"
+                                    shape="rounded"
+                                />
+                            </Box>
                         )}
                     </>
                 ) : (
