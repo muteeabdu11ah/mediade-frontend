@@ -8,6 +8,7 @@ export interface ScheduleFormData {
     startTime: string;
     endTime: string;
     isAvailable: boolean;
+    slotDuration: number;
 }
 
 export const useSchedules = () => {

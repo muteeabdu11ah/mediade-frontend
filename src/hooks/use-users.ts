@@ -3,7 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import api from '@/lib/api';
 import { API_ENDPOINTS, QUERY_KEYS } from '@/lib/constants/api-endpoints';
-import { Role, User, PaginatedResponse } from '@/lib/types';
+import { Role, User, PaginatedResponse, Specialty, Language } from '@/lib/types';
 
 export interface CreateUserDto {
     email: string;
@@ -13,9 +13,9 @@ export interface CreateUserDto {
     clinicId?: string;
     phone?: string;
     isActive?: boolean;
-    specialty?: string;
+    specialty?: Specialty;
     yearsOfExperience?: number;
-    languages?: string;
+    languages?: Language[];
 }
 
 export type UpdateUserDto = Partial<CreateUserDto>;

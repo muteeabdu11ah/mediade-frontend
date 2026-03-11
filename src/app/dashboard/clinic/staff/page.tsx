@@ -35,7 +35,7 @@ import {
     useUpdateUser,
     useDeactivateUser,
 } from '@/hooks/use-users';
-import { Role, User } from '@/lib/types';
+import { Role, User, Specialty, Language } from '@/lib/types';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -47,9 +47,9 @@ interface StaffFormData {
     phone: string;
     role: Role.DOCTOR | Role.RECEPTIONIST;
     isActive: boolean;
-    specialty: string;
+    specialty: Specialty | '';
     yearsOfExperience: string;
-    languages: string;
+    languages: Language[];
 }
 
 const initialFormData: StaffFormData = {
@@ -62,7 +62,7 @@ const initialFormData: StaffFormData = {
     isActive: true,
     specialty: '',
     yearsOfExperience: '',
-    languages: '',
+    languages: [],
 };
 
 // ─── Role helpers ───────────────────────────────────────────────────────────
@@ -130,7 +130,7 @@ export default function ClinicStaffManagementPage() {
             password: '',
             specialty: user.doctorProfile?.specialty || '',
             yearsOfExperience: user.doctorProfile?.yearsOfExperience?.toString() || '',
-            languages: user.doctorProfile?.languages || '',
+            languages: user.doctorProfile?.languages || [],
         });
         setSelectedUserId(user.id);
         setOpenDialog(true);
@@ -148,7 +148,7 @@ export default function ClinicStaffManagementPage() {
             if (formData.role === Role.DOCTOR) {
                 payload.specialty = formData.specialty || undefined;
                 payload.yearsOfExperience = formData.yearsOfExperience ? Number(formData.yearsOfExperience) : undefined;
-                payload.languages = formData.languages || undefined;
+                payload.languages = formData.languages.length > 0 ? formData.languages : undefined;
                 await createDoctor.mutateAsync(payload);
             } else {
                 await createReceptionist.mutateAsync(payload);
@@ -163,7 +163,7 @@ export default function ClinicStaffManagementPage() {
             if (formData.role === Role.DOCTOR) {
                 payload.specialty = formData.specialty || undefined;
                 payload.yearsOfExperience = formData.yearsOfExperience ? Number(formData.yearsOfExperience) : undefined;
-                payload.languages = formData.languages || undefined;
+                payload.languages = formData.languages.length > 0 ? formData.languages : undefined;
             }
             await updateUser.mutateAsync({
                 id: selectedUserId,
@@ -374,12 +374,17 @@ export default function ClinicStaffManagementPage() {
                                 {formData.role === Role.DOCTOR && (
                                     <>
                                         <TextField
+                                            select
                                             label="Specialty"
                                             fullWidth
-                                            placeholder="e.g. Cardiologist"
                                             value={formData.specialty}
-                                            onChange={(e) => setFormData({ ...formData, specialty: e.target.value })}
-                                        />
+                                            onChange={(e) => setFormData({ ...formData, specialty: e.target.value as Specialty | '' })}
+                                        >
+                                            <MenuItem value=""><em>None</em></MenuItem>
+                                            {Object.values(Specialty).map((val) => (
+                                                <MenuItem key={val} value={val}>{val}</MenuItem>
+                                            ))}
+                                        </TextField>
                                         <Grid container spacing={2}>
                                             <Grid size={{ xs: 12, sm: 6 }}>
                                                 <TextField
@@ -392,12 +397,26 @@ export default function ClinicStaffManagementPage() {
                                             </Grid>
                                             <Grid size={{ xs: 12, sm: 6 }}>
                                                 <TextField
+                                                    select
+                                                    SelectProps={{
+                                                        multiple: true,
+                                                        renderValue: (selected: any) => (
+                                                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                                                {(selected as string[]).map((value) => (
+                                                                    <Chip key={value} label={value} size="small" />
+                                                                ))}
+                                                            </Box>
+                                                        ),
+                                                    }}
                                                     label="Languages Spoken"
                                                     fullWidth
-                                                    placeholder="e.g. English, Spanish"
                                                     value={formData.languages}
-                                                    onChange={(e) => setFormData({ ...formData, languages: e.target.value })}
-                                                />
+                                                    onChange={(e) => setFormData({ ...formData, languages: e.target.value as unknown as Language[] })}
+                                                >
+                                                    {Object.values(Language).map((val) => (
+                                                        <MenuItem key={val} value={val}>{val}</MenuItem>
+                                                    ))}
+                                                </TextField>
                                             </Grid>
                                         </Grid>
                                     </>

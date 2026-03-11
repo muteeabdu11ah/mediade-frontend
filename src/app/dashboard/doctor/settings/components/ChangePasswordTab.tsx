@@ -171,10 +171,10 @@ export default function ChangePasswordTab() {
 
             <Divider sx={{ my: 4 }} />
 
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column-reverse', sm: 'row' }, justifyContent: 'flex-end', gap: 2 }}>
                 <Button
                     variant="outlined"
-                    sx={{ px: 4, py: 1, borderRadius: 3, textTransform: 'none', fontWeight: 600 }}
+                    sx={{ px: 4, py: 1, borderRadius: 3, textTransform: 'none', fontWeight: 600, width: { xs: '100%', sm: 'auto' } }}
                     onClick={() => setFormData({ currentPassword: '', newPassword: '', confirmPassword: '' })}
                 >
                     Cancel
@@ -189,6 +189,7 @@ export default function ChangePasswordTab() {
                         borderRadius: 3,
                         textTransform: 'none',
                         fontWeight: 600,
+                        width: { xs: '100%', sm: 'auto' },
                         background: 'linear-gradient(135deg, #00BCD4 0%, #009688 100%)',
                     }}
                 >

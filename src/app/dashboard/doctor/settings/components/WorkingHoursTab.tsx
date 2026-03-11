@@ -32,6 +32,7 @@ const defaultScheduleRow = (day: DayOfWeek): ScheduleFormData => ({
     startTime: '09:00:00',
     endTime: '17:00:00',
     isAvailable: false,
+    slotDuration: 30,
 });
 
 export default function WorkingHoursTab() {
@@ -51,6 +52,7 @@ export default function WorkingHoursTab() {
                         startTime: existing.startTime,
                         endTime: existing.endTime,
                         isAvailable: existing.isAvailable,
+                        slotDuration: existing.slotDuration,
                     };
                 } else {
                     initial[day] = defaultScheduleRow(day);
@@ -115,73 +117,93 @@ export default function WorkingHoursTab() {
                     return (
                         <Box key={day} sx={{ py: 2.5, borderBottom: index === DAYS_ORDER.length - 1 ? 'none' : '1px solid rgba(0,0,0,0.05)' }}>
                             <Grid container spacing={2} alignItems="center">
-                                <Grid size={{ xs: 12, md: 3 }}>
+                                <Grid size={{ xs: 12, sm: 4, md: 2 }}>
                                     <Typography variant="subtitle1" fontWeight={700} sx={{ textTransform: 'capitalize', color: '#4A5568' }}>
                                         {day}
                                     </Typography>
                                 </Grid>
-
-                                <Grid size={{ xs: 5, md: 3 }}>
-                                    <TextField
-                                        type="time"
-                                        fullWidth
-                                        size="small"
-                                        disabled={!rowData.isAvailable}
-                                        value={rowData.startTime}
-                                        onChange={(e) => {
-                                            const val = e.target.value;
-                                            handleChange(day, 'startTime', val.length === 5 ? `${val}:00` : val);
-                                        }}
-                                        slotProps={{
-                                            htmlInput: { step: 300 },
-                                            input: {
-                                                sx: {
-                                                    borderRadius: 3,
-                                                    bgcolor: rowData.isAvailable ? '#F7FAFC' : 'transparent'
-                                                }
-                                            }
-                                        }}
-                                    />
-                                </Grid>
-
-                                <Grid size={{ xs: 2, md: 1 }} sx={{ textAlign: 'center' }}>
-                                    <Box sx={{ width: 12, height: 2, bgcolor: 'divider', mx: 'auto' }} />
-                                </Grid>
-
-                                <Grid size={{ xs: 5, md: 3 }}>
-                                    <TextField
-                                        type="time"
-                                        fullWidth
-                                        size="small"
-                                        disabled={!rowData.isAvailable}
-                                        value={rowData.endTime}
-                                        onChange={(e) => {
-                                            const val = e.target.value;
-                                            handleChange(day, 'endTime', val.length === 5 ? `${val}:00` : val);
-                                        }}
-                                        slotProps={{
-                                            htmlInput: { step: 300 },
-                                            input: {
-                                                sx: {
-                                                    borderRadius: 3,
-                                                    bgcolor: rowData.isAvailable ? '#F7FAFC' : 'transparent'
-                                                }
-                                            }
-                                        }}
-                                    />
-                                </Grid>
-                                <Grid size={{ xs: 12, md: 2 }} sx={{ textAlign: { xs: 'left', md: 'right' } }}>
-                                    <FormControlLabel
-                                        control={
-                                            <Switch
-                                                color="primary"
-                                                checked={rowData.isAvailable}
-                                                onChange={(e) => handleChange(day, 'isAvailable', e.target.checked)}
+                                <Grid size={{ xs: 12, sm: 8, md: 10 }}>
+                                    <Grid container spacing={2} alignItems="center">
+                                        <Grid size={{ xs: 5, sm: 3.5, md: 3 }}>
+                                            <TextField
+                                                type="time"
+                                                fullWidth
+                                                size="small"
+                                                disabled={!rowData.isAvailable}
+                                                value={rowData.startTime}
+                                                onChange={(e) => {
+                                                    const val = e.target.value;
+                                                    handleChange(day, 'startTime', val.length === 5 ? `${val}:00` : val);
+                                                }}
+                                                slotProps={{
+                                                    htmlInput: { step: 300 },
+                                                    input: {
+                                                        sx: {
+                                                            borderRadius: 3,
+                                                            bgcolor: rowData.isAvailable ? '#F7FAFC' : 'transparent'
+                                                        }
+                                                    }
+                                                }}
                                             />
-                                        }
-                                        label=""
-                                        sx={{ m: 0 }}
-                                    />
+                                        </Grid>
+                                        <Grid size={{ xs: 2, sm: 1, md: 0.5 }} sx={{ textAlign: 'center' }}>
+                                            <Box sx={{ width: 8, height: 2, bgcolor: 'divider', mx: 'auto' }} />
+                                        </Grid>
+                                        <Grid size={{ xs: 5, sm: 3.5, md: 3 }}>
+                                            <TextField
+                                                type="time"
+                                                fullWidth
+                                                size="small"
+                                                disabled={!rowData.isAvailable}
+                                                value={rowData.endTime}
+                                                onChange={(e) => {
+                                                    const val = e.target.value;
+                                                    handleChange(day, 'endTime', val.length === 5 ? `${val}:00` : val);
+                                                }}
+                                                slotProps={{
+                                                    htmlInput: { step: 300 },
+                                                    input: {
+                                                        sx: {
+                                                            borderRadius: 3,
+                                                            bgcolor: rowData.isAvailable ? '#F7FAFC' : 'transparent'
+                                                        }
+                                                    }
+                                                }}
+                                            />
+                                        </Grid>
+                                        <Grid size={{ xs: 8, sm: 3, md: 3.5 }}>
+                                            <TextField
+                                                type="number"
+                                                label="Slot (min)"
+                                                fullWidth
+                                                size="small"
+                                                disabled={!rowData.isAvailable}
+                                                value={rowData.slotDuration}
+                                                onChange={(e) => handleChange(day, 'slotDuration', Number(e.target.value))}
+                                                slotProps={{
+                                                    input: {
+                                                        sx: {
+                                                            borderRadius: 3,
+                                                            bgcolor: rowData.isAvailable ? '#F7FAFC' : 'transparent'
+                                                        }
+                                                    }
+                                                }}
+                                            />
+                                        </Grid>
+                                        <Grid size={{ xs: 4, sm: 1, md: 2 }} sx={{ textAlign: 'right' }}>
+                                            <FormControlLabel
+                                                control={
+                                                    <Switch
+                                                        color="primary"
+                                                        checked={rowData.isAvailable}
+                                                        onChange={(e) => handleChange(day, 'isAvailable', e.target.checked)}
+                                                    />
+                                                }
+                                                label=""
+                                                sx={{ m: 0 }}
+                                            />
+                                        </Grid>
+                                    </Grid>
                                 </Grid>
                             </Grid>
                         </Box>

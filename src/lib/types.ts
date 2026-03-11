@@ -32,6 +32,41 @@ export enum Gender {
     OTHER = 'other',
 }
 
+export enum Specialty {
+    CARDIOLOGY = 'Cardiology',
+    DERMATOLOGY = 'Dermatology',
+    ENDOCRINOLOGY = 'Endocrinology',
+    GASTROENTEROLOGY = 'Gastroenterology',
+    GENERAL_PRACTICE = 'General Practice',
+    NEUROLOGY = 'Neurology',
+    OBSTETRICS_GYNECOLOGY = 'Obstetrics & Gynecology',
+    ONCOLOGY = 'Oncology',
+    OPHTHALMOLOGY = 'Ophthalmology',
+    ORTHOPEDICS = 'Orthopedics',
+    PEDIATRICS = 'Pediatrics',
+    PSYCHIATRY = 'Psychiatry',
+    PULMONOLOGY = 'Pulmonology',
+    RHEUMATOLOGY = 'Rheumatology',
+    UROLOGY = 'Urology',
+}
+
+export enum Language {
+    ENGLISH = 'English',
+    SPANISH = 'Spanish',
+    FRENCH = 'French',
+    GERMAN = 'German',
+    MANDARIN = 'Mandarin',
+    ARABIC = 'Arabic',
+    HINDI = 'Hindi',
+    URDU = 'Urdu',
+    PORTUGUESE = 'Portuguese',
+    RUSSIAN = 'Russian',
+    JAPANESE = 'Japanese',
+    KOREAN = 'Korean',
+    ITALIAN = 'Italian',
+    TURKISH = 'Turkish',
+}
+
 // ─── Interfaces ─────────────────────────────────────────────────────────────
 
 export interface User {
@@ -97,9 +132,9 @@ export interface PatientProfile {
 
 export interface DoctorProfile {
     id?: string;
-    specialty: string | null;
+    specialty: Specialty | null;
     yearsOfExperience: number | null;
-    languages: string | null;
+    languages: Language[] | null;
 }
 
 export interface DoctorSchedule {
@@ -110,6 +145,7 @@ export interface DoctorSchedule {
     startTime: string;
     endTime: string;
     isAvailable: boolean;
+    slotDuration: number;
     createdAt: string;
     updatedAt: string;
 }

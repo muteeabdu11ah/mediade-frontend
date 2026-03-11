@@ -34,8 +34,8 @@ export default function PatientHistoryPage() {
             render: (appt) => `Dr. ${appt.doctor?.firstName} ${appt.doctor?.lastName}`,
         },
         {
-            header: 'Designation',
-            render: (appt) => appt.type || 'Consultation', // Fallback designation from Appointment Type for now
+            header: 'Specialty',
+            render: (appt) => appt.doctor?.doctorProfile?.specialty || 'Consultation', // Fallback designation from Appointment Type for now
         },
         {
             header: 'Clinic',

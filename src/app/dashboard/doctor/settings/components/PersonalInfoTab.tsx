@@ -12,10 +12,13 @@ import {
     Divider,
     CircularProgress,
     Alert,
+    MenuItem,
+    Chip,
 } from '@mui/material';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import { useAuth } from '@/lib/auth-context';
 import api from '@/lib/api';
+import { Specialty, Language } from '@/lib/types';
 
 export default function PersonalInfoTab() {
     const { user, refreshProfile } = useAuth();
@@ -32,7 +35,7 @@ export default function PersonalInfoTab() {
         phone: user?.phone || '',
         specialty: user?.doctorProfile?.specialty || '',
         yearsOfExperience: user?.doctorProfile?.yearsOfExperience?.toString() || '',
-        languages: user?.doctorProfile?.languages || '',
+        languages: user?.doctorProfile?.languages || ([] as Language[]),
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -81,9 +84,9 @@ export default function PersonalInfoTab() {
             };
 
             if (user?.role === 'doctor') {
-                payload.specialty = formData.specialty;
+                payload.specialty = formData.specialty || undefined;
                 payload.yearsOfExperience = formData.yearsOfExperience ? Number(formData.yearsOfExperience) : undefined;
-                payload.languages = formData.languages;
+                payload.languages = formData.languages.length > 0 ? formData.languages : undefined;
             }
 
             await api.patch('/auth/profile', payload);
@@ -112,15 +115,15 @@ export default function PersonalInfoTab() {
                 Personalize your profile info
             </Typography>
 
-            <Box sx={{ position: 'relative', width: 100, height: 100, mb: 4 }}>
+            <Box sx={{ position: 'relative', width: { xs: 80, md: 100 }, height: { xs: 80, md: 100 }, mb: 4 }}>
                 <Avatar
                     src={user?.profileImageUrl || undefined}
                     sx={{
-                        width: 100,
-                        height: 100,
+                        width: { xs: 80, md: 100 },
+                        height: { xs: 80, md: 100 },
                         border: '4px solid #F0F9FA',
                         bgcolor: 'primary.main',
-                        fontSize: '2.5rem',
+                        fontSize: { xs: '2rem', md: '2.5rem' },
                         fontWeight: 700,
                     }}
                 >
@@ -147,7 +150,7 @@ export default function PersonalInfoTab() {
             {success && <Alert severity="success" sx={{ mb: 3 }}>{success}</Alert>}
 
             <Grid container spacing={3}>
-                <Grid size={{ xs: 12, md: 6 }}>
+                <Grid size={{ xs: 12, sm: 6, md: 6 }}>
                     <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1, color: '#4A5568' }}>
                         First Name
                     </Typography>
@@ -166,7 +169,7 @@ export default function PersonalInfoTab() {
                         }}
                     />
                 </Grid>
-                <Grid size={{ xs: 12, md: 6 }}>
+                <Grid size={{ xs: 12, sm: 6, md: 6 }}>
                     <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1, color: '#4A5568' }}>
                         Last Name
                     </Typography>
@@ -185,7 +188,7 @@ export default function PersonalInfoTab() {
                         }}
                     />
                 </Grid>
-                <Grid size={{ xs: 12, md: 12 }}>
+                <Grid size={{ xs: 12 }}>
                     <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1, color: '#4A5568' }}>
                         Email
                     </Typography>
@@ -204,7 +207,7 @@ export default function PersonalInfoTab() {
                         }}
                     />
                 </Grid>
-                <Grid size={{ xs: 12, md: 12 }}>
+                <Grid size={{ xs: 12 }}>
                     <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1, color: '#4A5568' }}>
                         Phone Number
                     </Typography>
@@ -226,16 +229,16 @@ export default function PersonalInfoTab() {
 
                 {user?.role === 'doctor' && (
                     <>
-                        <Grid size={{ xs: 12, md: 12 }}>
+                        <Grid size={{ xs: 12 }}>
                             <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1, color: '#4A5568' }}>
                                 Specialty
                             </Typography>
                             <TextField
+                                select
                                 fullWidth
                                 name="specialty"
                                 value={formData.specialty}
                                 onChange={handleChange}
-                                placeholder="e.g. Cardiologist"
                                 variant="outlined"
                                 sx={{
                                     '& .MuiOutlinedInput-root': {
@@ -243,9 +246,14 @@ export default function PersonalInfoTab() {
                                         bgcolor: '#F7FAFC',
                                     }
                                 }}
-                            />
+                            >
+                                <MenuItem value=""><em>None</em></MenuItem>
+                                {Object.values(Specialty).map((val) => (
+                                    <MenuItem key={val} value={val}>{val}</MenuItem>
+                                ))}
+                            </TextField>
                         </Grid>
-                        <Grid size={{ xs: 12, md: 6 }}>
+                        <Grid size={{ xs: 12, sm: 6, md: 6 }}>
                             <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1, color: '#4A5568' }}>
                                 Years of Experience
                             </Typography>
@@ -264,16 +272,26 @@ export default function PersonalInfoTab() {
                                 }}
                             />
                         </Grid>
-                        <Grid size={{ xs: 12, md: 6 }}>
+                        <Grid size={{ xs: 12, sm: 6, md: 6 }}>
                             <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1, color: '#4A5568' }}>
                                 Languages Spoken
                             </Typography>
                             <TextField
+                                select
+                                SelectProps={{
+                                    multiple: true,
+                                    renderValue: (selected: any) => (
+                                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                            {(selected as string[]).map((value) => (
+                                                <Chip key={value} label={value} size="small" />
+                                            ))}
+                                        </Box>
+                                    ),
+                                }}
                                 fullWidth
                                 name="languages"
                                 value={formData.languages}
-                                onChange={handleChange}
-                                placeholder="e.g. English, Spanish"
+                                onChange={(e) => setFormData({ ...formData, languages: e.target.value as unknown as Language[] })}
                                 variant="outlined"
                                 sx={{
                                     '& .MuiOutlinedInput-root': {
@@ -281,7 +299,11 @@ export default function PersonalInfoTab() {
                                         bgcolor: '#F7FAFC',
                                     }
                                 }}
-                            />
+                            >
+                                {Object.values(Language).map((val) => (
+                                    <MenuItem key={val} value={val}>{val}</MenuItem>
+                                ))}
+                            </TextField>
                         </Grid>
                     </>
                 )}
@@ -289,10 +311,11 @@ export default function PersonalInfoTab() {
 
             <Divider sx={{ my: 4 }} />
 
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+            <Box sx={{ display: 'flex', flexDirection: { xs: 'column-reverse', sm: 'row' }, justifyContent: 'flex-end', gap: 2 }}>
                 <Button
                     variant="outlined"
-                    sx={{ px: 4, py: 1, borderRadius: 3, textTransform: 'none', fontWeight: 600 }}
+                    fullWidth={false}
+                    sx={{ px: 4, py: 1, borderRadius: 3, textTransform: 'none', fontWeight: 600, width: { xs: '100%', sm: 'auto' } }}
                 >
                     Cancel
                 </Button>
@@ -306,6 +329,7 @@ export default function PersonalInfoTab() {
                         borderRadius: 3,
                         textTransform: 'none',
                         fontWeight: 600,
+                        width: { xs: '100%', sm: 'auto' },
                         background: 'linear-gradient(135deg, #00BCD4 0%, #009688 100%)',
                     }}
                 >

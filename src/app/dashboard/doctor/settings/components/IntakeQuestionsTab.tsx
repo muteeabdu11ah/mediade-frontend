@@ -40,6 +40,7 @@ export default function IntakeQuestionsTab() {
                         borderRadius: 3,
                         textTransform: 'none',
                         fontWeight: 600,
+                        width: { xs: '100%', sm: 'auto' },
                         background: 'linear-gradient(135deg, #00BCD4 0%, #009688 100%)',
                     }}
                 >

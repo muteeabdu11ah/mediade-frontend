@@ -1,162 +1,189 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
     Box,
     Typography,
-    Button,
-    Card,
-    CardContent,
-    Grid,
-    TextField,
-    CircularProgress,
+    Container,
+    IconButton,
+    Breadcrumbs,
+    Link,
     Alert,
+    Snackbar,
+    Fade,
+    Grid,
+    Button,
 } from '@mui/material';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import EventIcon from '@mui/icons-material/Event';
-import PersonIcon from '@mui/icons-material/Person';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import SettingsIcon from '@mui/icons-material/Settings';
-import EventAvailableIcon from '@mui/icons-material/EventAvailable';
+import { ChevronLeft, ArrowBack } from '@mui/icons-material';
 import DashboardLayout from '@/components/DashboardLayout';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import { Role } from '@/lib/types';
+import { Role, PaginatedResponse, User } from '@/lib/types';
 import api from '@/lib/api';
+import DoctorSearchFilters from './components/DoctorSearchFilters';
+import DoctorGrid from './components/DoctorGrid';
+import DoctorProfileSection from './components/DoctorProfileSection';
+import SlotPicker from './components/SlotPicker';
+import { GRADIENTS } from '@/lib/constants/design-tokens';
+
+enum BookingStep {
+    SEARCH = 0,
+    SLOTS = 1,
+}
 
 export default function BookAppointmentPage() {
-    const [doctorId, setDoctorId] = useState('');
-    const [appointmentDate, setAppointmentDate] = useState('');
-    const [startTime, setStartTime] = useState('');
-    const [notes, setNotes] = useState('');
+    const [step, setStep] = useState<BookingStep>(BookingStep.SEARCH);
+    const [search, setSearch] = useState('');
+    const [specialty, setSpecialty] = useState('');
+    const [page, setPage] = useState(1);
+    const [doctorsRes, setDoctorsRes] = useState<PaginatedResponse<User> | null>(null);
+    const [loadingDoctors, setLoadingDoctors] = useState(false);
+    const [selectedDoctor, setSelectedDoctor] = useState<User | null>(null);
 
-    const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
     const [successMsg, setSuccessMsg] = useState('');
 
-    const handleBook = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setSaving(true);
-        setError('');
-        setSuccessMsg('');
+    const fetchDoctors = useCallback(async () => {
+        setLoadingDoctors(true);
+        try {
+            const params = new URLSearchParams({
+                page: page.toString(),
+                limit: '12',
+                ...(search && { search }),
+                ...(specialty && { specialty }),
+            });
+            const res = await api.get(`/users/doctors?${params.toString()}`);
+            setDoctorsRes(res.data);
+        } catch (err) {
+            setError('Failed to load doctors. Please try again.');
+        } finally {
+            setLoadingDoctors(false);
+        }
+    }, [page, search, specialty]);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            fetchDoctors();
+        }, 500); // 500ms debounce
+        return () => clearTimeout(timer);
+    }, [fetchDoctors]);
+
+    const handleDoctorSelect = (doctorId: string) => {
+        const doctor = doctorsRes?.data.find(d => d.id === doctorId);
+        if (doctor) {
+            setSelectedDoctor(doctor);
+            setStep(BookingStep.SLOTS);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    };
+
+    const handleSlotSelect = async (date: string, time: string) => {
+        if (!selectedDoctor) return;
 
         try {
-            const payload = {
-                doctorId,
-                appointmentDate,
-                startTime: startTime.length === 5 ? `${startTime}:00` : startTime,
-                notes: notes || undefined,
-            };
-
-            await api.post('/appointments', payload);
-            setSuccessMsg('Appointment booked successfully!');
-
-            // Reset form
-            setDoctorId('');
-            setAppointmentDate('');
-            setStartTime('');
-            setNotes('');
-        } catch (err: unknown) {
-            const errorMessage =
-                (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-                'Failed to book appointment or slot unavailable.';
-            setError(errorMessage);
-        } finally {
-            setSaving(false);
+            await api.post('/appointments', {
+                doctorId: selectedDoctor.id,
+                appointmentDate: date,
+                startTime: time,
+                type: 'Consultation',
+            });
+            setSuccessMsg(`Appointment with Dr. ${selectedDoctor.firstName} booked successfully!`);
+            setStep(BookingStep.SEARCH);
+            setSelectedDoctor(null);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        } catch (err: any) {
+            setError(err.response?.data?.message || 'Failed to book appointment.');
         }
     };
 
     return (
         <ProtectedRoute allowedRoles={[Role.PATIENT]}>
             <DashboardLayout title="Book Appointment">
-                <Box sx={{ maxWidth: 600, mx: 'auto', mb: 4 }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                        <Box>
-                            <Typography variant="h4" fontWeight={800} sx={{ mb: 1 }}>
-                                Book Appointment
-                            </Typography>
-                            <Typography variant="body1" color="text.secondary">
-                                Schedule a visit with your preferred doctor.
-                            </Typography>
-                        </Box>
+                <Container maxWidth="xl" sx={{ py: 4 }}>
+                    {/* Header Section */}
+                    <Box sx={{ mb: 4 }}>
+                        <Typography variant="h4" fontWeight={800} sx={{ color: '#2D3748', mb: 1 }}>
+                            {step === BookingStep.SEARCH ? 'Book Appointment' : 'Select Date & Time'}
+                        </Typography>
+                        <Typography variant="body1" color="text.secondary">
+                            {step === BookingStep.SEARCH
+                                ? 'Find a doctor and schedule your visit'
+                                : `Booking with Dr. ${selectedDoctor?.firstName} ${selectedDoctor?.lastName}`
+                            }
+                        </Typography>
                     </Box>
 
-                    {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
-                    {successMsg && <Alert severity="success" sx={{ mb: 3 }} onClose={() => setSuccessMsg('')}>{successMsg}</Alert>}
+                    {/* Step Navigation for Slots View */}
+                    {step === BookingStep.SLOTS && (
+                        <Box sx={{ mb: 4 }}>
+                            <Button
+                                startIcon={<ArrowBack />}
+                                onClick={() => setStep(BookingStep.SEARCH)}
+                                sx={{ textTransform: 'none', color: '#00BCD4', fontWeight: 600 }}
+                            >
+                                Back to Doctors
+                            </Button>
+                        </Box>
+                    )}
 
-                    <Card sx={{ borderRadius: 3, boxShadow: '0 4px 20px rgba(0,0,0,0.05)' }}>
-                        <Box component="form" onSubmit={handleBook}>
-                            <CardContent sx={{ p: { xs: 3, sm: 4 } }}>
-                                <Typography variant="body2" color="text.secondary" sx={{ mb: 4, fontStyle: 'italic' }}>
-                                    Note: Until public endpoints for listing clinics and doctors are available, you must enter the exact Doctor ID.
-                                </Typography>
-
-                                <Grid container spacing={3}>
-                                    <Grid size={{ xs: 12 }}>
-                                        <TextField
-                                            fullWidth
-                                            label="Doctor ID"
-                                            required
-                                            value={doctorId}
-                                            onChange={(e) => setDoctorId(e.target.value)}
-                                            placeholder="e.g., 550e8400-e29b-41d4-a716-446655440000"
-                                        />
+                    {/* Content Section */}
+                    <Fade in timeout={500}>
+                        <Box>
+                            {step === BookingStep.SEARCH ? (
+                                <>
+                                    <DoctorSearchFilters
+                                        search={search}
+                                        onSearchChange={(val) => { setSearch(val); setPage(1); }}
+                                        specialty={specialty}
+                                        onSpecialtyChange={(val) => { setSpecialty(val); setPage(1); }}
+                                    />
+                                    <DoctorGrid
+                                        doctors={doctorsRes?.data || []}
+                                        loading={loadingDoctors}
+                                        page={page}
+                                        totalPages={doctorsRes?.meta.totalPages || 1}
+                                        onPageChange={setPage}
+                                        onBook={handleDoctorSelect}
+                                    />
+                                </>
+                            ) : (
+                                <Grid container spacing={4}>
+                                    <Grid size={{xs:12, md:4, lg:3}} >
+                                        <DoctorProfileSection doctor={selectedDoctor} />
                                     </Grid>
-
-                                    <Grid size={{ xs: 12, sm: 6 }}>
-                                        <TextField
-                                            fullWidth
-                                            label="Date"
-                                            type="date"
-                                            required
-                                            value={appointmentDate}
-                                            onChange={(e) => setAppointmentDate(e.target.value)}
-                                            slotProps={{ inputLabel: { shrink: true } }}
-                                        />
-                                    </Grid>
-
-                                    <Grid size={{ xs: 12, sm: 6 }}>
-                                        <TextField
-                                            fullWidth
-                                            label="Start Time (HH:mm)"
-                                            type="time"
-                                            required
-                                            value={startTime}
-                                            onChange={(e) => setStartTime(e.target.value)}
-                                            slotProps={{ inputLabel: { shrink: true }, htmlInput: { step: 300 } }}
-                                        />
-                                    </Grid>
-
-                                    <Grid size={{ xs: 12 }}>
-                                        <TextField
-                                            fullWidth
-                                            label="Reason for Visit / Notes (Optional)"
-                                            multiline
-                                            rows={3}
-                                            value={notes}
-                                            onChange={(e) => setNotes(e.target.value)}
+                                    <Grid size={{ xs:12, md:8, lg:9}}>
+                                        <SlotPicker
+                                            doctorId={selectedDoctor?.id || ''}
+                                            onSlotSelect={handleSlotSelect}
                                         />
                                     </Grid>
                                 </Grid>
-
-                                <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 4 }}>
-                                    <Button
-                                        type="submit"
-                                        variant="contained"
-                                        disabled={saving || !doctorId || !appointmentDate || !startTime}
-                                        startIcon={saving ? <CircularProgress size={20} color="inherit" /> : <EventAvailableIcon />}
-                                        sx={{
-                                            px: 4,
-                                            py: 1.2,
-                                            background: 'linear-gradient(135deg, #00BCD4 0%, #009688 100%)',
-                                        }}
-                                    >
-                                        Confirm Booking
-                                    </Button>
-                                </Box>
-                            </CardContent>
+                            )}
                         </Box>
-                    </Card>
-                </Box>
+                    </Fade>
+
+                    {/* Notifications */}
+                    <Snackbar
+                        open={!!successMsg}
+                        autoHideDuration={6000}
+                        onClose={() => setSuccessMsg('')}
+                        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                    >
+                        <Alert severity="success" sx={{ width: '100%', borderRadius: 3 }}>
+                            {successMsg}
+                        </Alert>
+                    </Snackbar>
+
+                    <Snackbar
+                        open={!!error}
+                        autoHideDuration={6000}
+                        onClose={() => setError('')}
+                        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                    >
+                        <Alert severity="error" sx={{ width: '100%', borderRadius: 3 }}>
+                            {error}
+                        </Alert>
+                    </Snackbar>
+                </Container>
             </DashboardLayout>
         </ProtectedRoute>
     );
