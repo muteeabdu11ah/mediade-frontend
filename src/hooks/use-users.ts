@@ -13,6 +13,9 @@ export interface CreateUserDto {
     clinicId?: string;
     phone?: string;
     isActive?: boolean;
+    specialty?: string;
+    yearsOfExperience?: number;
+    languages?: string;
 }
 
 export type UpdateUserDto = Partial<CreateUserDto>;

@@ -45,6 +45,8 @@ export interface User {
     clinicId: string | null;
     profileImagePath: string | null;
     clinic: ClinicSummary | null;
+    patientProfile?: PatientProfile | null;
+    doctorProfile?: DoctorProfile | null;
     createdAt: string;
     updatedAt?: string;
 }
@@ -91,6 +93,13 @@ export interface PatientProfile {
     medicalHistory: string | null;
     createdAt: string;
     updatedAt: string;
+}
+
+export interface DoctorProfile {
+    id?: string;
+    specialty: string | null;
+    yearsOfExperience: number | null;
+    languages: string | null;
 }
 
 export interface DoctorSchedule {
@@ -169,6 +178,8 @@ export interface ProfileResponse {
     isActive: boolean;
     clinicId: string | null;
     profileImageUrl?: string | null;
+    doctorProfile?: DoctorProfile | null;
+    patientProfile?: PatientProfile | null;
     createdAt: string;
 }
 

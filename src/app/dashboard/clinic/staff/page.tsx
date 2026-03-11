@@ -47,6 +47,9 @@ interface StaffFormData {
     phone: string;
     role: Role.DOCTOR | Role.RECEPTIONIST;
     isActive: boolean;
+    specialty: string;
+    yearsOfExperience: string;
+    languages: string;
 }
 
 const initialFormData: StaffFormData = {
@@ -57,6 +60,9 @@ const initialFormData: StaffFormData = {
     phone: '',
     role: Role.DOCTOR,
     isActive: true,
+    specialty: '',
+    yearsOfExperience: '',
+    languages: '',
 };
 
 // ─── Role helpers ───────────────────────────────────────────────────────────
@@ -122,6 +128,9 @@ export default function ClinicStaffManagementPage() {
             role: user.role as Role.DOCTOR | Role.RECEPTIONIST,
             isActive: user.isActive,
             password: '',
+            specialty: user.doctorProfile?.specialty || '',
+            yearsOfExperience: user.doctorProfile?.yearsOfExperience?.toString() || '',
+            languages: user.doctorProfile?.languages || '',
         });
         setSelectedUserId(user.id);
         setOpenDialog(true);
@@ -129,7 +138,7 @@ export default function ClinicStaffManagementPage() {
 
     const handleSave = async () => {
         if (dialogMode === 'add') {
-            const payload = {
+            const payload: any = {
                 email: formData.email,
                 password: formData.password,
                 firstName: formData.firstName,
@@ -137,19 +146,28 @@ export default function ClinicStaffManagementPage() {
                 phone: formData.phone || undefined,
             };
             if (formData.role === Role.DOCTOR) {
+                payload.specialty = formData.specialty || undefined;
+                payload.yearsOfExperience = formData.yearsOfExperience ? Number(formData.yearsOfExperience) : undefined;
+                payload.languages = formData.languages || undefined;
                 await createDoctor.mutateAsync(payload);
             } else {
                 await createReceptionist.mutateAsync(payload);
             }
         } else if (selectedUserId) {
+            const payload: any = {
+                firstName: formData.firstName,
+                lastName: formData.lastName,
+                phone: formData.phone || undefined,
+                isActive: formData.isActive,
+            };
+            if (formData.role === Role.DOCTOR) {
+                payload.specialty = formData.specialty || undefined;
+                payload.yearsOfExperience = formData.yearsOfExperience ? Number(formData.yearsOfExperience) : undefined;
+                payload.languages = formData.languages || undefined;
+            }
             await updateUser.mutateAsync({
                 id: selectedUserId,
-                payload: {
-                    firstName: formData.firstName,
-                    lastName: formData.lastName,
-                    phone: formData.phone || undefined,
-                    isActive: formData.isActive,
-                },
+                payload,
             });
         }
         setOpenDialog(false);
@@ -352,6 +370,38 @@ export default function ClinicStaffManagementPage() {
                                     value={formData.phone}
                                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                                 />
+
+                                {formData.role === Role.DOCTOR && (
+                                    <>
+                                        <TextField
+                                            label="Specialty"
+                                            fullWidth
+                                            placeholder="e.g. Cardiologist"
+                                            value={formData.specialty}
+                                            onChange={(e) => setFormData({ ...formData, specialty: e.target.value })}
+                                        />
+                                        <Grid container spacing={2}>
+                                            <Grid size={{ xs: 12, sm: 6 }}>
+                                                <TextField
+                                                    label="Years of Experience"
+                                                    type="number"
+                                                    fullWidth
+                                                    value={formData.yearsOfExperience}
+                                                    onChange={(e) => setFormData({ ...formData, yearsOfExperience: e.target.value })}
+                                                />
+                                            </Grid>
+                                            <Grid size={{ xs: 12, sm: 6 }}>
+                                                <TextField
+                                                    label="Languages Spoken"
+                                                    fullWidth
+                                                    placeholder="e.g. English, Spanish"
+                                                    value={formData.languages}
+                                                    onChange={(e) => setFormData({ ...formData, languages: e.target.value })}
+                                                />
+                                            </Grid>
+                                        </Grid>
+                                    </>
+                                )}
 
                                 {dialogMode === 'edit' && (
                                     <FormControlLabel

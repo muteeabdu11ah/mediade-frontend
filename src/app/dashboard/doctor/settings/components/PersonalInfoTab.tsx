@@ -30,6 +30,9 @@ export default function PersonalInfoTab() {
         lastName: user?.lastName || '',
         email: user?.email || '',
         phone: user?.phone || '',
+        specialty: user?.doctorProfile?.specialty || '',
+        yearsOfExperience: user?.doctorProfile?.yearsOfExperience?.toString() || '',
+        languages: user?.doctorProfile?.languages || '',
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -71,11 +74,19 @@ export default function PersonalInfoTab() {
         setSuccess('');
 
         try {
-            await api.patch('/auth/profile', {
+            const payload: any = {
                 firstName: formData.firstName,
                 lastName: formData.lastName,
                 phone: formData.phone,
-            });
+            };
+
+            if (user?.role === 'doctor') {
+                payload.specialty = formData.specialty;
+                payload.yearsOfExperience = formData.yearsOfExperience ? Number(formData.yearsOfExperience) : undefined;
+                payload.languages = formData.languages;
+            }
+
+            await api.patch('/auth/profile', payload);
             await refreshProfile();
             setSuccess('Profile updated successfully!');
         } catch (err: any) {
@@ -212,6 +223,68 @@ export default function PersonalInfoTab() {
                         }}
                     />
                 </Grid>
+
+                {user?.role === 'doctor' && (
+                    <>
+                        <Grid size={{ xs: 12, md: 12 }}>
+                            <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1, color: '#4A5568' }}>
+                                Specialty
+                            </Typography>
+                            <TextField
+                                fullWidth
+                                name="specialty"
+                                value={formData.specialty}
+                                onChange={handleChange}
+                                placeholder="e.g. Cardiologist"
+                                variant="outlined"
+                                sx={{
+                                    '& .MuiOutlinedInput-root': {
+                                        borderRadius: 3,
+                                        bgcolor: '#F7FAFC',
+                                    }
+                                }}
+                            />
+                        </Grid>
+                        <Grid size={{ xs: 12, md: 6 }}>
+                            <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1, color: '#4A5568' }}>
+                                Years of Experience
+                            </Typography>
+                            <TextField
+                                fullWidth
+                                type="number"
+                                name="yearsOfExperience"
+                                value={formData.yearsOfExperience}
+                                onChange={handleChange}
+                                variant="outlined"
+                                sx={{
+                                    '& .MuiOutlinedInput-root': {
+                                        borderRadius: 3,
+                                        bgcolor: '#F7FAFC',
+                                    }
+                                }}
+                            />
+                        </Grid>
+                        <Grid size={{ xs: 12, md: 6 }}>
+                            <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1, color: '#4A5568' }}>
+                                Languages Spoken
+                            </Typography>
+                            <TextField
+                                fullWidth
+                                name="languages"
+                                value={formData.languages}
+                                onChange={handleChange}
+                                placeholder="e.g. English, Spanish"
+                                variant="outlined"
+                                sx={{
+                                    '& .MuiOutlinedInput-root': {
+                                        borderRadius: 3,
+                                        bgcolor: '#F7FAFC',
+                                    }
+                                }}
+                            />
+                        </Grid>
+                    </>
+                )}
             </Grid>
 
             <Divider sx={{ my: 4 }} />
