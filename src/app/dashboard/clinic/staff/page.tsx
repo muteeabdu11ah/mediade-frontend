@@ -24,10 +24,9 @@ import BlockIcon from '@mui/icons-material/Block';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DashboardLayout from '@/components/DashboardLayout';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import DataTable, { ColumnDef } from '@/components/DataTable';
+import AdvancedDataTable, { ColumnDef } from '@/components/AdvancedDataTable';
 import StatusChip from '@/components/StatusChip';
 import PageHeader from '@/components/PageHeader';
-import SearchFilterBar from '@/components/SearchFilterBar';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import {
     useUsers,
@@ -256,40 +255,20 @@ export default function ClinicStaffManagementPage() {
                         onAction={handleOpenAdd}
                     />
 
-                    <SearchFilterBar
-                        search={{
-                            value: search,
-                            onChange: (v) => { setSearch(v); setPage(1); },
-                            placeholder: 'Search by name or email...',
-                        }}
-                        filters={[
-                            {
-                                value: roleFilter,
-                                onChange: (v) => { setRoleFilter(v); setPage(1); },
-                                options: [
-                                    { value: 'all', label: 'All Roles' },
-                                    { value: Role.DOCTOR, label: 'Doctor' },
-                                    { value: Role.RECEPTIONIST, label: 'Receptionist' },
-                                ],
-                            },
-                            {
-                                value: statusFilter,
-                                onChange: (v) => { setStatusFilter(v); setPage(1); },
-                                options: [
-                                    { value: 'all', label: 'All Status' },
-                                    { value: 'active', label: 'Active' },
-                                    { value: 'inactive', label: 'Inactive' },
-                                ],
-                            },
-                        ]}
-                    />
-
-                    <DataTable<User>
+                    <AdvancedDataTable<User>
                         columns={columns}
                         data={users}
                         isLoading={isLoading}
                         emptyMessage="No staff found in this clinic."
                         rowKey={(u) => u.id}
+                        onSearch={(v) => { setSearch(v); setPage(1); }}
+                        searchPlaceholder="Search by name or email..."
+                        statusOptions={[
+                            { value: 'active', label: 'Active' },
+                            { value: 'inactive', label: 'Inactive' }
+                        ]}
+                        statusValue={statusFilter}
+                        onStatusChange={(v) => { setStatusFilter(v); setPage(1); }}
                         pagination={
                             meta
                                 ? { page, totalPages: meta.totalPages, onPageChange: setPage }

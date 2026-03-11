@@ -20,10 +20,9 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import BusinessIcon from '@mui/icons-material/Business';
 import DashboardLayout from '@/components/DashboardLayout';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import DataTable, { ColumnDef } from '@/components/DataTable';
+import AdvancedDataTable, { ColumnDef } from '@/components/AdvancedDataTable';
 import StatusChip from '@/components/StatusChip';
 import PageHeader from '@/components/PageHeader';
-import SearchFilterBar from '@/components/SearchFilterBar';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import {
     useClinics,
@@ -164,31 +163,20 @@ export default function ClinicsPage() {
                         onAction={() => handleOpen()}
                     />
 
-                    <SearchFilterBar
-                        search={{
-                            value: search,
-                            onChange: (v) => { setSearch(v); setPage(1); },
-                            placeholder: 'Search clinics by name...',
-                        }}
-                        filters={[
-                            {
-                                value: status,
-                                onChange: (v) => { setStatus(v); setPage(1); },
-                                options: [
-                                    { value: 'all', label: 'All Status' },
-                                    { value: 'active', label: 'Active Only' },
-                                    { value: 'inactive', label: 'Inactive Only' },
-                                ],
-                            },
-                        ]}
-                    />
-
-                    <DataTable<Clinic>
+                    <AdvancedDataTable<Clinic>
                         columns={columns}
                         data={clinics}
                         isLoading={isLoading}
                         emptyMessage="No clinics found."
                         rowKey={(c) => c.id}
+                        onSearch={(v) => { setSearch(v); setPage(1); }}
+                        searchPlaceholder="Search clinics by name..."
+                        statusOptions={[
+                            { value: 'active', label: 'Active Only' },
+                            { value: 'inactive', label: 'Inactive Only' }
+                        ]}
+                        statusValue={status}
+                        onStatusChange={(v) => { setStatus(v); setPage(1); }}
                         pagination={
                             meta
                                 ? { page, totalPages: meta.totalPages, onPageChange: setPage }

@@ -15,7 +15,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import DashboardLayout from '@/components/DashboardLayout';
 import ProtectedRoute from '@/components/ProtectedRoute';
-import DataTable, { ColumnDef } from '@/components/DataTable';
+import AdvancedDataTable, { ColumnDef } from '@/components/AdvancedDataTable';
 import StatusChip from '@/components/StatusChip';
 import PageHeader from '@/components/PageHeader';
 import { useClinicAppointments, useUpdateAppointmentStatus } from '@/hooks/use-appointments';
@@ -35,15 +35,27 @@ const statusPresetMap: Record<string, string> = {
 export default function ClinicAppointmentsPage() {
     const { data: appointments = [], isLoading } = useClinicAppointments();
     const updateStatus = useUpdateAppointmentStatus();
+    const [searchTerm, setSearchTerm] = useState('');
 
     // Sort by date/time ascending
     const sorted = useMemo(() => {
-        return [...appointments].sort((a, b) => {
+        let filtered = [...appointments];
+        if (searchTerm) {
+            const lower = searchTerm.toLowerCase();
+            filtered = filtered.filter(a =>
+                a.patient?.firstName.toLowerCase().includes(lower) ||
+                a.patient?.lastName.toLowerCase().includes(lower) ||
+                a.doctor?.firstName.toLowerCase().includes(lower) ||
+                a.doctor?.lastName.toLowerCase().includes(lower)
+            );
+        }
+
+        return filtered.sort((a, b) => {
             const dateA = new Date(`${a.appointmentDate}T${a.startTime}`);
             const dateB = new Date(`${b.appointmentDate}T${b.startTime}`);
             return dateA.getTime() - dateB.getTime();
         });
-    }, [appointments]);
+    }, [appointments, searchTerm]);
 
     // Menu state
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -133,12 +145,14 @@ export default function ClinicAppointmentsPage() {
                         subtitle="View and manage all appointments across your clinic."
                     />
 
-                    <DataTable<Appointment>
+                    <AdvancedDataTable<Appointment>
                         columns={columns}
                         data={sorted}
                         isLoading={isLoading}
                         emptyMessage="No appointments found."
                         rowKey={(a) => a.id}
+                        onSearch={setSearchTerm}
+                        searchPlaceholder="Search by doctor or patient name..."
                     />
 
                     {/* Status Update Menu */}

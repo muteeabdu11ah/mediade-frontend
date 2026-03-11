@@ -13,6 +13,7 @@ export enum AppointmentStatus {
     COMPLETED = 'completed',
     CANCELLED = 'cancelled',
     MISSED = 'missed',
+    LATE = 'late',
 }
 
 export enum DayOfWeek {

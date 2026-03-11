@@ -1,89 +1,96 @@
 'use client';
 
 import React from 'react';
-import { Chip } from '@mui/material';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import BlockIcon from '@mui/icons-material/Block';
-import ScheduleIcon from '@mui/icons-material/Schedule';
-import CancelIcon from '@mui/icons-material/Cancel';
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import { Box, Typography } from '@mui/material';
 
 // ─── Preset Configurations ─────────────────────────────────────────────────
 
-type StatusPreset = 'active' | 'inactive' | 'upcoming' | 'completed' | 'cancelled' | 'missed';
+export type StatusPreset = 'active' | 'inactive' | 'upcoming' | 'completed' | 'cancelled' | 'missed' | 'late';
 
-const presets: Record<StatusPreset, { label: string; bgcolor: string; color: string; icon?: React.ReactElement }> = {
+const presets: Record<StatusPreset, { label: string; bgcolor: string; color: string; border: string }> = {
     active: {
         label: 'Active',
-        bgcolor: 'rgba(76, 175, 80, 0.1)',
+        bgcolor: '#E8F5E9',
         color: '#4CAF50',
-        icon: <CheckCircleIcon fontSize="small" />,
+        border: '1px solid #C8E6C9',
     },
     inactive: {
         label: 'Inactive',
-        bgcolor: 'rgba(239, 83, 80, 0.1)',
+        bgcolor: '#FFEBEE',
         color: '#EF5350',
-        icon: <BlockIcon fontSize="small" />,
+        border: '1px solid #FFCDD2',
     },
     upcoming: {
         label: 'Upcoming',
-        bgcolor: 'rgba(66, 165, 245, 0.1)',
+        bgcolor: '#E3F2FD',
         color: '#42A5F5',
-        icon: <ScheduleIcon fontSize="small" />,
+        border: '1px solid #BBDEFB',
     },
     completed: {
         label: 'Completed',
-        bgcolor: 'rgba(102, 187, 106, 0.1)',
+        bgcolor: '#E8F5E9',
         color: '#66BB6A',
-        icon: <CheckCircleIcon fontSize="small" />,
+        border: '1px solid #C8E6C9',
     },
     cancelled: {
         label: 'Cancelled',
-        bgcolor: 'rgba(239, 83, 80, 0.1)',
+        bgcolor: '#FFEBEE',
         color: '#EF5350',
-        icon: <CancelIcon fontSize="small" />,
+        border: '1px solid #FFCDD2',
     },
     missed: {
         label: 'Missed',
-        bgcolor: 'rgba(171, 71, 188, 0.1)',
-        color: '#AB47BC',
-        icon: <HelpOutlineIcon fontSize="small" />,
+        bgcolor: '#FFF3E0',
+        color: '#FFA726',
+        border: '1px solid #FFE0B2',
+    },
+    late: {
+        label: 'Late',
+        bgcolor: '#FFF3E0',
+        color: '#FFA726',
+        border: '1px solid #FFE0B2',
     },
 };
 
 // ─── Props ──────────────────────────────────────────────────────────────────
 
 interface StatusChipProps {
-    /** Use a preset or provide a custom label + color. */
     status: StatusPreset | string;
     label?: string;
     bgcolor?: string;
     color?: string;
+    border?: string;
 }
 
 // ─── Component ──────────────────────────────────────────────────────────────
 
-export default function StatusChip({ status, label, bgcolor, color }: StatusChipProps) {
-    const preset = presets[status as StatusPreset];
+export default function StatusChip({ status, label, bgcolor, color, border }: StatusChipProps) {
+    // Normalize status string to lowercase for preset matching
+    const normalizedStatus = status.toLowerCase() as StatusPreset;
+    const preset = presets[normalizedStatus];
 
     const chipLabel = label || preset?.label || status;
     const chipBgcolor = bgcolor || preset?.bgcolor || 'rgba(0,0,0,0.05)';
     const chipColor = color || preset?.color || 'text.secondary';
-    const chipIcon = preset?.icon;
+    const chipBorder = border || preset?.border || '1px solid rgba(0,0,0,0.1)';
 
     return (
-        <Chip
-            label={chipLabel}
-            size="small"
-            icon={chipIcon}
+        <Box
             sx={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
                 bgcolor: chipBgcolor,
                 color: chipColor,
-                fontWeight: 700,
-                fontSize: '0.7rem',
-                borderRadius: 1,
-                '& .MuiChip-icon': { color: 'inherit' },
+                border: chipBorder,
+                borderRadius: '16px',
+                px: 1.5,
+                py: 0.5,
             }}
-        />
+        >
+            <Typography variant="caption" sx={{ fontWeight: 600, textTransform: 'capitalize' }}>
+                {chipLabel}
+            </Typography>
+        </Box>
     );
 }
