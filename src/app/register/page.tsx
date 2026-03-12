@@ -182,7 +182,7 @@ export default function RegisterPage() {
                                 Create Account
                             </Typography>
                             <Typography variant="body2" color="text.secondary" fontWeight={500}>
-                                Join Aeyron Medical as a patient
+                                Join Medaide as a patient
                             </Typography>
                         </Box>
 

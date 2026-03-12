@@ -51,15 +51,15 @@ export const COLORS = {
     // Status States
     error: {
         main: '#EF4444',
-        subtle: 'rgba(239, 68, 68, 0.08)',
+        subtle: 'rgba(239, 68, 68, 0.12)',
     },
     warning: {
         main: '#F59E0B',
-        subtle: 'rgba(245, 158, 11, 0.08)',
+        subtle: 'rgba(245, 158, 11, 0.12)',
     },
     success: {
         main: '#10B981',
-        subtle: 'rgba(16, 185, 129, 0.08)',
+        subtle: 'rgba(16, 185, 129, 0.12)',
     },
     info: {
         main: '#009BE8',
@@ -69,7 +69,7 @@ export const COLORS = {
         main: '#6366F1',
         light: '#818CF8',
         dark: '#4F46E5',
-        subtle: 'rgba(99, 102, 241, 0.08)',
+        subtle: 'rgba(99, 102, 241, 0.12)',
         contrast: '#FFFFFF',
     },
 };
@@ -162,5 +162,5 @@ export const BUTTON_STYLE = {
 
 export const ANIMATIONS = {
     fadeIn: 'fadeIn 0.5s ease-out',
-    slideUp: 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+    slideUp: 'slideUp 0.4s cubic-bezier(0.16, 1, 0.2, 1)',
 };

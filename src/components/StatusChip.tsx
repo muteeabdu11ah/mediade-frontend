@@ -12,7 +12,7 @@ const presets: Record<string, { label: string; bgcolor: string; color: string; b
         label: 'Active',
         bgcolor: COLORS.success.subtle,
         color: COLORS.success.main,
-        border: `1px solid ${COLORS.success.main}30`,
+        border: `1px solid ${COLORS.success.main}10`,
     },
     inactive: {
         label: 'Inactive',
@@ -24,49 +24,49 @@ const presets: Record<string, { label: string; bgcolor: string; color: string; b
         label: 'Upcoming',
         bgcolor: COLORS.info.subtle,
         color: COLORS.info.main,
-        border: `1px solid ${COLORS.info.main}30`,
+        border: `1px solid ${COLORS.info.main}10`,
     },
     scheduled: {
         label: 'Scheduled',
         bgcolor: COLORS.info.subtle,
         color: COLORS.info.main,
-        border: `1px solid ${COLORS.info.main}30`,
+        border: `1px solid ${COLORS.info.main}10`,
     },
     completed: {
         label: 'Completed',
         bgcolor: COLORS.success.subtle,
         color: COLORS.success.main,
-        border: `1px solid ${COLORS.success.main}30`,
+        border: `1px solid ${COLORS.success.main}10`,
     },
     cancelled: {
         label: 'Cancelled',
         bgcolor: COLORS.error.subtle,
         color: COLORS.error.main,
-        border: `1px solid ${COLORS.error.main}30`,
+        border: `1px solid ${COLORS.error.main}10`,
     },
     missed: {
         label: 'Missed',
         bgcolor: COLORS.error.subtle,
         color: COLORS.error.main,
-        border: `1px solid ${COLORS.error.main}30`,
+        border: `1px solid ${COLORS.error.main}10`,
     },
     late: {
         label: 'Late',
         bgcolor: COLORS.warning.subtle,
         color: COLORS.warning.main,
-        border: `1px solid ${COLORS.warning.main}30`,
+        border: `1px solid ${COLORS.warning.main}10`,
     },
     in_progress: {
         label: 'In Progress',
         bgcolor: COLORS.primary.subtle,
         color: COLORS.primary.main,
-        border: `1px solid ${COLORS.primary.main}30`,
+        border: `1px solid ${COLORS.primary.main}10`,
     },
     pending: {
         label: 'Pending',
         bgcolor: COLORS.warning.subtle,
         color: COLORS.warning.main,
-        border: `1px solid ${COLORS.warning.main}30`,
+        border: `1px solid ${COLORS.warning.main}10`,
     }
 };
 
@@ -101,7 +101,7 @@ export default function StatusChip({ status, label, bgcolor, color, border }: St
                 bgcolor: chipBgcolor,
                 color: chipColor,
                 border: chipBorder,
-                borderRadius: BORDER_RADIUS.sm, // Using sm for a more modern "tag" look, but full if requested
+                borderRadius: BORDER_RADIUS.md, // Using sm for a more modern "tag" look, but full if requested
                 px: 1.5,
                 py: 0.5,
                 transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -114,7 +114,8 @@ export default function StatusChip({ status, label, bgcolor, color, border }: St
             <Typography
                 variant="caption"
                 sx={{
-                    fontWeight: 800,
+                    color: chipColor,
+                    fontWeight: 700,
                     textTransform: 'uppercase',
                     letterSpacing: '0.05em',
                     fontSize: '0.7rem'

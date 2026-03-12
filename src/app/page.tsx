@@ -467,7 +467,7 @@ export default function LandingPage() {
                 px: 6,
                 py: 2.5,
                 bgcolor: 'white',
-                color: COLORS.primary.main,
+                color: COLORS.primary.contrast,
                 fontWeight: TYPOGRAPHY.weights.black,
                 fontSize: TYPOGRAPHY.sizes.title,
                 borderRadius: BORDER_RADIUS.full,

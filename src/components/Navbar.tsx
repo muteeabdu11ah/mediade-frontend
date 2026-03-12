@@ -29,6 +29,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
 import { GRADIENTS, COLORS, BORDER_RADIUS, SHADOWS, TYPOGRAPHY } from '@/lib/constants/design-tokens';
+import Image from 'next/image';
 
 const navLinks = [
     { label: 'Home', href: '/' },
@@ -73,38 +74,7 @@ export default function Navbar() {
                     <Toolbar disableGutters sx={{ py: 1.5 }}>
                         {/* Logo */}
                         <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 14 }}>
-                            <Box sx={{
-                                background: GRADIENTS.primary,
-                                p: 1,
-                                borderRadius: BORDER_RADIUS.md,
-                                display: 'flex',
-                                boxShadow: SHADOWS.medium,
-                                transform: 'rotate(-5deg)',
-                                transition: 'transform 0.3s ease',
-                                '&:hover': {
-                                    transform: 'rotate(0deg) scale(1.1)',
-                                }
-                            }}>
-                                <LocalHospitalIcon sx={{ color: 'white', fontSize: 26 }} />
-                            </Box>
-                            <Typography
-                                variant="h3"
-                                sx={{
-                                    fontWeight: 900,
-                                    background: GRADIENTS.primary,
-                                    backgroundClip: 'text',
-                                    WebkitBackgroundClip: 'text',
-                                    WebkitTextFillColor: 'transparent',
-                                    letterSpacing: '-1px',
-                                    fontSize: '1.6rem',
-                                    transition: 'all 0.3s ease',
-                                    '&:hover': {
-                                        letterSpacing: '0px',
-                                    }
-                                }}
-                            >
-                                Aeyron Medical
-                            </Typography>
+                            <Image src="/logo.svg" alt="Logo" width={150} height={50} />
                         </Link>
 
                         <Box sx={{ flexGrow: 1 }} />

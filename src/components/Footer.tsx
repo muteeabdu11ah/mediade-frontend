@@ -66,7 +66,7 @@ export default function Footer() {
                                     fontSize: '1.4rem',
                                 }}
                             >
-                                Aeyron Medical
+                                Medaide
                             </Typography>
                         </Box>
                         <Typography variant="body2" color={COLORS.text.secondary} sx={{ maxWidth: 300, mb: 4, lineHeight: 1.8, fontWeight: 500 }}>
@@ -136,7 +136,7 @@ export default function Footer() {
 
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
                     <Typography variant="caption" sx={{ color: COLORS.text.muted, fontWeight: 600 }}>
-                        © {new Date().getFullYear()} Aeyron Medical. All rights reserved.
+                        © {new Date().getFullYear()} Medaide. All rights reserved.
                     </Typography>
                     <Box sx={{ display: 'flex', gap: 3 }}>
                         <Typography variant="caption" sx={{ color: COLORS.text.muted, fontWeight: 600 }}>

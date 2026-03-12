@@ -23,6 +23,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useAuth } from '@/lib/auth-context';
 import '@/app/globals.css';
 
@@ -97,28 +98,19 @@ export default function LoginPage() {
                     <CardContent sx={{ p: { xs: 4, sm: 6 } }}>
                         {/* Logo */}
                         <Box sx={{ textAlign: 'center', mb: 4 }}>
-                            <Box sx={{ display: 'inline-flex', alignItems: 'center', mb: 3 }}>
-                                <Box
-                                    sx={{
-                                        width: 56,
-                                        height: 56,
-                                        borderRadius: BORDER_RADIUS.md,
-                                        background: GRADIENTS.primary,
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        boxShadow: SHADOWS.small,
-                                    }}
-                                >
-                                    <LocalHospitalIcon sx={{ color: 'white', fontSize: 32 }} />
-                                </Box>
-                            </Box>
-                            <Typography variant="h4" fontWeight={900} sx={{ mb: 1, letterSpacing: '-1px' }}>
+
+                            <Image
+                                src="/logo.svg"
+                                alt="Logo"
+                                width={170}
+                                height={60}
+                            />
+                            {/* <Typography variant="h4" fontWeight={900} sx={{ mb: 1, letterSpacing: '-1px' }}>
                                 Welcome Back
                             </Typography>
                             <Typography variant="body2" color="text.secondary" fontWeight={500}>
                                 Sign in to access your healthcare dashboard
-                            </Typography>
+                            </Typography> */}
                         </Box>
 
                         {/* Error Alert */}
@@ -210,7 +202,7 @@ export default function LoginPage() {
 
                         <Divider sx={{ my: 4 }}>
                             <Typography variant="caption" sx={{ color: COLORS.text.muted, fontWeight: 600, px: 2 }}>
-                                NEW TO AEYRON MEDICAL?
+                                NEW TO Medaide?
                             </Typography>
                         </Divider>
 

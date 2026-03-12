@@ -4,8 +4,8 @@ import { AuthProvider } from "@/lib/auth-context";
 import Providers from "@/components/Providers";
 
 export const metadata: Metadata = {
-  title: "Aeyron Medical - Modern Healthcare Management",
-  description: "Connect with top doctors, book appointments seamlessly, and manage your healthcare journey with Aeyron Medical's intelligent platform.",
+  title: "Medaide - Modern Healthcare Management",
+  description: "Connect with top doctors, book appointments seamlessly, and manage your healthcare journey with Medaide's intelligent platform.",
   keywords: "healthcare, medical, appointments, doctors, clinic management, patient portal",
   icons: {
     icon: '/logo.svg',
