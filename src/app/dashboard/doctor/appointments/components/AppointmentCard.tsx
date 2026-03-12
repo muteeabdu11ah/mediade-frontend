@@ -17,6 +17,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { Appointment, AppointmentStatus } from '@/lib/types';
 import { GRADIENTS } from '@/lib/constants/design-tokens';
+import StatusChip from '@/components/StatusChip';
 
 interface AppointmentCardProps {
     appointment: Appointment;
@@ -80,7 +81,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment, onMenuOp
                     )}
                 </Box>
 
-            
+
 
                 {/* Time Track */}
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
@@ -91,15 +92,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment, onMenuOp
                     </Box>
 
                     {!isEmergency && (
-                        <Chip
-                            label={appointment.status.toUpperCase()}
-                            size="small"
-                            sx={{
-                                bgcolor: appointment.status === AppointmentStatus.COMPLETED ? 'rgba(16,185,129,0.1)' : 'rgba(31,178,186,0.1)',
-                                color: appointment.status === AppointmentStatus.COMPLETED ? '#10b981' : '#1fb2ba',
-                                fontWeight: 600
-                            }}
-                        />
+                        <StatusChip status={appointment.status} />
                     )}
                 </Box>
 

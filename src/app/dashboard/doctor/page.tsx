@@ -14,7 +14,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tool
 
 const statCards = [
     { title: "Today's Appointments", value: '12', trend: '+2 vs yesterday', icon: <CalendarTodayIcon sx={{ fontSize: 20 }} />, color: '#00BCD4' },
-    { title: "Upcoming Appointments", value: '12', trend: '+2 vs yesterday', icon: <CalendarTodayIcon sx={{ fontSize: 20 }} />, color: '#42A5F5' },
+    { title: "My Appointments", value: '12', trend: '+2 vs yesterday', icon: <CalendarTodayIcon sx={{ fontSize: 20 }} />, color: '#42A5F5' },
     { title: "Completed Appointments", value: '12', trend: '+2 vs yesterday', icon: <CheckCircleOutlineIcon sx={{ fontSize: 20 }} />, color: '#66BB6A' },
 ];
 

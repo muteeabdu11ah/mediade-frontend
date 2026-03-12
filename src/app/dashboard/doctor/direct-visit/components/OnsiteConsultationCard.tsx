@@ -10,6 +10,7 @@ import {
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { OnsiteConsultation } from '@/lib/types';
+import { GRADIENTS } from '@/lib/constants/design-tokens';
 
 interface OnsiteConsultationCardProps {
     consult: OnsiteConsultation;
@@ -64,7 +65,7 @@ const OnsiteConsultationCard: React.FC<OnsiteConsultationCardProps> = ({ consult
                         fullWidth
                         startIcon={<PlayArrowIcon />}
                         disableElevation
-                        sx={{ bgcolor: '#1fb2ba', color: 'white', borderRadius: 2, '&:hover': { bgcolor: '#148991' } }}
+                        sx={{ color: GRADIENTS.primary, borderRadius: 2, '&:hover': { color: GRADIENTS.primary } }}
                     >
                         Resume Consult
                     </Button>

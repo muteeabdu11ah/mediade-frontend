@@ -13,7 +13,7 @@ import { Role } from '@/lib/types';
 import { useAuth } from '@/lib/auth-context';
 
 const statCards = [
-    { title: 'Upcoming Appointments', value: '—', color: '#00BCD4', icon: <EventIcon /> },
+    { title: 'My Appointments', value: '—', color: '#00BCD4', icon: <EventIcon /> },
     { title: 'Completed Visits', value: '—', color: '#66BB6A', icon: <EventIcon /> },
     { title: 'Cancelled', value: '—', color: '#EF5350', icon: <EventIcon /> },
     { title: 'Profile Complete', value: '—', color: '#AB47BC', icon: <PersonIcon /> },

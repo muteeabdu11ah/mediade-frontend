@@ -37,6 +37,7 @@ export interface PatientAppointmentsParams {
     search?: string;
     startDate?: string;
     endDate?: string;
+    specialty?: string;
 }
 
 export function usePatientAppointments(params?: PatientAppointmentsParams) {
@@ -44,6 +45,16 @@ export function usePatientAppointments(params?: PatientAppointmentsParams) {
         queryKey: [...QUERY_KEYS.APPOINTMENTS, 'patient', params],
         queryFn: async () => {
             const { data } = await api.get(API_ENDPOINTS.APPOINTMENTS.PATIENT_ME, { params });
+            return data;
+        },
+    });
+}
+
+export function usePatientAppointmentStats(params: { startDate: string; endDate: string }) {
+    return useQuery<Record<string, number>>({
+        queryKey: [...QUERY_KEYS.APPOINTMENTS, 'patient-stats', params],
+        queryFn: async () => {
+            const { data } = await api.get(API_ENDPOINTS.APPOINTMENTS.PATIENT_STATS, { params });
             return data;
         },
     });
@@ -67,8 +78,8 @@ export function useUpdateAppointmentStatus() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async ({ id, status }: { id: string; status: AppointmentStatus }) => {
-            const { data } = await api.patch(API_ENDPOINTS.APPOINTMENTS.UPDATE_STATUS(id), { status });
+        mutationFn: async ({ id, status, reason }: { id: string; status: AppointmentStatus; reason?: string }) => {
+            const { data } = await api.patch(API_ENDPOINTS.APPOINTMENTS.UPDATE_STATUS(id), { status, reason });
             return data;
         },
         onSuccess: () => {

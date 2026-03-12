@@ -1,5 +1,5 @@
 import { Role } from '@/lib/types';
-import { BusinessOutlined, CalendarMonthOutlined, DashboardOutlined, EventOutlined, LockClockOutlined, PeopleOutline, SettingsOutlined, SmartToyOutlined } from '@mui/icons-material';
+import { BusinessOutlined, CalendarMonthOutlined, DashboardOutlined, EventOutlined, LocationPin, LockClockOutlined, MyLocationOutlined, PeopleOutline, SettingsOutlined, SmartToyOutlined } from '@mui/icons-material';
 import PersonOutline from '@mui/icons-material/PersonOutline';
 
 export interface NavItem {
@@ -16,7 +16,7 @@ export const SUPER_ADMIN_ITEMS: NavItem[] = [
 export const DOCTOR_NAV_ITEMS: NavItem[] = [
     { label: 'Dashboard', href: '/dashboard/doctor', icon: <DashboardOutlined /> },
     { label: 'Appointments', href: '/dashboard/doctor/appointments', icon: <EventOutlined /> },
-    { label: 'Direct Visit', href: '/dashboard/doctor/direct-visit', icon: <CalendarMonthOutlined /> },
+    { label: 'Direct Visit', href: '/dashboard/doctor/direct-visit', icon: <MyLocationOutlined /> },
     { label: 'AI Assistant', href: '/dashboard/doctor/ai-assistant', icon: <SmartToyOutlined /> },
     { label: 'Settings', href: '/dashboard/doctor/settings', icon: <SettingsOutlined /> },
 ];
@@ -30,7 +30,7 @@ export const CLINIC_NAV_ITEMS: NavItem[] = [
 export const PATIENT_NAV_ITEMS: NavItem[] = [
     { label: 'Dashboard', href: '/dashboard/patient', icon: <DashboardOutlined /> },
     { label: 'Book Appointment', href: '/dashboard/patient/book', icon: <CalendarMonthOutlined /> },
-    { label: 'Upcoming Appointments', href: '/dashboard/patient/appointments', icon: <EventOutlined /> },
+    { label: 'My Appointments', href: '/dashboard/patient/appointments', icon: <EventOutlined /> },
     { label: 'History', href: '/dashboard/patient/history', icon: <LockClockOutlined /> },
     { label: 'Profile', href: '/dashboard/patient/profile', icon: <PersonOutline /> },
 ];

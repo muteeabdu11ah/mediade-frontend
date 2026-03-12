@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Select, MenuItem, Button } from '@mui/material';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import { GRADIENTS } from '@/lib/constants/design-tokens';
 
 interface OnsiteFiltersProps {
     dateFilter: string;
@@ -34,7 +35,7 @@ const OnsiteFilters: React.FC<OnsiteFiltersProps> = ({ dateFilter, setDateFilter
             <Button
                 variant="contained"
                 disableElevation
-                sx={{ bgcolor: '#1fb2ba', color: 'white', borderRadius: 2, '&:hover': { bgcolor: '#148991' } }}
+                sx={{ color: GRADIENTS.primary, borderRadius: 1, '&:hover': { color: GRADIENTS.primary } }}
                 onClick={onNewConsultation}
             >
                 New Consultation
