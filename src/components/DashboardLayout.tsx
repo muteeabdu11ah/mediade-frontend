@@ -265,13 +265,13 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
                                     <MenuIcon />
                                 </IconButton>
                             )}
-                            <Typography variant="h5" sx={{ flex: 1, color: COLORS.text.primary, fontWeight: 900, letterSpacing: '-1px' }}>
+                            <Typography variant="h4" sx={{ flex: 1, color: COLORS.text.primary, fontWeight: 900, letterSpacing: '-1px' }}>
                                 {title}
                             </Typography>
 
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2.5 }}>
                                 {/* Search Placeholder */}
-                                {!isMobile && (
+                                {/* {!isMobile && (
                                     <Box sx={{
                                         display: 'flex',
                                         alignItems: 'center',
@@ -291,7 +291,7 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
                                         <SearchIcon sx={{ color: COLORS.text.muted, fontSize: 20, mr: 1 }} />
                                         <InputBase placeholder="Search anything..." sx={{ fontSize: '0.875rem', fontWeight: 500, width: '100%' }} />
                                     </Box>
-                                )}
+                                )} */}
 
                                 {/* Notifications */}
                                 <IconButton sx={{
