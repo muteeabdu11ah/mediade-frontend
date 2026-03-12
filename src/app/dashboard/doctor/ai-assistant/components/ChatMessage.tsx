@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Box, Typography, Avatar } from '@mui/material';
+import { COLORS, BORDER_RADIUS, SHADOWS } from '@/lib/constants/design-tokens';
 
 interface ChatMessageProps {
     content: string;
@@ -27,7 +28,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ content, time, isAi, sender }
                     flexDirection: isAi ? 'row' : 'row-reverse',
                     alignItems: 'flex-start',
                     gap: 1.5,
-                    maxWidth: '80%',
+                    maxWidth: '85%',
                 }}
             >
                 <Avatar
@@ -35,24 +36,25 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ content, time, isAi, sender }
                         width: 32,
                         height: 32,
                         fontSize: '0.75rem',
-                        fontWeight: 700,
-                        bgcolor: isAi ? 'rgba(46, 194, 201, 0.1)' : 'rgba(46, 194, 201, 0.1)',
-                        color: isAi ? '#2EC2C9' : '#1fb2ba',
-                        border: '1px solid rgba(46, 194, 201, 0.2)',
+                        fontWeight: 800,
+                        bgcolor: isAi ? COLORS.primary.subtle : COLORS.secondary.subtle,
+                        color: isAi ? COLORS.primary.main : COLORS.secondary.main,
+                        border: `1px solid ${isAi ? COLORS.primary.light : COLORS.secondary.light}44`,
                     }}
                 >
                     {sender}
                 </Avatar>
                 <Box
                     sx={{
-                        bgcolor: isAi ? 'rgba(46, 194, 201, 0.05)' : 'rgba(46, 194, 201, 0.15)',
-                        color: '#1A2B3C',
+                        bgcolor: isAi ? COLORS.background.paper : COLORS.primary.subtle,
+                        color: COLORS.text.primary,
                         p: 2.5,
-                        borderRadius: isAi ? '0 20px 20px 20px' : '20px 0 20px 20px',
-                        boxShadow: '0 2px 12px rgba(0,0,0,0.02)',
+                        borderRadius: isAi ? '0 16px 16px 16px' : '16px 0 16px 16px',
+                        boxShadow: SHADOWS.small,
+                        border: `1px solid ${isAi ? COLORS.border.light : COLORS.primary.subtle}`,
                     }}
                 >
-                    <Typography variant="body2" sx={{ lineHeight: 1.6, fontSize: '0.95rem' }}>
+                    <Typography variant="body2" sx={{ lineHeight: 1.6, fontSize: '0.95rem', fontWeight: 500 }}>
                         {content}
                     </Typography>
                 </Box>
@@ -61,9 +63,10 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ content, time, isAi, sender }
                 variant="caption"
                 sx={{
                     mt: 1,
-                    color: '#64748B',
-                    fontWeight: 500,
+                    color: COLORS.text.muted,
+                    fontWeight: 600,
                     px: isAi ? 6 : 6,
+                    letterSpacing: '0.5px'
                 }}
             >
                 {time}

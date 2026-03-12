@@ -9,6 +9,7 @@ import { useUsers } from '@/hooks/use-users';
 import DashboardLayout from '@/components/DashboardLayout';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { Role } from '@/lib/types';
+import { COLORS, BORDER_RADIUS, SHADOWS } from '@/lib/constants/design-tokens';
 
 export default function SuperAdminDashboard() {
     const { data: clinics, isLoading: loadingClinics } = useClinics();
@@ -18,13 +19,13 @@ export default function SuperAdminDashboard() {
         {
             title: 'Total Clinics',
             value: clinics?.meta.total || 0,
-            icon: <BusinessIcon sx={{ fontSize: 40, color: '#2EC2C9' }} />,
+            icon: <BusinessIcon sx={{ fontSize: 32, color: COLORS.primary.main }} />,
             loading: loadingClinics,
         },
         {
             title: 'Total Users',
             value: users?.meta.total || 0,
-            icon: <PeopleIcon sx={{ fontSize: 40, color: '#35C8C8' }} />,
+            icon: <PeopleIcon sx={{ fontSize: 32, color: COLORS.secondary.main }} />,
             loading: loadingUsers,
         },
     ];
@@ -33,20 +34,25 @@ export default function SuperAdminDashboard() {
         <ProtectedRoute allowedRoles={[Role.SUPER_ADMIN]}>
             <DashboardLayout title="Dashboard Overview">
                 <Box sx={{ p: 4 }}>
-                    <Grid container spacing={4}>
+                    <Grid container spacing={3}>
                         {stats.map((stat, index) => (
                             <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
                                 <Card sx={{
-                                    borderRadius: 4,
-                                    boxShadow: '0 4px 24px rgba(0,0,0,0.02)',
-                                    border: '1px solid rgba(0,0,0,0.04)',
+                                    borderRadius: BORDER_RADIUS.lg,
+                                    boxShadow: SHADOWS.small,
+                                    border: `1px solid ${COLORS.border.light}`,
                                     height: '100%',
+                                    transition: 'transform 0.2s, box-shadow 0.2s',
+                                    '&:hover': {
+                                        transform: 'translateY(-4px)',
+                                        boxShadow: SHADOWS.medium,
+                                    }
                                 }}>
                                     <CardContent sx={{ display: 'flex', alignItems: 'center', p: 3 }}>
                                         <Box sx={{
                                             p: 2,
-                                            borderRadius: 3,
-                                            bgcolor: 'rgba(46, 194, 201, 0.05)',
+                                            borderRadius: BORDER_RADIUS.md,
+                                            bgcolor: index === 0 ? COLORS.primary.subtle : COLORS.secondary.subtle,
                                             mr: 3,
                                             display: 'flex',
                                             alignItems: 'center',
@@ -55,10 +61,10 @@ export default function SuperAdminDashboard() {
                                             {stat.icon}
                                         </Box>
                                         <Box>
-                                            <Typography variant="body2" color="text.secondary" fontWeight={600} gutterBottom>
+                                            <Typography variant="body2" sx={{ color: COLORS.text.secondary, fontWeight: 700, mb: 0.5 }}>
                                                 {stat.title}
                                             </Typography>
-                                            <Typography variant="h4" fontWeight={800} sx={{ color: '#1A2B3C' }}>
+                                            <Typography variant="h4" fontWeight={900} sx={{ color: COLORS.text.primary, letterSpacing: '-1px' }}>
                                                 {stat.loading ? '...' : stat.value}
                                             </Typography>
                                         </Box>

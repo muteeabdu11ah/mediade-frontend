@@ -10,7 +10,6 @@ import {
     TableRow,
     Paper,
     Box,
-    CircularProgress,
     Typography,
     Pagination,
     InputBase,
@@ -26,7 +25,7 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import theme from '@/theme/theme';
+import { COLORS, BORDER_RADIUS, SHADOWS, TYPOGRAPHY } from '@/lib/constants/design-tokens';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -120,7 +119,14 @@ export default function AdvancedDataTable<T>({
     };
 
     return (
-        <Box sx={{ width: '100%', bgcolor: 'white', borderRadius: '16px', p: '24px', border: '0.8px solid #F0F1F3' }}>
+        <Box sx={{
+            width: '100%',
+            bgcolor: COLORS.background.paper,
+            borderRadius: BORDER_RADIUS.lg,
+            p: 4,
+            border: `1px solid ${COLORS.border.light}`,
+            boxShadow: SHADOWS.small
+        }}>
             {/* Top Action Bar */}
             <Box
                 sx={{
@@ -128,8 +134,8 @@ export default function AdvancedDataTable<T>({
                     flexDirection: { xs: 'column', md: 'row' },
                     justifyContent: 'space-between',
                     alignItems: { xs: 'stretch', md: 'center' },
-                    mb: 3,
-                    gap: 2,
+                    mb: 4,
+                    gap: 3,
                 }}
             >
                 {/* Search Input */}
@@ -138,20 +144,35 @@ export default function AdvancedDataTable<T>({
                         sx={{
                             display: 'flex',
                             alignItems: 'center',
-                            bgcolor: '#fff',
-                            border: '1px solid rgba(0,0,0,0.1)',
-                            borderRadius: '24px',
-                            px: 2,
-                            py: 0.5,
+                            bgcolor: COLORS.background.default,
+                            border: `1px solid ${COLORS.border.medium}`,
+                            borderRadius: BORDER_RADIUS.full,
+                            px: 3,
+                            py: 0.8,
                             flex: 1,
                             maxWidth: { xs: '100%', md: '450px' },
+                            transition: 'all 0.2s ease',
+                            '&:focus-within': {
+                                borderColor: COLORS.primary.main,
+                                boxShadow: `0 0 0 4px ${COLORS.primary.subtle}`,
+                                bgcolor: COLORS.background.paper
+                            }
                         }}
                     >
-                        <SearchIcon sx={{ color: 'text.secondary', mr: 1, fontSize: 20 }} />
+                        <SearchIcon sx={{ color: COLORS.text.muted, mr: 1.5, fontSize: 22 }} />
                         <InputBase
                             placeholder={searchPlaceholder}
                             onChange={handleSearchChange}
-                            sx={{ flex: 1, fontSize: '0.875rem' }}
+                            sx={{
+                                flex: 1,
+                                fontSize: '0.95rem',
+                                fontWeight: 500,
+                                color: COLORS.text.primary,
+                                '& input::placeholder': {
+                                    color: COLORS.text.muted,
+                                    opacity: 1
+                                }
+                            }}
                         />
                     </Box>
                 )}
@@ -165,24 +186,24 @@ export default function AdvancedDataTable<T>({
                             size="small"
                             displayEmpty
                             sx={{
-                                bgcolor: '#fff',
-                                borderRadius: '24px',
+                                bgcolor: COLORS.background.default,
+                                borderRadius: BORDER_RADIUS.full,
+                                border: `1px solid ${COLORS.border.medium}`,
                                 '& .MuiOutlinedInput-notchedOutline': {
-                                    borderColor: 'rgba(0,0,0,0.1)',
+                                    border: 'none',
                                 },
-                                '&:hover .MuiOutlinedInput-notchedOutline': {
-                                    borderColor: 'rgba(0,0,0,0.2)',
-                                },
-                                minWidth: 120,
+                                minWidth: 140,
+                                height: 44,
                                 '& .MuiSelect-select': {
-                                    py: 1,
-                                    pl: 2,
-                                    fontSize: '0.875rem',
-                                    color: 'text.secondary',
+                                    py: 0,
+                                    pl: 3,
+                                    fontSize: '0.9rem',
+                                    fontWeight: 600,
+                                    color: COLORS.text.secondary,
                                 }
                             }}
                         >
-                            <MenuItem value="all">Status</MenuItem>
+                            <MenuItem value="all"><em>All Status</em></MenuItem>
                             {statusOptions.map((opt) => (
                                 <MenuItem key={opt.value} value={opt.value}>
                                     {opt.label}
@@ -193,27 +214,26 @@ export default function AdvancedDataTable<T>({
 
                     {/* Date Filters (Dropdown + Inputs) */}
                     {onDateChange !== undefined && (
-                        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                        <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center' }}>
                             <Select
                                 value={dateFilterType}
                                 onChange={(e) => setDateFilterType(e.target.value as 'Date' | 'Date Range')}
                                 size="small"
                                 sx={{
-                                    bgcolor: '#fff',
-                                    borderRadius: '24px',
+                                    bgcolor: COLORS.background.default,
+                                    borderRadius: BORDER_RADIUS.full,
+                                    border: `1px solid ${COLORS.border.medium}`,
                                     '& .MuiOutlinedInput-notchedOutline': {
-                                        borderColor: 'rgba(0,0,0,0.1)',
+                                        border: 'none',
                                     },
-                                    '&:hover .MuiOutlinedInput-notchedOutline': {
-                                        borderColor: 'rgba(0,0,0,0.2)',
-                                    },
-                                    minWidth: 100,
-                                    height: '38px',
+                                    minWidth: 110,
+                                    height: 44,
                                     '& .MuiSelect-select': {
-                                        py: 1,
-                                        pl: 2,
-                                        fontSize: '0.875rem',
-                                        color: 'text.secondary',
+                                        py: 0,
+                                        pl: 3,
+                                        fontSize: '0.9rem',
+                                        fontWeight: 600,
+                                        color: COLORS.text.secondary,
                                     }
                                 }}
                             >
@@ -225,14 +245,16 @@ export default function AdvancedDataTable<T>({
                                 <input
                                     type="date"
                                     style={{
-                                        padding: '0 16px',
-                                        borderRadius: '24px',
-                                        border: '1px solid rgba(0,0,0,0.1)',
+                                        padding: '0 20px',
+                                        borderRadius: BORDER_RADIUS.full,
+                                        border: `1px solid ${COLORS.border.medium}`,
                                         outline: 'none',
-                                        color: '#475569',
+                                        color: COLORS.text.primary,
+                                        backgroundColor: COLORS.background.default,
                                         fontFamily: 'inherit',
-                                        fontSize: '0.875rem',
-                                        height: '38px',
+                                        fontSize: '0.9rem',
+                                        fontWeight: 500,
+                                        height: '44px',
                                         boxSizing: 'border-box'
                                     }}
                                     onChange={(e) => onDateChange(e.target.value, e.target.value)}
@@ -242,30 +264,34 @@ export default function AdvancedDataTable<T>({
                                     <input
                                         type="date"
                                         style={{
-                                            padding: '0 16px',
-                                            borderRadius: '24px',
-                                            border: '1px solid rgba(0,0,0,0.1)',
+                                            padding: '0 20px',
+                                            borderRadius: BORDER_RADIUS.full,
+                                            border: `1px solid ${COLORS.border.medium}`,
                                             outline: 'none',
-                                            color: '#475569',
+                                            color: COLORS.text.primary,
+                                            backgroundColor: COLORS.background.default,
                                             fontFamily: 'inherit',
-                                            fontSize: '0.875rem',
-                                            height: '38px',
+                                            fontSize: '0.9rem',
+                                            fontWeight: 500,
+                                            height: '44px',
                                             boxSizing: 'border-box'
                                         }}
                                         onChange={(e) => onDateChange(e.target.value, undefined)}
                                     />
-                                    <Typography variant="body2" color="text.secondary">-</Typography>
+                                    <Typography variant="body2" color={COLORS.text.muted} sx={{ fontWeight: 800 }}>-</Typography>
                                     <input
                                         type="date"
                                         style={{
-                                            padding: '0 16px',
-                                            borderRadius: '24px',
-                                            border: '1px solid rgba(0,0,0,0.1)',
+                                            padding: '0 20px',
+                                            borderRadius: BORDER_RADIUS.full,
+                                            border: `1px solid ${COLORS.border.medium}`,
                                             outline: 'none',
-                                            color: '#475569',
+                                            color: COLORS.text.primary,
+                                            backgroundColor: COLORS.background.default,
                                             fontFamily: 'inherit',
-                                            fontSize: '0.875rem',
-                                            height: '38px',
+                                            fontSize: '0.9rem',
+                                            fontWeight: 500,
+                                            height: '44px',
                                             boxSizing: 'border-box'
                                         }}
                                         onChange={(e) => onDateChange(undefined, e.target.value)}
@@ -282,146 +308,133 @@ export default function AdvancedDataTable<T>({
                 component={Paper}
                 elevation={0}
                 sx={{
-                    borderRadius: '8px',
-                    border: '1px solid rgba(0,0,0,0.08)',
+                    borderRadius: BORDER_RADIUS.md,
+                    border: `1px solid ${COLORS.border.light}`,
                     mb: 4,
-                    overflow: 'hidden'
+                    overflow: 'hidden',
+                    background: COLORS.background.paper
                 }}
             >
-                {isLoading ? (
-                    <Table sx={{ minWidth: 700 }} aria-label="loading data table">
-                        <TableHead sx={{ bgcolor: '#F8FAFC' }}>
-                            <TableRow>
-                                {columns.map((col, index) => (
-                                    <TableCell
-                                        key={index}
-                                        sx={{
-                                            py: 1.5,
-                                            borderBottom: '1px solid rgba(0,0,0,0.08)',
-                                            borderRight: (index < columns.length - 1 || (actions && actions.length > 0)) ? '1px solid rgba(0,0,0,0.08)' : 'none'
-                                        }}
-                                    >
-                                        <Skeleton animation="wave" height={20} width="60%" />
-                                    </TableCell>
-                                ))}
-                                {actions && actions.length > 0 && (
-                                    <TableCell
-                                        sx={{
-                                            py: 1.5,
-                                            borderBottom: '1px solid rgba(0,0,0,0.08)'
-                                        }}
-                                    >
-                                        <Skeleton animation="wave" height={20} width={40} />
-                                    </TableCell>
-                                )}
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {[...Array(5)].map((_, rowIndex) => (
+                <Table sx={{ minWidth: 700 }} aria-label="advanced data table">
+                    <TableHead sx={{ bgcolor: COLORS.background.subtle }}>
+                        <TableRow>
+                            {columns.map((col, index) => (
+                                <TableCell
+                                    key={col.header + index}
+                                    align={col.align || 'left'}
+                                    sx={{
+                                        fontWeight: 800,
+                                        color: COLORS.text.primary,
+                                        fontSize: '0.8rem',
+                                        textTransform: 'uppercase',
+                                        letterSpacing: '1px',
+                                        minWidth: col.minWidth,
+                                        py: 2.5,
+                                        borderBottom: `2px solid ${COLORS.border.light}`,
+                                        borderRight: (index < columns.length - 1 || (actions && actions.length > 0)) ? `1px solid ${COLORS.border.light}` : 'none'
+                                    }}
+                                >
+                                    {col.header}
+                                </TableCell>
+                            ))}
+                            {actions && actions.length > 0 && (
+                                <TableCell
+                                    align="center"
+                                    sx={{
+                                        fontWeight: 800,
+                                        color: COLORS.text.primary,
+                                        fontSize: '0.8rem',
+                                        textTransform: 'uppercase',
+                                        letterSpacing: '1px',
+                                        py: 2.5,
+                                        borderBottom: `2px solid ${COLORS.border.light}`
+                                    }}
+                                >
+                                    Actions
+                                </TableCell>
+                            )}
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {isLoading ? (
+                            [...Array(5)].map((_, rowIndex) => (
                                 <TableRow key={rowIndex}>
                                     {columns.map((col, colIndex) => (
                                         <TableCell
                                             key={colIndex}
                                             sx={{
-                                                py: 1.5,
-                                                borderRight: (colIndex < columns.length - 1 || (actions && actions.length > 0)) ? '1px solid rgba(0,0,0,0.06)' : 'none'
+                                                py: 2.5,
+                                                borderRight: (colIndex < columns.length - 1 || (actions && actions.length > 0)) ? `1px solid ${COLORS.border.light}44` : 'none',
+                                                borderBottom: `1px solid ${COLORS.border.light}44`
                                             }}
                                         >
                                             <Skeleton animation="wave" height={24} width={colIndex === 0 ? "80%" : "60%"} />
                                         </TableCell>
                                     ))}
                                     {actions && actions.length > 0 && (
-                                        <TableCell align="center" sx={{ borderRight: 'none', py: 1.5 }}>
+                                        <TableCell align="center" sx={{ borderBottom: `1px solid ${COLORS.border.light}44`, py: 2.5 }}>
                                             <Skeleton animation="wave" variant="circular" width={24} height={24} sx={{ mx: 'auto' }} />
                                         </TableCell>
                                     )}
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                ) : (
-                    <Table sx={{ minWidth: 700 }} aria-label="advanced data table">
-                        <TableHead sx={{ bgcolor: '#F8FAFC' }}>
+                            ))
+                        ) : data.length === 0 ? (
                             <TableRow>
-                                {columns.map((col, index) => (
-                                    <TableCell
-                                        key={col.header + index}
-                                        align={col.align || 'left'}
-                                        sx={{
-                                            fontWeight: 600,
-                                            color: '#334155',
-                                            fontSize: '0.85rem',
-                                            minWidth: col.minWidth,
-                                            py: 1.5,
-                                            borderBottom: '1px solid rgba(0,0,0,0.08)',
-                                            borderRight: (index < columns.length - 1 || (actions && actions.length > 0)) ? '1px solid rgba(0,0,0,0.08)' : 'none'
-                                        }}
-                                    >
-                                        {col.header}
-                                    </TableCell>
-                                ))}
-                                {actions && actions.length > 0 && (
-                                    <TableCell
-                                        align="center"
-                                        sx={{
-                                            fontWeight: 600,
-                                            color: '#334155',
-                                            fontSize: '0.85rem',
-                                            py: 1.5,
-                                            borderBottom: '1px solid rgba(0,0,0,0.08)'
-                                        }}
-                                    >
-                                        Actions
-                                    </TableCell>
-                                )}
+                                <TableCell
+                                    colSpan={columns.length + (actions ? 1 : 0)}
+                                    sx={{ textAlign: 'center', py: 10, color: COLORS.text.muted }}
+                                >
+                                    <Box sx={{ opacity: 0.5, mb: 1.5 }}>
+                                        <SearchIcon sx={{ fontSize: 48 }} />
+                                    </Box>
+                                    <Typography variant="body1" fontWeight={600}>{emptyMessage}</Typography>
+                                </TableCell>
                             </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {data.length === 0 ? (
-                                <TableRow>
-                                    <TableCell
-                                        colSpan={columns.length}
-                                        sx={{ textAlign: 'center', py: 8, color: 'text.secondary' }}
-                                    >
-                                        <Typography variant="body2">{emptyMessage}</Typography>
-                                    </TableCell>
+                        ) : (
+                            data.map((row) => (
+                                <TableRow
+                                    key={rowKey(row)}
+                                    hover
+                                    sx={{
+                                        transition: 'background-color 0.2s',
+                                        '&:hover': { bgcolor: `${COLORS.primary.subtle}22 !important` },
+                                        '&:last-child td': { borderBottom: 0 },
+                                        '& td': { borderBottom: `1px solid ${COLORS.border.light}`, py: 2.5 }
+                                    }}
+                                >
+                                    {columns.map((col, index) => (
+                                        <TableCell key={col.header + index} align={col.align || 'left'} sx={{
+                                            color: COLORS.text.secondary,
+                                            fontSize: '0.9rem',
+                                            fontWeight: 500,
+                                            borderRight: (index < columns.length - 1 || (actions && actions.length > 0)) ? `1px solid ${COLORS.border.light}44` : 'none'
+                                        }}>
+                                            {col.render
+                                                ? col.render(row)
+                                                : col.accessor
+                                                    ? String((row as Record<string, unknown>)[col.accessor as string] ?? '')
+                                                    : ''}
+                                        </TableCell>
+                                    ))}
+                                    {actions && actions.length > 0 && (
+                                        <TableCell align="center" sx={{ borderRight: 'none' }}>
+                                            <IconButton
+                                                size="small"
+                                                onClick={(e) => handleActionClick(e, row)}
+                                                sx={{
+                                                    color: COLORS.text.muted,
+                                                    '&:hover': { bgcolor: COLORS.primary.subtle, color: COLORS.primary.main }
+                                                }}
+                                            >
+                                                <MoreVertIcon fontSize="small" />
+                                            </IconButton>
+                                        </TableCell>
+                                    )}
                                 </TableRow>
-                            ) : (
-                                data.map((row) => (
-                                    <TableRow
-                                        key={rowKey(row)}
-                                        hover
-                                        sx={{
-                                            '&:last-child td, &:last-child th': { borderBottom: 0 },
-                                            '& td': { borderBottom: '1px solid rgba(0,0,0,0.06)', py: 1.5 }
-                                        }}
-                                    >
-                                        {columns.map((col, index) => (
-                                            <TableCell key={col.header + index} align={col.align || 'left'} sx={{
-                                                color: '#475569',
-                                                fontSize: '0.875rem',
-                                                borderRight: (index < columns.length - 1 || (actions && actions.length > 0)) ? '1px solid rgba(0,0,0,0.06)' : 'none'
-                                            }}>
-                                                {col.render
-                                                    ? col.render(row)
-                                                    : col.accessor
-                                                        ? String((row as Record<string, unknown>)[col.accessor as string] ?? '')
-                                                        : ''}
-                                            </TableCell>
-                                        ))}
-                                        {actions && actions.length > 0 && (
-                                            <TableCell align="center" sx={{ borderRight: 'none' }}>
-                                                <IconButton size="small" onClick={(e) => handleActionClick(e, row)}>
-                                                    <MoreVertIcon fontSize="small" sx={{ color: '#64748B' }} />
-                                                </IconButton>
-                                            </TableCell>
-                                        )}
-                                    </TableRow>
-                                ))
-                            )}
-                        </TableBody>
-                    </Table>
-                )}
+                            ))
+                        )}
+                    </TableBody>
+                </Table>
             </TableContainer>
 
             {/* Actions Popover Menu */}
@@ -439,14 +452,16 @@ export default function AdvancedDataTable<T>({
                 }}
                 PaperProps={{
                     sx: {
-                        mt: 0.5,
-                        boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-                        borderRadius: '2',
-                        minWidth: 180
+                        mt: 1,
+                        boxShadow: SHADOWS.premium,
+                        borderRadius: BORDER_RADIUS.md,
+                        minWidth: 190,
+                        border: `1px solid ${COLORS.border.light}`,
+                        overflow: 'hidden'
                     }
                 }}
             >
-                <MenuList dense>
+                <MenuList sx={{ p: 1 }}>
                     {actions?.map((action, i) => (
                         <MenuItem
                             key={i}
@@ -457,16 +472,23 @@ export default function AdvancedDataTable<T>({
                                 handleCloseActionMenu();
                             }}
                             sx={{
-                                color: action.color === 'error' ? 'error.main' : 'text.secondary',
-                                py: 1
+                                color: action.color === 'error' ? COLORS.error.main : COLORS.text.secondary,
+                                py: 1.5,
+                                px: 2,
+                                borderRadius: BORDER_RADIUS.sm,
+                                transition: 'all 0.2s',
+                                '&:hover': {
+                                    bgcolor: action.color === 'error' ? COLORS.error.subtle : COLORS.primary.subtle,
+                                    color: action.color === 'error' ? COLORS.error.main : COLORS.primary.main,
+                                }
                             }}
                         >
                             {action.icon && (
                                 <ListItemIcon sx={{ minWidth: 32, color: 'inherit' }}>
-                                    {action.icon}
+                                    {React.cloneElement(action.icon as React.ReactElement)}
                                 </ListItemIcon>
                             )}
-                            <ListItemText primary={action.label} primaryTypographyProps={{ variant: 'body2' }} />
+                            <ListItemText primary={action.label} primaryTypographyProps={{ variant: 'body2', fontWeight: 600 }} />
                         </MenuItem>
                     ))}
                 </MenuList>
@@ -477,36 +499,41 @@ export default function AdvancedDataTable<T>({
                 <Box
                     sx={{
                         display: 'flex',
-                        bgcolor: '#fff',
-                        borderRadius: '8px',
-                        border: '1px solid rgba(0,0,0,0.06)',
-                        px: 3,
-                        py: 2,
+                        bgcolor: COLORS.background.paper,
+                        borderRadius: BORDER_RADIUS.md,
+                        border: `1px solid ${COLORS.border.light}`,
+                        px: 4,
+                        py: 2.5,
                         justifyContent: 'space-between',
                         alignItems: 'center',
                         flexDirection: { xs: 'column', sm: 'row' },
-                        gap: 2,
+                        gap: 3,
+                        boxShadow: SHADOWS.small
                     }}
                 >
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <Typography variant="body2" color="text.secondary">
-                            Page
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                        <Typography variant="body2" color={COLORS.text.muted} fontWeight={600}>
+                            Jump to page:
                         </Typography>
                         <Select
                             size="small"
                             value={String(pagination.page)}
                             onChange={(e) => pagination.onPageChange(Number(e.target.value))}
                             sx={{
-                                borderRadius: 2,
-                                bgcolor: 'rgba(0,0,0,0.02)',
+                                borderRadius: BORDER_RADIUS.sm,
+                                bgcolor: COLORS.background.subtle,
                                 '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
+                                fontWeight: 700,
+                                color: COLORS.text.primary,
+                                minWidth: 80,
+                                height: 36
                             }}
                         >
                             {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map(num => (
                                 <MenuItem key={num} value={String(num)}>{num}</MenuItem>
                             ))}
                         </Select>
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" color={COLORS.text.muted} fontWeight={600}>
                             of {pagination.totalPages}
                         </Typography>
                     </Box>
@@ -515,10 +542,16 @@ export default function AdvancedDataTable<T>({
                         count={pagination.totalPages}
                         page={pagination.page}
                         onChange={(_, val) => pagination.onPageChange(val)}
-                        color="standard"
+                        color="primary"
                         shape="rounded"
                         showFirstButton
                         showLastButton
+                        sx={{
+                            '& .MuiPaginationItem-root': {
+                                fontWeight: 700,
+                                borderRadius: BORDER_RADIUS.sm
+                            }
+                        }}
                     />
                 </Box>
             )}

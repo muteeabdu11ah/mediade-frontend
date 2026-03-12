@@ -77,7 +77,7 @@ const CalendarWeekly: React.FC<CalendarWeeklyProps> = ({ selectedDate, onDateSel
                     </IconButton>
 
                     <Typography
-                        variant="h6"
+                        variant="h3"
                         fontWeight={600}
                         color="#2D3748"
                         sx={{

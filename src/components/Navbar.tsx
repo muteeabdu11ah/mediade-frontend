@@ -28,7 +28,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
-import { GRADIENTS } from '@/lib/constants/design-tokens';
+import { GRADIENTS, COLORS, BORDER_RADIUS, SHADOWS, TYPOGRAPHY } from '@/lib/constants/design-tokens';
 
 const navLinks = [
     { label: 'Home', href: '/' },
@@ -59,21 +59,48 @@ export default function Navbar() {
 
     return (
         <>
-            <AppBar position="fixed" elevation={0}>
+            <AppBar
+                position="fixed"
+                elevation={0}
+                sx={{
+                    background: 'rgba(255, 255, 255, 0.8)',
+                    backdropFilter: 'blur(12px)',
+                    borderBottom: `1px solid ${COLORS.border.light}`,
+                    zIndex: (theme) => theme.zIndex.drawer + 1
+                }}
+            >
                 <Container maxWidth="lg">
-                    <Toolbar disableGutters sx={{ py: 0.5 }}>
+                    <Toolbar disableGutters sx={{ py: 1.5 }}>
                         {/* Logo */}
-                        <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8 }}>
-                            <LocalHospitalIcon sx={{ color: 'primary.main', fontSize: 32 }} />
+                        <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 14 }}>
+                            <Box sx={{
+                                background: GRADIENTS.primary,
+                                p: 1,
+                                borderRadius: BORDER_RADIUS.md,
+                                display: 'flex',
+                                boxShadow: SHADOWS.medium,
+                                transform: 'rotate(-5deg)',
+                                transition: 'transform 0.3s ease',
+                                '&:hover': {
+                                    transform: 'rotate(0deg) scale(1.1)',
+                                }
+                            }}>
+                                <LocalHospitalIcon sx={{ color: 'white', fontSize: 26 }} />
+                            </Box>
                             <Typography
-                                variant="h6"
+                                variant="h3"
                                 sx={{
-                                    fontWeight: 800,
+                                    fontWeight: 900,
                                     background: GRADIENTS.primary,
                                     backgroundClip: 'text',
                                     WebkitBackgroundClip: 'text',
                                     WebkitTextFillColor: 'transparent',
-                                    letterSpacing: '-0.5px',
+                                    letterSpacing: '-1px',
+                                    fontSize: '1.6rem',
+                                    transition: 'all 0.3s ease',
+                                    '&:hover': {
+                                        letterSpacing: '0px',
+                                    }
                                 }}
                             >
                                 Aeyron Medical
@@ -91,12 +118,17 @@ export default function Navbar() {
                                         component={Link}
                                         href={link.href}
                                         sx={{
-                                            color: GRADIENTS.primary,
-                                            fontWeight: 500,
+                                            color: COLORS.text.secondary,
+                                            fontWeight: 700,
+                                            px: 2.5,
+                                            fontSize: '0.95rem',
+                                            borderRadius: BORDER_RADIUS.md,
                                             '&:hover': {
-                                                color: 'primary.main',
-                                                backgroundColor: 'rgba(0,188,212,0.04)',
+                                                color: COLORS.primary.main,
+                                                backgroundColor: COLORS.primary.subtle,
+                                                transform: 'translateY(-1px)'
                                             },
+                                            transition: 'all 0.2s ease'
                                         }}
                                     >
                                         {link.label}
@@ -104,25 +136,46 @@ export default function Navbar() {
                                 ))}
 
                                 {isAuthenticated && user ? (
-                                    <>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', ml: 2, gap: 2 }}>
                                         <Button
                                             component={Link}
                                             href={getDashboardRoute()}
-                                            variant="outlined"
-                                            color="primary"
+                                            variant="contained"
                                             startIcon={<DashboardIcon />}
-                                            sx={{ ml: 1 }}
+                                            sx={{
+                                                borderRadius: BORDER_RADIUS.full,
+                                                background: GRADIENTS.primary,
+                                                boxShadow: SHADOWS.medium,
+                                                fontWeight: 800,
+                                                px: 3,
+                                                '&:hover': {
+                                                    boxShadow: SHADOWS.hover,
+                                                    background: GRADIENTS.hover
+                                                }
+                                            }}
                                         >
                                             Dashboard
                                         </Button>
-                                        <IconButton onClick={handleMenuOpen} sx={{ ml: 1 }}>
+                                        <IconButton
+                                            onClick={handleMenuOpen}
+                                            sx={{
+                                                p: 0.5,
+                                                border: `2px solid ${COLORS.border.medium}`,
+                                                transition: 'all 0.3s ease',
+                                                '&:hover': {
+                                                    borderColor: COLORS.primary.main,
+                                                    transform: 'scale(1.05)'
+                                                }
+                                            }}
+                                        >
                                             <Avatar
                                                 sx={{
-                                                    width: 36,
-                                                    height: 36,
-                                                    bgcolor: 'primary.main',
-                                                    fontSize: '0.875rem',
-                                                    fontWeight: 700,
+                                                    width: 40,
+                                                    height: 40,
+                                                    background: GRADIENTS.secondary,
+                                                    fontSize: '0.9rem',
+                                                    fontWeight: 800,
+                                                    boxShadow: SHADOWS.small
                                                 }}
                                             >
                                                 {user.firstName[0]}{user.lastName[0]}
@@ -137,42 +190,49 @@ export default function Navbar() {
                                             slotProps={{
                                                 paper: {
                                                     sx: {
-                                                        mt: 1,
-                                                        minWidth: 200,
-                                                        borderRadius: 2,
-                                                        boxShadow: '0 8px 32px rgba(0,188,212,0.16)',
+                                                        mt: 2,
+                                                        minWidth: 240,
+                                                        borderRadius: BORDER_RADIUS.lg,
+                                                        boxShadow: SHADOWS.premium,
+                                                        border: `1px solid ${COLORS.border.light}`,
+                                                        p: 1,
+                                                        overflow: 'hidden'
                                                     },
                                                 },
                                             }}
                                         >
-                                            <Box sx={{ px: 2, py: 1.5 }}>
-                                                <Typography variant="body2" fontWeight={600}>
+                                            <Box sx={{ px: 2, py: 2, mb: 1, bgcolor: COLORS.background.subtle, borderRadius: BORDER_RADIUS.md }}>
+                                                <Typography variant="body2" fontWeight={800} sx={{ color: COLORS.text.primary, mb: 0.5 }}>
                                                     {user.firstName} {user.lastName}
                                                 </Typography>
-                                                <Typography variant="caption" color="text.secondary">
+                                                <Typography variant="caption" sx={{ color: COLORS.text.muted, fontWeight: 600 }}>
                                                     {user.email}
                                                 </Typography>
                                             </Box>
-                                            <Divider />
-                                            <MenuItem onClick={handleMenuClose} component={Link} href={getDashboardRoute()}>
-                                                <DashboardIcon fontSize="small" sx={{ mr: 1.5, color: 'primary.main' }} />
-                                                Dashboard
-                                            </MenuItem>
-                                            <Divider />
-                                            <MenuItem onClick={handleLogout}>
-                                                <LogoutIcon fontSize="small" sx={{ mr: 1.5, color: 'error.main' }} />
-                                                Logout
-                                            </MenuItem>
+                                            <Box sx={{ p: 0.5 }}>
+                                                <MenuItem onClick={handleMenuClose} component={Link} href={getDashboardRoute()} sx={{ borderRadius: BORDER_RADIUS.md, py: 1.5, mb: 0.5, fontWeight: 700 }}>
+                                                    <DashboardIcon fontSize="small" sx={{ mr: 1.5, color: COLORS.primary.main }} />
+                                                    My Dashboard
+                                                </MenuItem>
+                                                <Divider sx={{ my: 1, opacity: 0.5 }} />
+                                                <MenuItem onClick={handleLogout} sx={{ borderRadius: BORDER_RADIUS.md, py: 1.5, color: COLORS.error.main, fontWeight: 700, '&:hover': { bgcolor: COLORS.error.subtle } }}>
+                                                    <LogoutIcon fontSize="small" sx={{ mr: 1.5 }} />
+                                                    Logout
+                                                </MenuItem>
+                                            </Box>
                                         </Menu>
-                                    </>
+                                    </Box>
+
                                 ) : (
-                                    <>
+                                    <Box sx={{ display: 'flex', gap: 2, ml: 2 }}>
                                         <Button
                                             component={Link}
                                             href="/login"
-                                            variant="outlined"
-                                            color="primary"
-                                            sx={{ ml: 1 }}
+                                            sx={{
+                                                color: COLORS.primary.main,
+                                                fontWeight: 800,
+                                                '&:hover': { bgcolor: COLORS.primary.subtle }
+                                            }}
                                         >
                                             Sign In
                                         </Button>
@@ -180,19 +240,35 @@ export default function Navbar() {
                                             component={Link}
                                             href="/register"
                                             variant="contained"
-                                            color="primary"
-                                            sx={{ ml: 1 }}
+                                            sx={{
+                                                borderRadius: BORDER_RADIUS.full,
+                                                background: GRADIENTS.primary,
+                                                fontWeight: 800,
+                                                px: 4,
+                                                boxShadow: SHADOWS.medium,
+                                                '&:hover': {
+                                                    boxShadow: SHADOWS.hover,
+                                                    background: GRADIENTS.hover
+                                                }
+                                            }}
                                         >
                                             Get Started
                                         </Button>
-                                    </>
+                                    </Box>
                                 )}
                             </Box>
                         )}
 
                         {/* Mobile Menu Button */}
                         {isMobile && (
-                            <IconButton onClick={() => setDrawerOpen(true)} sx={{ color: 'text.primary' }}>
+                            <IconButton
+                                onClick={() => setDrawerOpen(true)}
+                                sx={{
+                                    color: COLORS.text.primary,
+                                    bgcolor: COLORS.background.subtle,
+                                    borderRadius: BORDER_RADIUS.md
+                                }}
+                            >
                                 <MenuIcon />
                             </IconButton>
                         )}
@@ -207,77 +283,103 @@ export default function Navbar() {
                 onClose={() => setDrawerOpen(false)}
                 PaperProps={{
                     sx: {
-                        width: 280,
-                        background: 'linear-gradient(180deg, #F0FDFD 0%, #FFFFFF 100%)',
+                        width: 300,
+                        background: COLORS.background.paper,
+                        borderLeft: `1px solid ${COLORS.border.light}`
                     },
                 }}
             >
-                <Box sx={{ p: 2 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
-                        <LocalHospitalIcon sx={{ color: 'primary.main' }} />
-                        <Typography variant="h6" fontWeight={800} color="primary.main">
-                            Aeyron Medical
+                <Box sx={{ p: 3 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 4 }}>
+                        <Box sx={{ background: GRADIENTS.primary, p: 0.8, borderRadius: BORDER_RADIUS.sm }}>
+                            <LocalHospitalIcon sx={{ color: 'white' }} />
+                        </Box>
+                        <Typography variant="h3" fontWeight={900} sx={{ background: GRADIENTS.primary, backgroundClip: 'text', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                            Aeyron
                         </Typography>
                     </Box>
 
-                    <List>
+                    <List sx={{ mb: 4 }}>
                         {navLinks.map((link) => (
                             <ListItem key={link.label} disablePadding>
                                 <ListItemButton
                                     component={Link}
                                     href={link.href}
                                     onClick={() => setDrawerOpen(false)}
-                                    sx={{ borderRadius: 2, mb: 0.5 }}
+                                    sx={{
+                                        borderRadius: BORDER_RADIUS.md,
+                                        mb: 1,
+                                        py: 1.5,
+                                        '&:hover': {
+                                            bgcolor: COLORS.primary.subtle,
+                                            color: COLORS.primary.main
+                                        }
+                                    }}
                                 >
-                                    <ListItemText primary={link.label} />
+                                    <ListItemText
+                                        primary={link.label}
+                                        primaryTypographyProps={{ fontWeight: 700, fontSize: '1rem' }}
+                                    />
                                 </ListItemButton>
                             </ListItem>
                         ))}
                     </List>
 
-                    <Divider sx={{ my: 2 }} />
+                    <Divider sx={{ mb: 4, opacity: 0.5 }} />
 
                     {isAuthenticated && user ? (
-                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                            <Box sx={{ px: 2, py: 1 }}>
-                                <Typography variant="body2" fontWeight={600}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                            <Box sx={{ px: 2, py: 2, bgcolor: COLORS.background.subtle, borderRadius: BORDER_RADIUS.md, mb: 2 }}>
+                                <Typography variant="body1" fontWeight={800} color={COLORS.text.primary}>
                                     {user.firstName} {user.lastName}
                                 </Typography>
-                                <Typography variant="caption" color="text.secondary">
+                                <Typography variant="caption" fontWeight={600} color={COLORS.text.muted}>
                                     {user.role.replace('_', ' ')}
                                 </Typography>
                             </Box>
                             <Button
                                 component={Link}
                                 href={getDashboardRoute()}
-                                variant="outlined"
+                                variant="contained"
                                 fullWidth
                                 startIcon={<DashboardIcon />}
                                 onClick={() => setDrawerOpen(false)}
+                                sx={{
+                                    borderRadius: BORDER_RADIUS.md,
+                                    py: 1.5,
+                                    background: GRADIENTS.primary,
+                                    fontWeight: 800
+                                }}
                             >
                                 Dashboard
                             </Button>
                             <Button
-                                variant="contained"
-                                color="error"
+                                variant="text"
                                 fullWidth
                                 startIcon={<LogoutIcon />}
                                 onClick={() => {
                                     setDrawerOpen(false);
                                     logout();
                                 }}
+                                sx={{
+                                    color: COLORS.error.main,
+                                    fontWeight: 700,
+                                    py: 1.5,
+                                    '&:hover': { bgcolor: COLORS.error.subtle }
+                                }}
                             >
                                 Logout
                             </Button>
                         </Box>
                     ) : (
-                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                             <Button
                                 component={Link}
                                 href="/login"
                                 variant="outlined"
                                 fullWidth
                                 onClick={() => setDrawerOpen(false)}
+                                sx={{ borderRadius: BORDER_RADIUS.md, py: 1.5, fontWeight: 700, borderWidth: 2 }}
                             >
                                 Sign In
                             </Button>
@@ -287,6 +389,13 @@ export default function Navbar() {
                                 variant="contained"
                                 fullWidth
                                 onClick={() => setDrawerOpen(false)}
+                                sx={{
+                                    borderRadius: BORDER_RADIUS.md,
+                                    py: 1.5,
+                                    background: GRADIENTS.primary,
+                                    fontWeight: 800,
+                                    boxShadow: SHADOWS.medium
+                                }}
                             >
                                 Get Started
                             </Button>
@@ -295,7 +404,6 @@ export default function Navbar() {
                 </Box>
             </Drawer>
 
-            {/* Spacer to push content below appbar */}
             <Toolbar />
         </>
     );

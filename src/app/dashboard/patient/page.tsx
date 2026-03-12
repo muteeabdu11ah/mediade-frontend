@@ -43,7 +43,7 @@ export default function PatientDashboard() {
 
                 {/* Recent History Table */}
                 <Box sx={{ mb: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <Typography variant="h6" fontWeight={700} color="#1A2B3C">
+                    <Typography variant="h3" fontWeight={700} color="#1A2B3C">
                         Appointments History
                     </Typography>
                 </Box>

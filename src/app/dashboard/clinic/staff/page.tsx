@@ -35,7 +35,9 @@ import {
     useUpdateUser,
     useDeactivateUser,
 } from '@/hooks/use-users';
+
 import { Role, User, Specialty, Language } from '@/lib/types';
+import { GRADIENTS, COLORS, BORDER_RADIUS, SHADOWS, TYPOGRAPHY } from '@/lib/constants/design-tokens';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -67,9 +69,30 @@ const initialFormData: StaffFormData = {
 
 // ─── Role helpers ───────────────────────────────────────────────────────────
 
-const ROLE_STYLES: Record<string, { label: string; bgcolor: string; color: string }> = {
-    [Role.DOCTOR]: { label: 'Doctor', bgcolor: 'rgba(66,165,245,0.1)', color: '#42A5F5' },
-    [Role.RECEPTIONIST]: { label: 'Receptionist', bgcolor: 'rgba(255,167,38,0.1)', color: '#FFA726' },
+const getRoleStyles = (role: string) => {
+    switch (role) {
+        case Role.DOCTOR:
+            return {
+                label: 'Doctor',
+                bgcolor: COLORS.primary.subtle,
+                color: COLORS.primary.main,
+                border: `1px solid ${COLORS.primary.main}22`
+            };
+        case Role.RECEPTIONIST:
+            return {
+                label: 'Receptionist',
+                bgcolor: COLORS.secondary.subtle,
+                color: COLORS.secondary.main,
+                border: `1px solid ${COLORS.secondary.main}22`
+            };
+        default:
+            return {
+                label: role,
+                bgcolor: COLORS.background.subtle,
+                color: COLORS.text.secondary,
+                border: `1px solid ${COLORS.border.light}`
+            };
+    }
 };
 
 // ─── Page Component ─────────────────────────────────────────────────────────
@@ -195,18 +218,18 @@ export default function ClinicStaffManagementPage() {
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                     <Avatar
                         sx={{
-                            bgcolor: 'rgba(46, 194, 201, 0.1)',
-                            color: '#2EC2C9',
-                            fontWeight: 700,
+                            bgcolor: COLORS.primary.subtle,
+                            color: COLORS.primary.main,
+                            fontWeight: 800,
                         }}
                     >
                         {user.firstName[0]}
                     </Avatar>
                     <Box>
-                        <Typography variant="body2" fontWeight={700} color="#1A2B3C">
+                        <Typography variant="body2" fontWeight={800} color={COLORS.text.primary} sx={{ letterSpacing: '-0.2px' }}>
                             {user.firstName} {user.lastName}
                         </Typography>
-                        <Typography variant="caption" color="text.secondary">
+                        <Typography variant="caption" color={COLORS.text.secondary} fontWeight={500}>
                             {user.email}
                         </Typography>
                     </Box>
@@ -216,12 +239,19 @@ export default function ClinicStaffManagementPage() {
         {
             header: 'Role',
             render: (user) => {
-                const style = ROLE_STYLES[user.role] || { label: user.role, bgcolor: 'rgba(0,0,0,0.05)', color: 'text.secondary' };
+                const style = getRoleStyles(user.role);
                 return (
                     <Chip
                         label={style.label}
                         size="small"
-                        sx={{ bgcolor: style.bgcolor, color: style.color, fontWeight: 700, fontSize: '0.7rem', borderRadius: 1 }}
+                        sx={{
+                            bgcolor: style.bgcolor,
+                            color: style.color,
+                            fontWeight: 700,
+                            fontSize: '0.75rem',
+                            borderRadius: BORDER_RADIUS.sm,
+                            border: style.border
+                        }}
                     />
                 );
             },
@@ -229,7 +259,7 @@ export default function ClinicStaffManagementPage() {
         {
             header: 'Contact',
             render: (user) => (
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" color={COLORS.text.secondary} fontWeight={500}>
                     {user.phone || 'N/A'}
                 </Typography>
             ),
@@ -245,11 +275,11 @@ export default function ClinicStaffManagementPage() {
             align: 'right',
             render: (user) => (
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
-                    <IconButton size="small" onClick={() => handleOpenEdit(user)} sx={{ color: '#64748B' }}>
+                    <IconButton size="small" onClick={() => handleOpenEdit(user)} sx={{ color: COLORS.text.secondary }}>
                         <EditIcon fontSize="small" />
                     </IconButton>
                     {user.isActive && (
-                        <IconButton size="small" onClick={() => handleDeactivateClick(user.id)} sx={{ color: '#e5e80fff' }}>
+                        <IconButton size="small" onClick={() => handleDeactivateClick(user.id)} sx={{ color: COLORS.warning.main }}>
                             <BlockIcon fontSize="small" />
                         </IconButton>
                     )}
@@ -300,12 +330,17 @@ export default function ClinicStaffManagementPage() {
                         onClose={() => setOpenDialog(false)}
                         maxWidth="sm"
                         fullWidth
-                        PaperProps={{ sx: { borderRadius: 4 } }}
+                        PaperProps={{ 
+                            sx: { 
+                                borderRadius: BORDER_RADIUS.lg,
+                                boxShadow: SHADOWS.premium
+                            } 
+                        }}
                     >
-                        <DialogTitle sx={{ fontWeight: 800, color: '#1A2B3C' }}>
+                        <DialogTitle sx={{ fontWeight: 900, color: COLORS.text.primary, pt: 4, px: 4 }}>
                             {dialogMode === 'add' ? 'Add Clinic Staff' : 'Edit Staff'}
                         </DialogTitle>
-                        <DialogContent>
+                        <DialogContent sx={{ px: 4, py: 2 }}>
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, mt: 1 }}>
                                 <Grid container spacing={2}>
                                     <Grid size={{ xs: 12, sm: 6 }}>
@@ -403,7 +438,12 @@ export default function ClinicStaffManagementPage() {
                                                         renderValue: (selected: any) => (
                                                             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                                                                 {(selected as string[]).map((value) => (
-                                                                    <Chip key={value} label={value} size="small" />
+                                                                    <Chip 
+                                                                        key={value} 
+                                                                        label={value} 
+                                                                        size="small"
+                                                                        sx={{ borderRadius: BORDER_RADIUS.xs, bgcolor: COLORS.primary.subtle, color: COLORS.primary.main, fontWeight: 600 }}
+                                                                    />
                                                                 ))}
                                                             </Box>
                                                         ),
@@ -432,12 +472,13 @@ export default function ClinicStaffManagementPage() {
                                             />
                                         }
                                         label="Active Status"
+                                        sx={{ color: COLORS.text.secondary, fontWeight: 500 }}
                                     />
                                 )}
                             </Box>
                         </DialogContent>
-                        <DialogActions sx={{ p: 3 }}>
-                            <Button onClick={() => setOpenDialog(false)} sx={{ color: '#64748B', fontWeight: 600 }}>
+                        <DialogActions sx={{ p: 4 }}>
+                            <Button onClick={() => setOpenDialog(false)} sx={{ color: COLORS.text.secondary, fontWeight: 700 }}>
                                 Cancel
                             </Button>
                             <Button
@@ -450,11 +491,10 @@ export default function ClinicStaffManagementPage() {
                                     (dialogMode === 'add' && (!formData.email || !formData.password || !formData.role))
                                 }
                                 sx={{
-                                    bgcolor: '#2EC2C9',
-                                    borderRadius: 2,
+                                    borderRadius: BORDER_RADIUS.md,
                                     px: 4,
-                                    fontWeight: 700,
-                                    '&:hover': { bgcolor: '#24B1B8' },
+                                    fontWeight: 800,
+                                    boxShadow: SHADOWS.medium,
                                 }}
                             >
                                 {isSaving ? <CircularProgress size={24} color="inherit" /> : 'Save Staff'}

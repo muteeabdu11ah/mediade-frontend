@@ -37,7 +37,8 @@ import GridViewIcon from '@mui/icons-material/GridView';
 import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
 import SmartToyOutlinedIcon from '@mui/icons-material/SmartToyOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import { GRADIENTS } from '@/lib/constants/design-tokens';
+import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
+import { GRADIENTS, COLORS, BORDER_RADIUS, SHADOWS, TYPOGRAPHY } from '@/lib/constants/design-tokens';
 
 const DRAWER_WIDTH = 320;
 
@@ -47,11 +48,11 @@ interface DashboardLayoutProps {
 }
 
 const roleColors: Record<string, string> = {
-    [Role.SUPER_ADMIN]: '#EF5350',
-    [Role.CLINIC_ADMIN]: '#AB47BC',
-    [Role.DOCTOR]: '#1fb2ba',
-    [Role.RECEPTIONIST]: '#FFA726',
-    [Role.PATIENT]: '#66BB6A',
+    [Role.SUPER_ADMIN]: COLORS.error.main,
+    [Role.CLINIC_ADMIN]: COLORS.secondary.main,
+    [Role.DOCTOR]: COLORS.primary.main,
+    [Role.RECEPTIONIST]: COLORS.warning.main,
+    [Role.PATIENT]: COLORS.success.main,
 };
 
 const roleLabels: Record<string, string> = {
@@ -72,22 +73,22 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
     const navItems = user ? getNavItemsByRole(user.role) : [];
 
     const drawerContent = (
-        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', bgcolor: 'white' }}
+        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', bgcolor: COLORS.background.paper }}
         >
             {/* Brand */}
-            <Box sx={{ p: 4, display: 'flex', justifyContent: 'center', mb: 2 }}>
-                <Image
-                    src="/logo.svg"
-                    alt="Medaide Logo"
-                    width={180}
-                    height={60}
-                    priority
-                    style={{ objectFit: 'contain' }}
-                />
+            <Box sx={{ p: 4, display: 'flex', justifyContent: 'center', mb: 1 }}>
+                <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <Image
+                        src="/logo.svg"
+                        alt="Logo"
+                        width={170}
+                        height={60}
+                    />
+                </Link>
             </Box>
 
             {/* Navigation */}
-            <List sx={{ px: 2, flex: 1 }}>
+            <List sx={{ px: 2, flex: 1, mt: 2 }}>
                 {navItems.map((item) => {
                     const isActive = pathname === item.href;
                     return (
@@ -97,34 +98,48 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
                                 href={item.href}
                                 onClick={() => isMobile && setMobileOpen(false)}
                                 sx={{
-                                    borderRadius: 1,
+
+                                    borderRadius: BORDER_RADIUS.md,
                                     px: 2.5,
-                                    py: 1.5,
+                                    py: 1.8,
                                     background: isActive ? GRADIENTS.primary : 'transparent',
-                                    color: isActive ? 'white' : '#64748B',
-                                    transition: 'all 0.2s',
-                                    boxShadow: isActive ? '0 4px 12px rgba(46, 194, 201, 0.3)' : 'none',
+                                    color: isActive ? 'white' : COLORS.text.secondary,
+                                    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                                    boxShadow: isActive ? SHADOWS.medium : 'none',
                                     '&:hover': {
-                                        background: isActive ? GRADIENTS.primary : 'rgba(46, 194, 201, 0.05)',
-                                        color: isActive ? 'white' : '#1fb2ba',
+                                        background: isActive ? GRADIENTS.hover : COLORS.primary.subtle,
+                                        color: isActive ? 'white' : COLORS.primary.main,
+                                        transform: isActive ? 'none' : 'translateX(6px)',
+                                        '& .MuiListItemIcon-root': {
+                                            color: isActive ? 'white' : COLORS.primary.main,
+                                            transform: 'scale(1.1)'
+                                        }
                                     },
                                 }}
                             >
                                 <ListItemIcon
                                     sx={{
-                                        minWidth: 42,
+                                        minWidth: 44,
                                         color: 'inherit',
+                                        transition: 'all 0.3s ease'
                                     }}
                                 >
-                                    {item.icon}
+                                    {React.isValidElement(item.icon) && React.cloneElement(item.icon as React.ReactElement<any>, {
+                                        sx: { fontSize: 24 }
+                                    })}
                                 </ListItemIcon>
                                 <ListItemText
                                     primary={item.label}
                                     primaryTypographyProps={{
-                                        fontWeight: isActive ? 700 : 500,
-                                        fontSize: '14px',
+                                        fontWeight: isActive ? 800 : 600,
+                                        fontSize: '0.875rem',
+                                        letterSpacing: isActive ? '0.2px' : '0',
+                                        color: isActive ? 'white' : 'inherit'
                                     }}
                                 />
+                                {isActive && (
+                                    <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: 'white', opacity: 0.8 }} />
+                                )}
                             </ListItemButton>
                         </ListItem>
                     );
@@ -132,26 +147,37 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
             </List>
 
             {/* Logout Section */}
-            <Box sx={{ p: 2.5, borderTop: '1px solid rgba(0,0,0,0.04)' }}>
+            <Box sx={{ p: 3, borderTop: `1px solid ${COLORS.border.light}`, bgcolor: COLORS.background.default + '40' }}>
                 <ListItem disablePadding>
                     <ListItemButton
                         onClick={logout}
                         sx={{
-                            borderRadius: 3,
+                            borderRadius: BORDER_RADIUS.md,
                             px: 2.5,
                             py: 1.5,
-                            color: '#64748B',
+                            color: COLORS.text.muted,
+                            transition: 'all 0.3s ease',
                             '&:hover': {
-                                bgcolor: 'rgba(239,83,80,0.05)',
-                                color: 'error.main',
-                                '& .MuiListItemIcon-root': { color: 'error.main' }
+                                bgcolor: COLORS.error.subtle,
+                                color: COLORS.error.main,
+                                '& .MuiListItemIcon-root': {
+                                    color: COLORS.error.main,
+                                    transform: 'rotate(-10deg)'
+                                }
                             },
                         }}
                     >
-                        <ListItemIcon sx={{ minWidth: 42, color: 'inherit' }}>
-                            <LogoutIcon />
+                        <ListItemIcon sx={{ minWidth: 44, color: 'inherit', transition: 'all 0.3s ease' }}>
+                            <LogoutIcon sx={{ fontSize: 22 }} />
                         </ListItemIcon>
-                        <ListItemText primary="Logout" primaryTypographyProps={{ fontSize: '1rem', fontWeight: 600 }} />
+                        <ListItemText
+                            primary="Logout"
+                            primaryTypographyProps={{
+                                fontSize: '0.875rem',
+                                fontWeight: 800,
+                                letterSpacing: '0.5px'
+                            }}
+                        />
                     </ListItemButton>
                 </ListItem>
             </Box>
@@ -159,7 +185,7 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
     );
 
     return (
-        <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: 'background.default' }}>
+        <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: COLORS.background.default }}>
             {/* Sidebar */}
             <Box component="nav" sx={{ width: { md: DRAWER_WIDTH + 32 }, flexShrink: { md: 0 } }}>
                 {isMobile ? (
@@ -171,9 +197,9 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
                         PaperProps={{
                             sx: {
                                 width: DRAWER_WIDTH,
-                                bgcolor: '#FFFFFF',
+                                bgcolor: COLORS.background.paper,
                                 borderRight: 'none',
-                                boxShadow: '0 4px 24px rgba(0,0,0,0.04)',
+                                boxShadow: SHADOWS.large,
                             },
                         }}
                     >
@@ -193,14 +219,16 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
                         }}
                         open
                     >
-                        <Box sx={{ p: 2, height: '100%' }}>
+                        <Box sx={{ p: 3, height: '100%' }}>
                             <Box sx={{
                                 height: '100%',
-                                bgcolor: 'white',
-                                borderRadius: 2,
-                                boxShadow: '0 4px 24px rgba(0,0,0,0.02)',
+                                bgcolor: COLORS.background.paper,
+                                borderRadius: BORDER_RADIUS.lg,
+                                boxShadow: SHADOWS.premium,
                                 overflow: 'hidden',
-                                border: '2px solid #2f96ca3b'
+                                position: 'relative',
+                                border: '2px solid transparent',
+                                background: `linear-gradient(${COLORS.background.paper}, ${COLORS.background.paper}) padding-box, ${GRADIENTS.primary} border-box`,
                             }}>
                                 {drawerContent}
                             </Box>
@@ -211,42 +239,84 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
 
             {/* Main Content */}
             <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, height: '100vh', overflow: 'hidden' }}>
-                <Box sx={{ py: 2, pr: 2, pl: 0, pb: 0 }}>
+                <Box sx={{ mt: 3, mr: 3, ml: isMobile ? 3 : 0, mb: 0 }}>
                     <AppBar
                         position="static"
                         elevation={0}
                         sx={{
-                            bgcolor: 'white',
-                            borderRadius: 1,
-                            border: 'none',
-                            color: 'text.primary',
-                            boxShadow: '0 4px 20px rgba(0,0,0,0.02)',
+                            bgcolor: COLORS.background.paper,
+                            borderRadius: BORDER_RADIUS.md,
+                            border: `1px solid ${COLORS.border.light}`,
+                            color: COLORS.text.primary,
+                            boxShadow: SHADOWS.small,
                         }}
                     >
-                        <Toolbar sx={{ py: 1.5, pr: { xs: 1, sm: 2 }, pl: 0 }}>
+                        <Toolbar sx={{ py: 1.5, px: 3 }}>
                             {isMobile && (
-                                <IconButton onClick={() => setMobileOpen(true)} sx={{ mr: 1 }}>
+                                <IconButton
+                                    onClick={() => setMobileOpen(true)}
+                                    sx={{
+                                        mr: 2,
+                                        border: `1px solid ${COLORS.border.medium}`,
+                                        borderRadius: BORDER_RADIUS.sm,
+                                        color: COLORS.primary.main
+                                    }}
+                                >
                                     <MenuIcon />
                                 </IconButton>
                             )}
-                            <Typography variant="h6" fontWeight={700} sx={{ flex: 1, color: '#1A2B3C', fontSize: '1.25rem' }}>
+                            <Typography variant="h5" sx={{ flex: 1, color: COLORS.text.primary, fontWeight: 900, letterSpacing: '-1px' }}>
                                 {title}
                             </Typography>
 
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2.5 }}>
+                                {/* Search Placeholder */}
+                                {!isMobile && (
+                                    <Box sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        bgcolor: COLORS.background.subtle,
+                                        borderRadius: BORDER_RADIUS.full,
+                                        px: 2,
+                                        py: 1,
+                                        width: 240,
+                                        border: `1px solid ${COLORS.border.light}`,
+                                        transition: 'all 0.3s ease',
+                                        '&:focus-within': {
+                                            borderColor: COLORS.primary.main,
+                                            width: 300,
+                                            boxShadow: `0 0 0 4px ${COLORS.primary.main}15`
+                                        }
+                                    }}>
+                                        <SearchIcon sx={{ color: COLORS.text.muted, fontSize: 20, mr: 1 }} />
+                                        <InputBase placeholder="Search anything..." sx={{ fontSize: '0.875rem', fontWeight: 500, width: '100%' }} />
+                                    </Box>
+                                )}
+
                                 {/* Notifications */}
-                                <IconButton sx={{ color: '#64748B' }}>
+                                <IconButton sx={{
+                                    color: COLORS.text.secondary,
+                                    bgcolor: COLORS.background.subtle,
+                                    borderRadius: BORDER_RADIUS.sm,
+                                    p: 1.2,
+                                    border: `1px solid ${COLORS.border.light}`,
+                                    '&:hover': {
+                                        color: COLORS.primary.main,
+                                        borderColor: COLORS.primary.main,
+                                        bgcolor: COLORS.primary.subtle
+                                    }
+                                }}>
                                     <Badge
                                         color="error"
                                         variant="dot"
                                         overlap="circular"
-                                        sx={{ '& .MuiBadge-badge': { border: '2px solid white' } }}
+                                        sx={{ '& .MuiBadge-badge': { border: `2px solid ${COLORS.background.paper}`, width: 10, height: 10, borderRadius: '50%' } }}
                                     >
                                         <NotificationsIcon sx={{ fontSize: 22 }} />
                                     </Badge>
                                 </IconButton>
 
-                                <Divider orientation="vertical" flexItem sx={{ mx: 0.5, height: 32, alignSelf: 'center', borderColor: '#E2E8F0' }} />
+                                <Divider orientation="vertical" flexItem sx={{ mx: 0.5, height: 24, alignSelf: 'center', borderColor: COLORS.border.medium }} />
 
                                 {/* User Profile */}
                                 {user && (
@@ -254,30 +324,37 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
                                         sx={{
                                             display: 'flex',
                                             alignItems: 'center',
-                                            gap: 1.2,
-                                            pl: 0.5
+                                            gap: 1.5,
+                                            cursor: 'pointer',
+                                            p: 0.5,
+                                            borderRadius: BORDER_RADIUS.md,
+                                            transition: 'all 0.2s',
+                                            '&:hover': {
+                                                bgcolor: COLORS.background.subtle
+                                            }
                                         }}
                                     >
                                         <Avatar
                                             src={user.profileImageUrl || undefined}
                                             sx={{
-                                                width: 40,
-                                                height: 40,
-                                                background: 'linear-gradient(135deg, #2EC2C9 0%, #35C8C8 100%)',
-                                                fontSize: '0.85rem',
-                                                fontWeight: 800,
+                                                width: 44,
+                                                height: 44,
+                                                background: GRADIENTS.primary,
+                                                fontSize: '0.9rem',
+                                                fontWeight: 900,
                                                 color: 'white',
-                                                boxShadow: '0 2px 8px rgba(46, 194, 201, 0.2)'
+                                                boxShadow: SHADOWS.medium,
+                                                border: `2px solid ${COLORS.background.paper}`
                                             }}
                                         >
                                             {user.profileImageUrl ? null : (user.role === Role.DOCTOR ? 'DR' : user.firstName[0])}
                                         </Avatar>
                                         {!isMobile && (
                                             <Box sx={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-                                                <Typography variant="body2" fontWeight={700} sx={{ lineHeight: 1.1, color: '#1A2B3C', fontSize: '0.9rem' }}>
+                                                <Typography variant="body2" sx={{ fontWeight: 800, color: COLORS.text.primary, fontSize: '0.9rem' }}>
                                                     {user.role === Role.DOCTOR ? `Dr. ${user.firstName} ${user.lastName}` : `${user.firstName} ${user.lastName}`}
                                                 </Typography>
-                                                <Typography variant="caption" color="text.secondary" fontWeight={500} sx={{ fontSize: '0.75rem' }}>
+                                                <Typography variant="caption" sx={{ fontSize: '0.7rem', fontWeight: 800, color: roleColors[user.role], textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                                                     {roleLabels[user.role] || user.role}
                                                 </Typography>
                                             </Box>
@@ -289,8 +366,9 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
                     </AppBar>
                 </Box>
 
+
                 {/* Page Content */}
-                <Box sx={{ flex: 1, py: 2, pr: 2, pl: 0, overflowY: 'auto' }}>
+                <Box sx={{ flex: 1, p: 3, pt: 2, mr: 1, overflowY: 'auto' }}>
                     {children}
                 </Box>
             </Box>

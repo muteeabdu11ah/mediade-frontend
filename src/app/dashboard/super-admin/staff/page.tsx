@@ -35,6 +35,8 @@ import {
 import { useClinics } from '@/hooks/use-clinics';
 import { Role, User } from '@/lib/types';
 
+import { GRADIENTS, COLORS, BORDER_RADIUS, SHADOWS, TYPOGRAPHY } from '@/lib/constants/design-tokens';
+
 export default function StaffPage() {
     const [page, setPage] = useState(1);
     const [search, setSearch] = useState('');
@@ -112,14 +114,14 @@ export default function StaffPage() {
             header: 'User',
             render: (user) => (
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <Avatar sx={{ bgcolor: 'rgba(46, 194, 201, 0.1)', color: '#2EC2C9', fontWeight: 700 }}>
+                    <Avatar sx={{ bgcolor: COLORS.primary.subtle, color: COLORS.primary.main, fontWeight: 800 }}>
                         {user.firstName[0]}
                     </Avatar>
                     <Box>
-                        <Typography variant="body2" fontWeight={700} color="#1A2B3C">
+                        <Typography variant="body2" fontWeight={800} color={COLORS.text.primary}>
                             {user.firstName} {user.lastName}
                         </Typography>
-                        <Typography variant="caption" color="text.secondary">
+                        <Typography variant="caption" color={COLORS.text.secondary} fontWeight={500}>
                             {user.email}
                         </Typography>
                     </Box>
@@ -134,10 +136,11 @@ export default function StaffPage() {
                     size="small"
                     sx={{
                         textTransform: 'capitalize',
-                        fontWeight: 600,
-                        bgcolor: 'rgba(53, 200, 200, 0.05)',
-                        color: '#1fb2ba',
-                        borderRadius: 1,
+                        fontWeight: 700,
+                        bgcolor: COLORS.primary.subtle,
+                        color: COLORS.primary.main,
+                        borderRadius: BORDER_RADIUS.sm,
+                        border: `1px solid ${COLORS.primary.main}1A`,
                     }}
                 />
             ),
@@ -145,7 +148,7 @@ export default function StaffPage() {
         {
             header: 'Clinic',
             render: (user) => (
-                <Typography variant="body2" color="#64748B">
+                <Typography variant="body2" color={COLORS.text.secondary} fontWeight={500}>
                     {user.clinic?.name || '-'}
                 </Typography>
             ),
@@ -158,14 +161,14 @@ export default function StaffPage() {
             header: 'Actions',
             render: (user) => (
                 <Box sx={{ display: 'flex', gap: 1 }}>
-                    <IconButton size="small" onClick={() => handleOpen(user)} sx={{ color: '#64748B' }}>
+                    <IconButton size="small" onClick={() => handleOpen(user)} sx={{ color: COLORS.text.secondary }}>
                         <EditIcon fontSize="small" />
                     </IconButton>
-                    <IconButton size="small" onClick={() => setDeactivateConfirm(user.id)} sx={{ color: '#e5e80fff' }}>
+                    <IconButton size="small" onClick={() => setDeactivateConfirm(user.id)} sx={{ color: COLORS.warning.main }}>
                         <Block fontSize="small" />
                     </IconButton>
-                    <IconButton size="small" onClick={() => setDeleteConfirm(user.id)} sx={{ color: '#D32F2F' }} title="Permanent Delete">
-                        <DeleteIcon fontSize="small" color="error" />
+                    <IconButton size="small" onClick={() => setDeleteConfirm(user.id)} sx={{ color: COLORS.error.main }} title="Permanent Delete">
+                        <DeleteIcon fontSize="small" />
                     </IconButton>
                 </Box>
             ),
@@ -178,6 +181,7 @@ export default function StaffPage() {
                 <Box sx={{ p: 4 }}>
                     <PageHeader
                         title="All Users"
+                        subtitle="Manage hospital staff and clinic administrators"
                         actionLabel="Add Clinic Admin"
                         onAction={() => handleOpen()}
                     />
@@ -204,11 +208,22 @@ export default function StaffPage() {
                     />
 
                     {/* ── Create / Edit Dialog ───────────────────────────────── */}
-                    <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth PaperProps={{ sx: { borderRadius: 4 } }}>
-                        <DialogTitle sx={{ fontWeight: 800, color: '#1A2B3C' }}>
+                    <Dialog
+                        open={open}
+                        onClose={() => setOpen(false)}
+                        maxWidth="sm"
+                        fullWidth
+                        PaperProps={{
+                            sx: {
+                                borderRadius: BORDER_RADIUS.lg,
+                                boxShadow: SHADOWS.premium
+                            }
+                        }}
+                    >
+                        <DialogTitle sx={{ fontWeight: 900, color: COLORS.text.primary, pt: 4, px: 4 }}>
                             {selectedUser ? 'Edit User' : 'Create New Clinic Admin'}
                         </DialogTitle>
-                        <DialogContent>
+                        <DialogContent sx={{ px: 4, py: 2 }}>
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 1 }}>
                                 <Grid container spacing={2}>
                                     <Grid size={6}>
@@ -230,18 +245,24 @@ export default function StaffPage() {
                                 </TextField>
                             </Box>
                         </DialogContent>
-                        <DialogActions sx={{ p: 3 }}>
-                            <Button onClick={() => setOpen(false)} sx={{ color: '#64748B', fontWeight: 600 }}>Cancel</Button>
+                        <DialogActions sx={{ p: 4 }}>
+                            <Button onClick={() => setOpen(false)} sx={{ color: COLORS.text.secondary, fontWeight: 700 }}>Cancel</Button>
                             <Button
                                 variant="contained"
                                 onClick={handleSubmit}
                                 disabled={createClinicAdmin.isPending || updateUser.isPending}
-                                sx={{ bgcolor: '#2EC2C9', borderRadius: 2, px: 4, fontWeight: 700, '&:hover': { bgcolor: '#24B1B8' } }}
+                                sx={{
+                                    borderRadius: BORDER_RADIUS.md,
+                                    px: 4,
+                                    fontWeight: 800,
+                                    boxShadow: SHADOWS.medium
+                                }}
                             >
                                 {createClinicAdmin.isPending || updateUser.isPending ? 'Saving...' : selectedUser ? 'Update User' : 'Create Admin'}
                             </Button>
                         </DialogActions>
                     </Dialog>
+
 
                     {/* ── Confirm Deactivate ──────────────────────────────────── */}
                     <ConfirmDialog

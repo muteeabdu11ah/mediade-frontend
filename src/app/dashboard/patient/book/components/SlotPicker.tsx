@@ -44,7 +44,7 @@ const SlotPicker: React.FC<SlotPickerProps> = ({ doctorId, onSlotSelect }) => {
                 <IconButton onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}>
                     <ChevronLeft />
                 </IconButton>
-                <Typography variant="h6" fontWeight={700} color="#2D3748">
+                <Typography variant="h3" fontWeight={700} color="#2D3748">
                     {format(currentMonth, 'MMMM yyyy')}
                 </Typography>
                 <IconButton onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}>
@@ -125,7 +125,7 @@ const SlotPicker: React.FC<SlotPickerProps> = ({ doctorId, onSlotSelect }) => {
 
     return (
         <Card sx={{ p: 3, borderRadius: BORDER_RADIUS.large, boxShadow: SHADOWS.premium, height: '100%' }}>
-            <Typography variant="h6" fontWeight={700} color="#2D3748" sx={{ mb: 3 }}>
+            <Typography variant="h3" fontWeight={700} color="#2D3748" sx={{ mb: 3 }}>
                 Select Date & Time
             </Typography>
 

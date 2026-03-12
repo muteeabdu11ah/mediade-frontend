@@ -17,24 +17,25 @@ a {
 }
 
 ::selection {
-  background: rgba(0, 188, 212, 0.2);
-  color: #00838F;
+  background: rgba(0, 155, 232, 0.2);
+  color: #006EA5;
 }
 
 /* Scrollbar styling */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #F0FDFD;
+  background: #F6F8FF;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #B2EBF2;
-  border-radius: 4px;
+  background: rgba(0, 155, 232, 0.2);
+  border-radius: 20px;
+  border: 3px solid #F6F8FF;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #80DEEA;
+  background: rgba(0, 155, 232, 0.4);
 }

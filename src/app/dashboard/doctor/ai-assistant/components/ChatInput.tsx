@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Box, InputBase, IconButton } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
+import { COLORS, BORDER_RADIUS, SHADOWS, GRADIENTS } from '@/lib/constants/design-tokens';
 
 interface ChatInputProps {
     onSendMessage: (message: string) => void;
@@ -21,9 +22,9 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
     return (
         <Box
             sx={{
-                p: 2,
-                bgcolor: 'white',
-                borderTop: '1px solid rgba(0,0,0,0.04)',
+                p: 3,
+                bgcolor: COLORS.background.paper,
+                borderTop: `1px solid ${COLORS.border.light}`,
                 mt: 'auto',
             }}
         >
@@ -31,40 +32,53 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
                 sx={{
                     display: 'flex',
                     alignItems: 'center',
-                    bgcolor: 'white',
-                    borderRadius: 8,
-                    border: '1px solid #E2E8F0',
-                    px: 3,
+                    bgcolor: COLORS.background.default,
+                    borderRadius: BORDER_RADIUS.full,
+                    border: `1px solid ${COLORS.border.medium}`,
+                    pl: 4,
+                    pr: 1,
                     py: 1,
                     gap: 2,
-                    boxShadow: '0 2px 12px rgba(0,0,0,0.02)',
+                    boxShadow: SHADOWS.premium,
+                    transition: 'border-color 0.2s, box-shadow 0.2s',
+                    '&:focus-within': {
+                        borderColor: COLORS.primary.main,
+                        boxShadow: `0 0 0 4px ${COLORS.primary.subtle}`,
+                    }
                 }}
             >
                 <InputBase
                     fullWidth
-                    placeholder="Start chat"
+                    placeholder="Type your message here..."
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     onKeyPress={(e) => e.key === 'Enter' && handleSend()}
                     sx={{
                         fontSize: '1rem',
+                        fontWeight: 600,
+                        color: COLORS.text.primary,
                         '& input::placeholder': {
-                            color: '#94A3B8',
+                            color: COLORS.text.muted,
                             opacity: 1,
+                            fontWeight: 500
                         },
                     }}
                 />
                 <IconButton
                     onClick={handleSend}
                     sx={{
-                        color: 'white',
-                        bgcolor: '#2EC2C9',
-                        '&:hover': { bgcolor: '#24B1B8' },
-                        width: 42,
-                        height: 42,
+                        color: COLORS.primary.contrast,
+                        background: GRADIENTS.primary,
+                        '&:hover': {
+                            boxShadow: SHADOWS.medium,
+                            transform: 'scale(1.05)'
+                        },
+                        width: 48,
+                        height: 48,
+                        transition: 'all 0.23s cubic-bezier(0.4, 0, 0.2, 1)',
                     }}
                 >
-                    <SendIcon sx={{ fontSize: 20 }} />
+                    <SendIcon sx={{ fontSize: 24 }} />
                 </IconButton>
             </Box>
         </Box>

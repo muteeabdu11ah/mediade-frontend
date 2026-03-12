@@ -20,7 +20,7 @@ function DoctorCardSkeleton() {
         <Card
             sx={{
                 p: { xs: 2, sm: 2.5 },
-                borderRadius: BORDER_RADIUS.large,
+                borderRadius: BORDER_RADIUS.lg,
                 boxShadow: SHADOWS.premium,
                 border: '1px solid rgba(0,0,0,0.05)',
                 display: 'flex',
@@ -89,7 +89,7 @@ const DoctorGrid: React.FC<DoctorGridProps> = ({
     if (doctors.length === 0) {
         return (
             <Box sx={{ textAlign: 'center', py: 10 }}>
-                <Typography variant="h6" color="textSecondary">
+                <Typography variant="h3" color="textSecondary">
                     No doctors found matching your search.
                 </Typography>
             </Box>

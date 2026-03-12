@@ -26,6 +26,8 @@ import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
 import '@/app/globals.css';
 
+import { GRADIENTS, COLORS, BORDER_RADIUS, SHADOWS } from '@/lib/constants/design-tokens';
+
 export default function LoginPage() {
     const { login, isAuthenticated, getDashboardRoute } = useAuth();
     const router = useRouter();
@@ -66,7 +68,7 @@ export default function LoginPage() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                background: 'linear-gradient(135deg, #E0F7FA 0%, #B2EBF2 30%, #80DEEA 60%, #4DD0E1 100%)',
+                background: `linear-gradient(135deg, ${COLORS.background.subtle} 0%, #FFFFFF 100%)`,
                 position: 'relative',
                 overflow: 'hidden',
             }}
@@ -74,57 +76,47 @@ export default function LoginPage() {
             {/* Decorative elements */}
             <Box sx={{
                 position: 'absolute', top: -100, left: -100, width: 400, height: 400,
-                borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%)',
+                borderRadius: '50%', background: `radial-gradient(circle, ${COLORS.primary.light}22 0%, transparent 70%)`,
             }} />
             <Box sx={{
                 position: 'absolute', bottom: -150, right: -150, width: 500, height: 500,
-                borderRadius: '50%', background: 'radial-gradient(circle, rgba(0,150,136,0.1) 0%, transparent 70%)',
-            }} />
-            <Box sx={{
-                position: 'absolute', top: '20%', right: '15%', width: 200, height: 200,
-                borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
+                borderRadius: '50%', background: `radial-gradient(circle, ${COLORS.primary.main}1A 0%, transparent 70%)`,
             }} />
 
             <Container maxWidth="sm" sx={{ position: 'relative', zIndex: 1 }}>
                 <Card
                     sx={{
-                        borderRadius: 4,
-                        boxShadow: '0 20px 60px rgba(0,0,0,0.12)',
+                        borderRadius: BORDER_RADIUS.lg,
+                        boxShadow: SHADOWS.large,
                         backdropFilter: 'blur(20px)',
-                        bgcolor: 'rgba(255,255,255,0.95)',
-                        border: '1px solid rgba(255,255,255,0.5)',
+                        bgcolor: 'rgba(255,255,255,0.92)',
+                        border: `1px solid ${COLORS.border.light}`,
                         overflow: 'visible',
                     }}
                 >
-                    <CardContent sx={{ p: { xs: 3, sm: 5 } }}>
+                    <CardContent sx={{ p: { xs: 4, sm: 6 } }}>
                         {/* Logo */}
                         <Box sx={{ textAlign: 'center', mb: 4 }}>
-                            <Box
-                                sx={{
-                                    display: 'inline-flex',
-                                    alignItems: 'center',
-                                    gap: 1,
-                                    mb: 3,
-                                }}
-                            >
+                            <Box sx={{ display: 'inline-flex', alignItems: 'center', mb: 3 }}>
                                 <Box
                                     sx={{
-                                        width: 48,
-                                        height: 48,
-                                        borderRadius: 3,
-                                        background: 'linear-gradient(135deg, #00BCD4 0%, #009688 100%)',
+                                        width: 56,
+                                        height: 56,
+                                        borderRadius: BORDER_RADIUS.md,
+                                        background: GRADIENTS.primary,
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
+                                        boxShadow: SHADOWS.small,
                                     }}
                                 >
-                                    <LocalHospitalIcon sx={{ color: 'white', fontSize: 28 }} />
+                                    <LocalHospitalIcon sx={{ color: 'white', fontSize: 32 }} />
                                 </Box>
                             </Box>
-                            <Typography variant="h4" fontWeight={800} sx={{ mb: 1 }}>
+                            <Typography variant="h4" fontWeight={900} sx={{ mb: 1, letterSpacing: '-1px' }}>
                                 Welcome Back
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant="body2" color="text.secondary" fontWeight={500}>
                                 Sign in to access your healthcare dashboard
                             </Typography>
                         </Box>
@@ -134,7 +126,7 @@ export default function LoginPage() {
                             <Alert
                                 severity="error"
                                 onClose={() => setError('')}
-                                sx={{ mb: 3, borderRadius: 2 }}
+                                sx={{ mb: 3, borderRadius: BORDER_RADIUS.md }}
                             >
                                 {error}
                             </Alert>
@@ -155,7 +147,7 @@ export default function LoginPage() {
                                     input: {
                                         startAdornment: (
                                             <InputAdornment position="start">
-                                                <EmailIcon sx={{ color: 'primary.light', fontSize: 20 }} />
+                                                <EmailIcon sx={{ color: COLORS.primary.main, fontSize: 20 }} />
                                             </InputAdornment>
                                         ),
                                     },
@@ -170,12 +162,12 @@ export default function LoginPage() {
                                 onChange={(e) => setPassword(e.target.value)}
                                 placeholder="Enter your password"
                                 required
-                                sx={{ mb: 3 }}
+                                sx={{ mb: 4 }}
                                 slotProps={{
                                     input: {
                                         startAdornment: (
                                             <InputAdornment position="start">
-                                                <LockIcon sx={{ color: 'primary.light', fontSize: 20 }} />
+                                                <LockIcon sx={{ color: COLORS.primary.main, fontSize: 20 }} />
                                             </InputAdornment>
                                         ),
                                         endAdornment: (
@@ -201,14 +193,13 @@ export default function LoginPage() {
                                 disabled={isLoading}
                                 endIcon={isLoading ? <CircularProgress size={20} color="inherit" /> : <ArrowForwardIcon />}
                                 sx={{
-                                    py: 1.5,
-                                    fontSize: '1rem',
-                                    background: 'linear-gradient(135deg, #00BCD4 0%, #009688 100%)',
-                                    '&:hover': {
-                                        background: 'linear-gradient(135deg, #00ACC1 0%, #00897B 100%)',
-                                    },
+                                    py: 2,
+                                    fontSize: '1.1rem',
+                                    fontWeight: 800,
+                                    borderRadius: BORDER_RADIUS.md,
+                                    boxShadow: SHADOWS.medium,
                                     '&.Mui-disabled': {
-                                        background: 'rgba(0,188,212,0.3)',
+                                        background: COLORS.border.strong,
                                         color: 'white',
                                     },
                                 }}
@@ -217,8 +208,10 @@ export default function LoginPage() {
                             </Button>
                         </Box>
 
-                        <Divider sx={{ my: 3, color: 'text.secondary', fontSize: '0.8rem' }}>
-                            New to Aeyron Medical?
+                        <Divider sx={{ my: 4 }}>
+                            <Typography variant="caption" sx={{ color: COLORS.text.muted, fontWeight: 600, px: 2 }}>
+                                NEW TO AEYRON MEDICAL?
+                            </Typography>
                         </Divider>
 
                         <Button
@@ -227,12 +220,13 @@ export default function LoginPage() {
                             variant="outlined"
                             fullWidth
                             sx={{
-                                py: 1.2,
-                                borderColor: 'primary.light',
-                                color: 'primary.dark',
+                                py: 1.5,
+                                fontWeight: 700,
+                                borderRadius: BORDER_RADIUS.md,
+                                borderWidth: 2,
                                 '&:hover': {
-                                    borderColor: 'primary.main',
-                                    bgcolor: 'rgba(0,188,212,0.04)',
+                                    borderWidth: 2,
+                                    bgcolor: 'rgba(13, 148, 136, 0.04)',
                                 },
                             }}
                         >
@@ -240,15 +234,17 @@ export default function LoginPage() {
                         </Button>
 
                         {/* Back to home */}
-                        <Box sx={{ textAlign: 'center', mt: 3 }}>
+                        <Box sx={{ textAlign: 'center', mt: 4 }}>
                             <Typography
                                 component={Link}
                                 href="/"
                                 variant="body2"
                                 sx={{
-                                    color: 'text.secondary',
+                                    color: COLORS.text.secondary,
+                                    fontWeight: 600,
                                     textDecoration: 'none',
-                                    '&:hover': { color: 'primary.main' },
+                                    transition: 'color 0.2s',
+                                    '&:hover': { color: COLORS.primary.main },
                                 }}
                             >
                                 ← Back to Home
@@ -260,3 +256,4 @@ export default function LoginPage() {
         </Box>
     );
 }
+

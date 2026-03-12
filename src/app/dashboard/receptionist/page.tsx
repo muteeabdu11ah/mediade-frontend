@@ -51,7 +51,7 @@ export default function ReceptionistDashboard() {
                 </Grid>
 
                 <Card sx={{ bgcolor: 'white', p: 4, textAlign: 'center' }}>
-                    <Typography variant="h6" fontWeight={600} sx={{ mb: 1, color: 'text.secondary' }}>
+                    <Typography variant="h3" fontWeight={600} sx={{ mb: 1, color: 'text.secondary' }}>
                         🚧 Dashboard Content Coming Soon
                     </Typography>
                     <Typography variant="body2" color="text.secondary">

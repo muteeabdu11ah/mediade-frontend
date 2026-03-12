@@ -10,6 +10,8 @@ import {
     Button,
 } from '@mui/material';
 
+import { COLORS, BORDER_RADIUS, SHADOWS, TYPOGRAPHY } from '@/lib/constants/design-tokens';
+
 interface ConfirmDialogProps {
     open: boolean;
     title: string;
@@ -39,14 +41,30 @@ export default function ConfirmDialog({
             onClose={onCancel}
             maxWidth="xs"
             fullWidth
-            PaperProps={{ sx: { borderRadius: 4 } }}
+            PaperProps={{
+                sx: {
+                    borderRadius: BORDER_RADIUS.lg,
+                    boxShadow: SHADOWS.premium
+                }
+            }}
         >
-            <DialogTitle sx={{ fontWeight: 800, color: '#1A2B3C' }}>{title}</DialogTitle>
-            <DialogContent>
-                <DialogContentText>{message}</DialogContentText>
+            <DialogTitle sx={{ fontWeight: 900, color: COLORS.text.primary, pt: 4, px: 4 }}>
+                {title}
+            </DialogTitle>
+            <DialogContent sx={{ px: 4, pb: 1 }}>
+                <DialogContentText sx={{ color: COLORS.text.secondary, fontWeight: 500 }}>
+                    {message}
+                </DialogContentText>
             </DialogContent>
-            <DialogActions sx={{ p: 2.5 }}>
-                <Button onClick={onCancel} sx={{ color: '#64748B', fontWeight: 600 }}>
+            <DialogActions sx={{ p: 4, pt: 2 }}>
+                <Button
+                    onClick={onCancel}
+                    sx={{
+                        color: COLORS.text.muted,
+                        fontWeight: 700,
+                        '&:hover': { color: COLORS.text.secondary }
+                    }}
+                >
                     {cancelLabel}
                 </Button>
                 <Button
@@ -54,7 +72,12 @@ export default function ConfirmDialog({
                     variant="contained"
                     color={confirmColor}
                     disabled={isLoading}
-                    sx={{ borderRadius: 2, fontWeight: 700, px: 3 }}
+                    sx={{
+                        borderRadius: BORDER_RADIUS.md,
+                        fontWeight: 800,
+                        px: 4,
+                        boxShadow: confirmColor === 'error' ? 'none' : SHADOWS.medium,
+                    }}
                 >
                     {isLoading ? 'Processing...' : confirmLabel}
                 </Button>

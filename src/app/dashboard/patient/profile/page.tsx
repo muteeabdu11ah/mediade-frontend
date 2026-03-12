@@ -136,7 +136,7 @@ export default function PatientProfilePage() {
                                 <Box component="form" onSubmit={handleSave}>
                                     <CardContent sx={{ p: { xs: 3, sm: 4 } }}>
 
-                                        <Typography variant="h6" fontWeight={700} sx={{ mb: 3, color: 'primary.dark' }}>
+                                        <Typography variant="h3" fontWeight={700} sx={{ mb: 3, color: 'primary.dark' }}>
                                             Basic Details
                                         </Typography>
 
@@ -191,7 +191,7 @@ export default function PatientProfilePage() {
 
                                         <Divider sx={{ my: 4 }} />
 
-                                        <Typography variant="h6" fontWeight={700} sx={{ mb: 3, color: 'primary.dark' }}>
+                                        <Typography variant="h3" fontWeight={700} sx={{ mb: 3, color: 'primary.dark' }}>
                                             Medical Information
                                         </Typography>
 
@@ -256,7 +256,7 @@ export default function PatientProfilePage() {
 
                                         <Divider sx={{ my: 4 }} />
 
-                                        <Typography variant="h6" fontWeight={700} sx={{ mb: 3, color: 'primary.dark' }}>
+                                        <Typography variant="h3" fontWeight={700} sx={{ mb: 3, color: 'primary.dark' }}>
                                             Contact & Emergency
                                         </Typography>
 

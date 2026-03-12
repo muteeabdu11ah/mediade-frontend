@@ -33,6 +33,8 @@ import {
 } from '@/hooks/use-clinics';
 import { Role, Clinic } from '@/lib/types';
 
+import { GRADIENTS, COLORS, BORDER_RADIUS, SHADOWS, TYPOGRAPHY } from '@/lib/constants/design-tokens';
+
 export default function ClinicsPage() {
     const [page, setPage] = useState(1);
     const [search, setSearch] = useState('');
@@ -99,10 +101,10 @@ export default function ClinicsPage() {
             header: 'Clinic Name',
             render: (clinic) => (
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <Box sx={{ p: 1, borderRadius: 2, bgcolor: 'rgba(46, 194, 201, 0.05)' }}>
-                        <BusinessIcon sx={{ color: '#2EC2C9' }} />
+                    <Box sx={{ p: 1, borderRadius: BORDER_RADIUS.sm, bgcolor: COLORS.primary.subtle, display: 'flex' }}>
+                        <BusinessIcon sx={{ color: COLORS.primary.main, fontSize: 24 }} />
                     </Box>
-                    <Typography variant="body2" fontWeight={700} color="#1A2B3C">
+                    <Typography variant="body2" fontWeight={800} color={COLORS.text.primary} sx={{ letterSpacing: '-0.2px' }}>
                         {clinic.name}
                     </Typography>
                 </Box>
@@ -112,15 +114,15 @@ export default function ClinicsPage() {
             header: 'Contact Details',
             render: (clinic) => (
                 <Box>
-                    <Typography variant="body2" fontWeight={500} color="#64748B">{clinic.email}</Typography>
-                    <Typography variant="caption" color="text.secondary">{clinic.phone}</Typography>
+                    <Typography variant="body2" fontWeight={600} color={COLORS.text.secondary}>{clinic.email}</Typography>
+                    <Typography variant="caption" color={COLORS.text.muted} fontWeight={500}>{clinic.phone}</Typography>
                 </Box>
             ),
         },
         {
             header: 'Address',
             render: (clinic) => (
-                <Typography variant="body2" color="#64748B" noWrap title={clinic.address} sx={{ maxWidth: 200 }}>
+                <Typography variant="body2" color={COLORS.text.secondary} fontWeight={500} noWrap title={clinic.address} sx={{ maxWidth: 200 }}>
                     {clinic.address}
                 </Typography>
             ),
@@ -134,18 +136,18 @@ export default function ClinicsPage() {
             align: 'right',
             render: (clinic) => (
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
-                    <IconButton size="small" onClick={() => handleOpen(clinic)} sx={{ color: '#64748B' }} title="Edit Clinic">
+                    <IconButton size="small" onClick={() => handleOpen(clinic)} sx={{ color: COLORS.text.secondary }} title="Edit Clinic">
                         <EditIcon fontSize="small" />
                     </IconButton>
                     <IconButton
                         size="small"
                         onClick={() => setToggleConfirm(clinic)}
-                        sx={{ color: clinic.isActive ? '#e5e80fff' : '#4CAF50' }}
+                        sx={{ color: clinic.isActive ? COLORS.warning.main : COLORS.success.main }}
                         title={clinic.isActive ? 'Deactivate Clinic' : 'Activate Clinic'}
                     >
                         {clinic.isActive ? <BlockIcon fontSize="small" /> : <CheckCircleIcon fontSize="small" />}
                     </IconButton>
-                    <IconButton size="small" onClick={() => setDeleteConfirm(clinic.id)} sx={{ color: '#D32F2F' }} title="Permanent Delete">
+                    <IconButton size="small" onClick={() => setDeleteConfirm(clinic.id)} sx={{ color: COLORS.error.main }} title="Permanent Delete">
                         <DeleteIcon fontSize="small" />
                     </IconButton>
                 </Box>
@@ -159,6 +161,7 @@ export default function ClinicsPage() {
                 <Box sx={{ p: 4 }}>
                     <PageHeader
                         title="All Clinics"
+                        subtitle="Manage healthcare facilities and their registration details"
                         actionLabel="Add New Clinic"
                         onAction={() => handleOpen()}
                     />
@@ -185,11 +188,22 @@ export default function ClinicsPage() {
                     />
 
                     {/* ── Create / Edit Dialog ───────────────────────────────── */}
-                    <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth PaperProps={{ sx: { borderRadius: 4 } }}>
-                        <DialogTitle sx={{ fontWeight: 800, color: '#1A2B3C' }}>
+                    <Dialog
+                        open={open}
+                        onClose={() => setOpen(false)}
+                        maxWidth="sm"
+                        fullWidth
+                        PaperProps={{
+                            sx: {
+                                borderRadius: BORDER_RADIUS.lg,
+                                boxShadow: SHADOWS.premium
+                            }
+                        }}
+                    >
+                        <DialogTitle sx={{ fontWeight: 900, color: COLORS.text.primary, pt: 4, px: 4 }}>
                             {selectedClinic ? 'Edit Clinic' : 'Add New Clinic'}
                         </DialogTitle>
-                        <DialogContent>
+                        <DialogContent sx={{ px: 4, py: 2 }}>
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 1 }}>
                                 <TextField fullWidth label="Clinic Name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
                                 <TextField fullWidth label="Email Address" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
@@ -197,17 +211,23 @@ export default function ClinicsPage() {
                                 <TextField fullWidth multiline rows={3} label="Address" value={formData.address} onChange={(e) => setFormData({ ...formData, address: e.target.value })} />
                             </Box>
                         </DialogContent>
-                        <DialogActions sx={{ p: 3 }}>
-                            <Button onClick={() => setOpen(false)} sx={{ color: '#64748B', fontWeight: 600 }}>Cancel</Button>
+                        <DialogActions sx={{ p: 4 }}>
+                            <Button onClick={() => setOpen(false)} sx={{ color: COLORS.text.secondary, fontWeight: 700 }}>Cancel</Button>
                             <Button
                                 variant="contained"
                                 onClick={handleSubmit}
-                                sx={{ bgcolor: '#2EC2C9', borderRadius: 2, px: 4, fontWeight: 700, '&:hover': { bgcolor: '#24B1B8' } }}
+                                sx={{
+                                    borderRadius: BORDER_RADIUS.md,
+                                    px: 4,
+                                    fontWeight: 800,
+                                    boxShadow: SHADOWS.medium
+                                }}
                             >
                                 {selectedClinic ? 'Update' : 'Create'}
                             </Button>
                         </DialogActions>
                     </Dialog>
+
 
                     {/* ── Toggle Status Confirm ───────────────────────────────── */}
                     <ConfirmDialog

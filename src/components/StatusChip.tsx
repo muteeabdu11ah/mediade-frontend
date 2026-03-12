@@ -3,53 +3,71 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
 
-// ─── Preset Configurations ─────────────────────────────────────────────────
+import { COLORS, BORDER_RADIUS } from '@/lib/constants/design-tokens';
 
-export type StatusPreset = 'active' | 'inactive' | 'upcoming' | 'completed' | 'cancelled' | 'missed' | 'late';
+export type StatusPreset = 'active' | 'inactive' | 'upcoming' | 'completed' | 'cancelled' | 'missed' | 'late' | 'scheduled' | 'in_progress' | 'pending';
 
-const presets: Record<StatusPreset, { label: string; bgcolor: string; color: string; border: string }> = {
+const presets: Record<string, { label: string; bgcolor: string; color: string; border: string }> = {
     active: {
         label: 'Active',
-        bgcolor: '#E8F5E9',
-        color: '#4CAF50',
-        border: '1px solid #C8E6C9',
+        bgcolor: COLORS.success.subtle,
+        color: COLORS.success.main,
+        border: `1px solid ${COLORS.success.main}30`,
     },
     inactive: {
         label: 'Inactive',
-        bgcolor: '#FFEBEE',
-        color: '#EF5350',
-        border: '1px solid #FFCDD2',
+        bgcolor: COLORS.background.subtle,
+        color: COLORS.text.muted,
+        border: `1px solid ${COLORS.border.medium}`,
     },
     upcoming: {
         label: 'Upcoming',
-        bgcolor: '#E3F2FD',
-        color: '#42A5F5',
-        border: '1px solid #BBDEFB',
+        bgcolor: COLORS.info.subtle,
+        color: COLORS.info.main,
+        border: `1px solid ${COLORS.info.main}30`,
+    },
+    scheduled: {
+        label: 'Scheduled',
+        bgcolor: COLORS.info.subtle,
+        color: COLORS.info.main,
+        border: `1px solid ${COLORS.info.main}30`,
     },
     completed: {
         label: 'Completed',
-        bgcolor: '#E8F5E9',
-        color: '#66BB6A',
-        border: '1px solid #C8E6C9',
+        bgcolor: COLORS.success.subtle,
+        color: COLORS.success.main,
+        border: `1px solid ${COLORS.success.main}30`,
     },
     cancelled: {
         label: 'Cancelled',
-        bgcolor: '#FFEBEE',
-        color: '#EF5350',
-        border: '1px solid #FFCDD2',
+        bgcolor: COLORS.error.subtle,
+        color: COLORS.error.main,
+        border: `1px solid ${COLORS.error.main}30`,
     },
     missed: {
         label: 'Missed',
-        bgcolor: '#FFF3E0',
-        color: '#FFA726',
-        border: '1px solid #FFE0B2',
+        bgcolor: COLORS.error.subtle,
+        color: COLORS.error.main,
+        border: `1px solid ${COLORS.error.main}30`,
     },
     late: {
         label: 'Late',
-        bgcolor: '#FFF3E0',
-        color: '#FFA726',
-        border: '1px solid #FFE0B2',
+        bgcolor: COLORS.warning.subtle,
+        color: COLORS.warning.main,
+        border: `1px solid ${COLORS.warning.main}30`,
     },
+    in_progress: {
+        label: 'In Progress',
+        bgcolor: COLORS.primary.subtle,
+        color: COLORS.primary.main,
+        border: `1px solid ${COLORS.primary.main}30`,
+    },
+    pending: {
+        label: 'Pending',
+        bgcolor: COLORS.warning.subtle,
+        color: COLORS.warning.main,
+        border: `1px solid ${COLORS.warning.main}30`,
+    }
 };
 
 // ─── Props ──────────────────────────────────────────────────────────────────
@@ -70,9 +88,9 @@ export default function StatusChip({ status, label, bgcolor, color, border }: St
     const preset = presets[normalizedStatus];
 
     const chipLabel = label || preset?.label || status;
-    const chipBgcolor = bgcolor || preset?.bgcolor || 'rgba(0,0,0,0.05)';
-    const chipColor = color || preset?.color || 'text.secondary';
-    const chipBorder = border || preset?.border || '1px solid rgba(0,0,0,0.1)';
+    const chipBgcolor = bgcolor || preset?.bgcolor || COLORS.background.subtle;
+    const chipColor = color || preset?.color || COLORS.text.secondary;
+    const chipBorder = border || preset?.border || `1px solid ${COLORS.border.light}`;
 
     return (
         <Box
@@ -83,12 +101,25 @@ export default function StatusChip({ status, label, bgcolor, color, border }: St
                 bgcolor: chipBgcolor,
                 color: chipColor,
                 border: chipBorder,
-                borderRadius: '16px',
+                borderRadius: BORDER_RADIUS.sm, // Using sm for a more modern "tag" look, but full if requested
                 px: 1.5,
                 py: 0.5,
+                transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                '&:hover': {
+                    transform: 'scale(1.02)',
+                    filter: 'brightness(0.98)'
+                }
             }}
         >
-            <Typography variant="caption" sx={{ fontWeight: 600, textTransform: 'capitalize' }}>
+            <Typography
+                variant="caption"
+                sx={{
+                    fontWeight: 800,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    fontSize: '0.7rem'
+                }}
+            >
                 {chipLabel}
             </Typography>
         </Box>

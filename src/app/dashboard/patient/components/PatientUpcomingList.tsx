@@ -30,7 +30,7 @@ export default function PatientUpcomingList() {
         <Card sx={{ borderRadius: 3, boxShadow: '0 2px 10px rgba(0,0,0,0.02)', border: '1px solid #f0f0f0', height: '100%' }}>
             <CardContent sx={{ p: 3 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                    <Typography variant="h6" fontWeight={700} color="#1A2B3C">
+                    <Typography variant="h3" fontWeight={700} color="#1A2B3C">
                         Upcoming Appointments
                     </Typography>
                     <Link href="/dashboard/patient/appointments" style={{ textDecoration: 'none' }}>

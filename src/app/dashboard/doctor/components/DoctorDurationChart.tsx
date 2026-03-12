@@ -5,6 +5,7 @@ import { Card, CardContent, Box, Typography, Skeleton } from '@mui/material';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip as RechartsTooltip } from 'recharts';
 import { useDoctorDurationChart } from '@/hooks/use-appointments';
+import { COLORS, BORDER_RADIUS, SHADOWS, GRADIENTS } from '@/lib/constants/design-tokens';
 
 function ChartSkeleton() {
     return (
@@ -17,7 +18,7 @@ function ChartSkeleton() {
                         variant="rectangular"
                         width="100%"
                         height={h * 2.8}
-                        sx={{ borderRadius: '4px 4px 0 0', alignSelf: 'flex-end' }}
+                        sx={{ borderRadius: BORDER_RADIUS.sm, alignSelf: 'flex-end' }}
                     />
                 ))}
             </Box>
@@ -30,9 +31,9 @@ export default function DoctorDurationChart() {
     const { data: areaChartData, isLoading } = useDoctorDurationChart();
 
     return (
-        <Card sx={{ borderRadius: 3, boxShadow: '0 2px 10px rgba(0,0,0,0.02)', border: '1px solid #f0f0f0', height: '100%' }}>
+        <Card sx={{ height: '100%' }}>
             <CardContent sx={{ p: 3 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 4 }}>
                     <Box>
                         {isLoading ? (
                             <>
@@ -41,18 +42,18 @@ export default function DoctorDurationChart() {
                             </>
                         ) : (
                             <>
-                                <Typography variant="h6" fontWeight={700} color="#1A2B3C">
+                                <Typography variant="h3" sx={{ fontWeight: 800, color: COLORS.text.primary }}>
                                     Consultation Duration
                                 </Typography>
-                                <Typography variant="body2" color="text.secondary">
+                                <Typography variant="body2" sx={{ color: COLORS.text.muted, fontWeight: 600 }}>
                                     Average minutes per day
                                 </Typography>
                             </>
                         )}
                     </Box>
-                    <Box sx={{ display: 'flex', alignItems: 'center', bgcolor: '#f8f9fa', px: 1.5, py: 0.5, borderRadius: 2 }}>
-                        <AccessTimeIcon sx={{ fontSize: 16, mr: 0.5, color: 'text.secondary' }} />
-                        <Typography variant="caption" color="text.secondary" fontWeight={500}>This Week</Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', bgcolor: COLORS.background.subtle, px: 2, py: 0.8, borderRadius: BORDER_RADIUS.md, border: `1px solid ${COLORS.border.light}` }}>
+                        <AccessTimeIcon sx={{ fontSize: 16, mr: 0.8, color: COLORS.primary.main }} />
+                        <Typography variant="caption" sx={{ color: COLORS.text.primary, fontWeight: 700 }}>This Week</Typography>
                     </Box>
                 </Box>
 
@@ -64,15 +65,38 @@ export default function DoctorDurationChart() {
                             <AreaChart data={areaChartData || []} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
                                 <defs>
                                     <linearGradient id="colorValueDuration" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#1fb2ba" stopOpacity={0.2} />
-                                        <stop offset="95%" stopColor="#1fb2ba" stopOpacity={0} />
+                                        <stop offset="5%" stopColor={COLORS.primary.main} stopOpacity={0.3} />
+                                        <stop offset="95%" stopColor={COLORS.primary.main} stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#8f9da9' }} />
-                                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#8f9da9' }} ticks={[0, 8, 16, 24, 32]} />
-                                <RechartsTooltip />
-                                <Area type="monotone" dataKey="value" stroke="#1fb2ba" strokeWidth={3} fillOpacity={1} fill="url(#colorValueDuration)" />
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={COLORS.border.light} />
+                                <XAxis
+                                    dataKey="name"
+                                    axisLine={false}
+                                    tickLine={false}
+                                    tick={{ fontSize: 12, fill: COLORS.text.muted, fontWeight: 600 }}
+                                />
+                                <YAxis
+                                    axisLine={false}
+                                    tickLine={false}
+                                    tick={{ fontSize: 12, fill: COLORS.text.muted, fontWeight: 600 }}
+                                    ticks={[0, 8, 16, 24, 32]}
+                                />
+                                <RechartsTooltip
+                                    contentStyle={{
+                                        borderRadius: BORDER_RADIUS.md,
+                                        border: `1px solid ${COLORS.border.light}`,
+                                        boxShadow: SHADOWS.medium
+                                    }}
+                                />
+                                <Area
+                                    type="monotone"
+                                    dataKey="value"
+                                    stroke={COLORS.primary.main}
+                                    strokeWidth={4}
+                                    fillOpacity={1}
+                                    fill="url(#colorValueDuration)"
+                                />
                             </AreaChart>
                         </ResponsiveContainer>
                     </Box>

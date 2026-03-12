@@ -109,7 +109,7 @@ const CalendarMonthly: React.FC<CalendarMonthlyProps> = ({ selectedDate, onDateS
                         }}
                     >
                         <Typography
-                            variant="h6"
+                            variant="h3"
                             fontWeight={600}
                             color="#2D3748"
                             sx={{ fontSize: { xs: '0.9rem', sm: '1.25rem' }, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}

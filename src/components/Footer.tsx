@@ -8,6 +8,8 @@ import TwitterIcon from '@mui/icons-material/Twitter';
 import EmailIcon from '@mui/icons-material/Email';
 import Link from 'next/link';
 
+import { COLORS, GRADIENTS, BORDER_RADIUS, SHADOWS } from '@/lib/constants/design-tokens';
+
 const footerLinks = {
     Product: [
         { label: 'Features', href: '/#features' },
@@ -31,72 +33,77 @@ export default function Footer() {
         <Box
             component="footer"
             sx={{
-                background: 'linear-gradient(180deg, #F0FDFD 0%, #E0F7FA 100%)',
-                pt: 8,
-                pb: 4,
+                background: COLORS.background.subtle,
+                pt: 10,
+                pb: 6,
                 mt: 'auto',
+                borderTop: `1px solid ${COLORS.border.light}`
             }}
         >
             <Container maxWidth="lg">
-                <Grid container spacing={4}>
+                <Grid container spacing={6}>
                     {/* Brand */}
                     <Grid size={{ xs: 12, md: 4 }}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                            <LocalHospitalIcon sx={{ color: 'primary.main', fontSize: 28 }} />
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 3 }}>
+                            <Box sx={{
+                                background: GRADIENTS.primary,
+                                p: 1,
+                                borderRadius: BORDER_RADIUS.sm,
+                                display: 'flex',
+                                boxShadow: SHADOWS.small
+                            }}>
+                                <LocalHospitalIcon sx={{ color: 'white', fontSize: 24 }} />
+                            </Box>
                             <Typography
-                                variant="h6"
+                                variant="h3"
                                 sx={{
-                                    fontWeight: 800,
-                                    background: 'linear-gradient(135deg, #00BCD4 0%, #009688 100%)',
+                                    fontWeight: 900,
+                                    background: GRADIENTS.primary,
                                     backgroundClip: 'text',
                                     WebkitBackgroundClip: 'text',
                                     WebkitTextFillColor: 'transparent',
+                                    letterSpacing: '-1px',
+                                    fontSize: '1.4rem',
                                 }}
                             >
                                 Aeyron Medical
                             </Typography>
                         </Box>
-                        <Typography variant="body2" color="text.secondary" sx={{ maxWidth: 280, mb: 2, lineHeight: 1.8 }}>
-                            Modern healthcare management platform. Connecting patients with doctors through seamless appointment booking and clinic management.
+                        <Typography variant="body2" color={COLORS.text.secondary} sx={{ maxWidth: 300, mb: 4, lineHeight: 1.8, fontWeight: 500 }}>
+                            A complete healthcare ecosystem designed to modernize patient-doctor interactions and streamline clinic operations with state-of-the-art technology.
                         </Typography>
-                        <Box sx={{ display: 'flex', gap: 1 }}>
-                            <IconButton
-                                size="small"
-                                sx={{
-                                    color: 'primary.main',
-                                    bgcolor: 'rgba(0,188,212,0.08)',
-                                    '&:hover': { bgcolor: 'rgba(0,188,212,0.16)' },
-                                }}
-                            >
-                                <TwitterIcon fontSize="small" />
-                            </IconButton>
-                            <IconButton
-                                size="small"
-                                sx={{
-                                    color: 'primary.main',
-                                    bgcolor: 'rgba(0,188,212,0.08)',
-                                    '&:hover': { bgcolor: 'rgba(0,188,212,0.16)' },
-                                }}
-                            >
-                                <LinkedInIcon fontSize="small" />
-                            </IconButton>
-                            <IconButton
-                                size="small"
-                                sx={{
-                                    color: 'primary.main',
-                                    bgcolor: 'rgba(0,188,212,0.08)',
-                                    '&:hover': { bgcolor: 'rgba(0,188,212,0.16)' },
-                                }}
-                            >
-                                <EmailIcon fontSize="small" />
-                            </IconButton>
+                        <Box sx={{ display: 'flex', gap: 1.5 }}>
+                            {[
+                                { icon: <TwitterIcon fontSize="small" />, label: 'Twitter' },
+                                { icon: <LinkedInIcon fontSize="small" />, label: 'LinkedIn' },
+                                { icon: <EmailIcon fontSize="small" />, label: 'Email' }
+                            ].map((social, idx) => (
+                                <IconButton
+                                    key={idx}
+                                    size="small"
+                                    sx={{
+                                        color: COLORS.primary.main,
+                                        bgcolor: COLORS.primary.subtle,
+                                        border: `1px solid ${COLORS.border.light}`,
+                                        transition: 'all 0.3s ease',
+                                        '&:hover': {
+                                            bgcolor: COLORS.primary.main,
+                                            color: 'white',
+                                            transform: 'translateY(-3px)',
+                                            boxShadow: SHADOWS.medium
+                                        },
+                                    }}
+                                >
+                                    {social.icon}
+                                </IconButton>
+                            ))}
                         </Box>
                     </Grid>
 
                     {/* Links */}
                     {Object.entries(footerLinks).map(([category, links]) => (
                         <Grid size={{ xs: 6, sm: 4, md: 2 }} key={category}>
-                            <Typography variant="body2" fontWeight={700} color="text.primary" sx={{ mb: 2 }}>
+                            <Typography variant="subtitle2" fontWeight={800} color={COLORS.text.primary} sx={{ mb: 3, textTransform: 'uppercase', letterSpacing: '1px' }}>
                                 {category}
                             </Typography>
                             {links.map((link) => (
@@ -107,11 +114,15 @@ export default function Footer() {
                                     underline="none"
                                     sx={{
                                         display: 'block',
-                                        color: 'text.secondary',
-                                        mb: 1.5,
-                                        fontSize: '0.875rem',
-                                        transition: 'color 0.2s',
-                                        '&:hover': { color: 'primary.main' },
+                                        color: COLORS.text.secondary,
+                                        mb: 2,
+                                        fontSize: '0.9rem',
+                                        fontWeight: 600,
+                                        transition: 'all 0.2s',
+                                        '&:hover': {
+                                            color: COLORS.primary.main,
+                                            pl: 0.5
+                                        },
                                     }}
                                 >
                                     {link.label}
@@ -121,15 +132,20 @@ export default function Footer() {
                     ))}
                 </Grid>
 
-                <Divider sx={{ my: 4, borderColor: 'rgba(0,188,212,0.12)' }} />
+                <Divider sx={{ my: 6, opacity: 0.5 }} />
 
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography variant="caption" sx={{ color: COLORS.text.muted, fontWeight: 600 }}>
                         © {new Date().getFullYear()} Aeyron Medical. All rights reserved.
                     </Typography>
-                    <Typography variant="caption" color="text.secondary">
-                        Built with ❤️ for better healthcare
-                    </Typography>
+                    <Box sx={{ display: 'flex', gap: 3 }}>
+                        <Typography variant="caption" sx={{ color: COLORS.text.muted, fontWeight: 600 }}>
+                            Privacy Policy
+                        </Typography>
+                        <Typography variant="caption" sx={{ color: COLORS.text.muted, fontWeight: 600 }}>
+                            Terms of Service
+                        </Typography>
+                    </Box>
                 </Box>
             </Container>
         </Box>

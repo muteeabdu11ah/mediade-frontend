@@ -23,7 +23,10 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import StatusChip from '@/components/StatusChip';
 import '@/app/globals.css';
+
+import { COLORS, GRADIENTS, SHADOWS, BORDER_RADIUS, TYPOGRAPHY } from '@/lib/constants/design-tokens';
 
 const features = [
   {
@@ -73,7 +76,7 @@ const stats = [
 
 export default function LandingPage() {
   return (
-    <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', bgcolor: COLORS.background.default }}>
       <Navbar />
 
       {/* ───────── HERO SECTION ───────── */}
@@ -81,77 +84,82 @@ export default function LandingPage() {
         sx={{
           position: 'relative',
           overflow: 'hidden',
-          background: 'linear-gradient(135deg, #E0F7FA 0%, #FFFFFF 40%, #F0FDFD 100%)',
-          pt: { xs: 8, md: 12 },
-          pb: { xs: 10, md: 14 },
+          background: `linear-gradient(180deg, ${COLORS.background.subtle} 0%, #FFFFFF 100%)`,
+          pt: { xs: 10, md: 16 },
+          pb: { xs: 12, md: 20 },
         }}
       >
-        {/* Decorative circles */}
+        {/* Decorative elements */}
         <Box sx={{
-          position: 'absolute', top: -120, right: -120, width: 400, height: 400,
-          borderRadius: '50%', background: 'radial-gradient(circle, rgba(0,188,212,0.08) 0%, transparent 70%)',
+          position: 'absolute', top: -150, right: -150, width: 500, height: 500,
+          borderRadius: '50%', background: `radial-gradient(circle, ${COLORS.primary.main}10 0%, transparent 70%)`,
+          zIndex: 0
         }} />
         <Box sx={{
-          position: 'absolute', bottom: -80, left: -80, width: 300, height: 300,
-          borderRadius: '50%', background: 'radial-gradient(circle, rgba(0,150,136,0.06) 0%, transparent 70%)',
+          position: 'absolute', bottom: -100, left: -100, width: 400, height: 400,
+          borderRadius: '50%', background: `radial-gradient(circle, ${COLORS.primary.light}08 0%, transparent 70%)`,
+          zIndex: 0
         }} />
 
         <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
-          <Grid container spacing={4} alignItems="center">
+          <Grid container spacing={6} alignItems="center">
             <Grid size={{ xs: 12, md: 7 }}>
               <Chip
-                label="🚀 Modern Healthcare Platform"
+                label="Healthcare Infrastructure for the Future"
                 sx={{
-                  mb: 3,
-                  bgcolor: 'rgba(0,188,212,0.1)',
-                  color: 'primary.dark',
-                  fontWeight: 600,
-                  fontSize: '0.8rem',
-                  height: 36,
-                  borderRadius: 10,
-                  border: '1px solid rgba(0,188,212,0.2)',
+                  mb: 4,
+                  bgcolor: COLORS.primary.subtle,
+                  color: COLORS.primary.main,
+                  fontWeight: TYPOGRAPHY.weights.black,
+                  fontSize: TYPOGRAPHY.sizes.overline,
+                  textTransform: 'uppercase',
+                  letterSpacing: '1px',
+                  height: 32,
+                  borderRadius: BORDER_RADIUS.sm,
+                  border: `1px solid ${COLORS.primary.main}20`,
                 }}
               />
 
               <Typography
                 variant="h1"
                 sx={{
-                  fontSize: { xs: '2.5rem', sm: '3rem', md: '3.5rem' },
-                  fontWeight: 900,
-                  lineHeight: 1.15,
+                  fontSize: { xs: '2.5rem', sm: '3.5rem', md: '4.5rem' },
+                  fontWeight: TYPOGRAPHY.weights.black,
+                  lineHeight: 1.05,
                   mb: 3,
-                  color: 'text.primary',
+                  color: COLORS.text.primary,
+                  letterSpacing: '-2px'
                 }}
               >
-                Your Health,{' '}
+                Seamless Care,{' '}
                 <Box
                   component="span"
                   sx={{
-                    background: 'linear-gradient(135deg, #00BCD4 0%, #009688 100%)',
+                    background: GRADIENTS.primary,
                     backgroundClip: 'text',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                   }}
                 >
-                  Simplified.
+                  Intelligent Platform.
                 </Box>
               </Typography>
 
               <Typography
-                variant="h5"
+                variant="h4"
                 sx={{
-                  color: 'text.secondary',
-                  fontWeight: 400,
+                  color: COLORS.text.secondary,
+                  fontWeight: TYPOGRAPHY.weights.medium,
                   lineHeight: 1.6,
-                  mb: 4,
-                  maxWidth: 520,
-                  fontSize: { xs: '1rem', sm: '1.15rem' },
+                  mb: 5,
+                  maxWidth: 580,
+                  fontSize: { xs: '1.1rem', sm: '1.25rem' },
                 }}
               >
-                Book appointments with top doctors, manage your health records, and take control of your healthcare journey — all from one seamless platform.
+                A unified ecosystem for clinics, doctors, and patients. Experience the next generation of healthcare administration and patient engagement.
               </Typography>
 
-              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 4 }}>
+              <Box sx={{ display: 'flex', gap: 2.5, flexWrap: 'wrap', mb: 6 }}>
                 <Button
                   component={Link}
                   href="/register"
@@ -160,32 +168,39 @@ export default function LandingPage() {
                   endIcon={<ArrowForwardIcon />}
                   sx={{
                     px: 4,
-                    py: 1.5,
-                    fontSize: '1rem',
-                    background: 'linear-gradient(135deg, #00BCD4 0%, #009688 100%)',
-                    '&:hover': {
-                      background: 'linear-gradient(135deg, #00ACC1 0%, #00897B 100%)',
-                    },
+                    py: 2,
+                    borderRadius: BORDER_RADIUS.full,
+                    fontSize: TYPOGRAPHY.sizes.bodyLarge,
+                    fontWeight: TYPOGRAPHY.weights.bold,
+                    boxShadow: SHADOWS.medium
                   }}
                 >
-                  Get Started Free
+                  Join the Network
                 </Button>
                 <Button
                   component={Link}
                   href="/login"
                   variant="outlined"
                   size="large"
-                  sx={{ px: 4, py: 1.5, fontSize: '1rem' }}
+                  sx={{
+                    px: 4,
+                    py: 2,
+                    borderRadius: BORDER_RADIUS.full,
+                    fontSize: TYPOGRAPHY.sizes.bodyLarge,
+                    fontWeight: TYPOGRAPHY.weights.semibold,
+                    borderWidth: 2,
+                    '&:hover': { borderWidth: 2 }
+                  }}
                 >
-                  Sign In
+                  Doctor Sign In
                 </Button>
               </Box>
 
-              <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap' }}>
-                {['No credit card required', 'Free for patients', 'HIPAA compliant'].map((item) => (
-                  <Box key={item} sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                    <CheckCircleIcon sx={{ fontSize: 18, color: 'success.main' }} />
-                    <Typography variant="body2" color="text.secondary" fontWeight={500}>
+              <Box sx={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                {['HIPAA Compliant', 'Zero Setup Cost', '24/7 Priority Support'].map((item) => (
+                  <Box key={item} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <CheckCircleIcon sx={{ fontSize: 20, color: COLORS.success.main }} />
+                    <Typography variant="body2" sx={{ color: COLORS.text.primary, fontWeight: TYPOGRAPHY.weights.bold }}>
                       {item}
                     </Typography>
                   </Box>
@@ -200,61 +215,74 @@ export default function LandingPage() {
                   display: { xs: 'none', md: 'block' },
                 }}
               >
-                {/* Decorative card mockup */}
-                <Box
+                {/* Refined Mockup Card */}
+                <Card
                   sx={{
-                    p: 4,
-                    borderRadius: 4,
-                    bgcolor: 'white',
-                    boxShadow: '0 20px 60px rgba(0,188,212,0.15)',
-                    border: '1px solid rgba(0,188,212,0.1)',
-                    transform: 'rotate(-2deg)',
+                    p: 1.5,
+                    borderRadius: BORDER_RADIUS.lg,
+                    boxShadow: SHADOWS.premium,
+                    border: `1px solid ${COLORS.border.light}`,
+                    transform: 'perspective(1000px) rotateY(-15deg) rotateX(5deg)',
+                    background: 'rgba(255, 255, 255, 0.9)',
+                    backdropFilter: 'blur(10px)',
                     position: 'relative',
                     zIndex: 2,
+                    transition: 'all 0.5s ease',
+                    '&:hover': {
+                      transform: 'perspective(1000px) rotateY(-5deg) rotateX(2deg)',
+                    }
                   }}
                 >
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-                    <Avatar sx={{ bgcolor: 'primary.main', width: 48, height: 48 }}>
-                      <LocalHospitalIcon />
-                    </Avatar>
-                    <Box>
-                      <Typography variant="body1" fontWeight={700}>Dr. Sarah Johnson</Typography>
-                      <Typography variant="body2" color="text.secondary">Cardiologist</Typography>
+                  <Box sx={{ p: 3, bgcolor: COLORS.background.subtle, borderRadius: BORDER_RADIUS.md, mb: 2 }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+                      <Avatar sx={{ background: GRADIENTS.primary, width: 56, height: 56, boxShadow: SHADOWS.small }}>
+                        <LocalHospitalIcon />
+                      </Avatar>
+                      <Box>
+                        <Typography variant="h3" sx={{ fontSize: TYPOGRAPHY.sizes.title, fontWeight: TYPOGRAPHY.weights.black, color: COLORS.text.primary, display: 'block' }}>Dr. Elena Rodriguez</Typography>
+                        <Typography variant="overline" sx={{ color: COLORS.primary.main, fontWeight: TYPOGRAPHY.weights.bold, letterSpacing: '1px' }}>Neurologist • 12Y Exp</Typography>
+                      </Box>
+                      <StatusChip status="active" />
                     </Box>
-                    <Chip label="Available" size="small" color="success" sx={{ ml: 'auto' }} />
+                    <Box sx={{ display: 'flex', gap: 1.5, mb: 3, flexWrap: 'wrap' }}>
+                      {['9:30 AM', '11:00 AM', '2:45 PM'].map((slot) => (
+                        <Box
+                          key={slot}
+                          sx={{
+                            px: 2,
+                            py: 1,
+                            borderRadius: BORDER_RADIUS.sm,
+                            bgcolor: 'white',
+                            border: `1px solid ${COLORS.border.light}`,
+                            color: COLORS.text.primary,
+                            fontSize: TYPOGRAPHY.sizes.bodySmall,
+                            fontWeight: TYPOGRAPHY.weights.bold,
+                            boxShadow: SHADOWS.small
+                          }}
+                        >
+                          {slot}
+                        </Box>
+                      ))}
+                    </Box>
+                    <Button variant="contained" fullWidth sx={{ borderRadius: BORDER_RADIUS.md, py: 1.5, fontWeight: TYPOGRAPHY.weights.black }}>
+                      Confirm Booking
+                    </Button>
                   </Box>
-                  <Box sx={{ display: 'flex', gap: 1, mb: 2, flexWrap: 'wrap' }}>
-                    {['Mon 9AM', 'Tue 2PM', 'Wed 10AM', 'Thu 3PM'].map((slot) => (
-                      <Chip
-                        key={slot}
-                        label={slot}
-                        size="small"
-                        variant="outlined"
-                        sx={{
-                          borderColor: 'primary.light',
-                          color: 'primary.dark',
-                          '&:hover': { bgcolor: 'rgba(0,188,212,0.08)' },
-                        }}
-                      />
-                    ))}
-                  </Box>
-                  <Button variant="contained" fullWidth>
-                    Book Appointment
-                  </Button>
-                </Box>
+                </Card>
 
-                {/* Background card */}
+                {/* Decorative background glass card */}
                 <Box
                   sx={{
                     position: 'absolute',
-                    top: 20,
-                    left: 20,
-                    right: -20,
-                    bottom: -20,
-                    borderRadius: 4,
-                    bgcolor: 'rgba(0,188,212,0.06)',
-                    border: '1px dashed rgba(0,188,212,0.2)',
+                    top: -30,
+                    right: -30,
+                    width: '100%',
+                    height: '100%',
+                    borderRadius: BORDER_RADIUS.lg,
+                    background: GRADIENTS.primary,
+                    opacity: 0.1,
                     zIndex: 1,
+                    transform: 'perspective(1000px) rotateY(-15deg) rotateX(5deg) translateZ(-50px)',
                   }}
                 />
               </Box>
@@ -264,16 +292,16 @@ export default function LandingPage() {
       </Box>
 
       {/* ───────── STATS BAR ───────── */}
-      <Box sx={{ bgcolor: 'primary.main', py: 5 }}>
+      <Box sx={{ background: GRADIENTS.primary, py: 6, boxShadow: SHADOWS.large, position: 'relative', zIndex: 10 }}>
         <Container maxWidth="lg">
-          <Grid container spacing={3} justifyContent="center">
+          <Grid container spacing={4} justifyContent="center">
             {stats.map((stat) => (
               <Grid size={{ xs: 6, sm: 3 }} key={stat.label}>
                 <Box sx={{ textAlign: 'center' }}>
-                  <Typography variant="h3" sx={{ fontWeight: 900, color: 'white', mb: 0.5 }}>
+                  <Typography variant="h3" sx={{ fontWeight: TYPOGRAPHY.weights.black, color: 'white', mb: 0.5, letterSpacing: '-1px' }}>
                     {stat.value}
                   </Typography>
-                  <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.8)', fontWeight: 500 }}>
+                  <Typography variant="overline" sx={{ color: 'rgba(255,255,255,0.8)', fontWeight: TYPOGRAPHY.weights.bold, letterSpacing: '1px', display: 'block' }}>
                     {stat.label}
                   </Typography>
                 </Box>
@@ -284,58 +312,64 @@ export default function LandingPage() {
       </Box>
 
       {/* ───────── FEATURES SECTION ───────── */}
-      <Box id="features" sx={{ py: { xs: 8, md: 12 }, bgcolor: '#FFFFFF' }}>
+      <Box id="features" sx={{ py: { xs: 12, md: 18 }, bgcolor: COLORS.background.paper }}>
         <Container maxWidth="lg">
-          <Box sx={{ textAlign: 'center', mb: 8 }}>
-            <Chip
-              label="Features"
-              sx={{
-                mb: 2,
-                bgcolor: 'rgba(0,188,212,0.08)',
-                color: 'primary.dark',
-                fontWeight: 600,
-                fontSize: '0.8rem',
-              }}
-            />
-            <Typography variant="h2" fontWeight={800} sx={{ mb: 2 }}>
-              Everything You Need for{' '}
-              <Box component="span" sx={{ color: 'primary.main' }}>
-                Better Healthcare
+          <Box sx={{ textAlign: 'center', mb: 10 }}>
+            <Typography variant="overline" sx={{ color: COLORS.primary.main, fontWeight: TYPOGRAPHY.weights.black, letterSpacing: '2px', display: 'block' }}>
+              Core Capabilities
+            </Typography>
+            <Typography variant="h3" sx={{ fontWeight: TYPOGRAPHY.weights.black, mt: 1, mb: 3, letterSpacing: '-1.5px' }}>
+              Advanced Healthcare{' '}
+              <Box component="span" sx={{
+                background: GRADIENTS.primary,
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}>
+                Operating System
               </Box>
             </Typography>
-            <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 600, mx: 'auto' }}>
-              A comprehensive platform designed for every stakeholder in the healthcare ecosystem.
+            <Typography variant="h3" sx={{ color: COLORS.text.secondary, maxWidth: 700, mx: 'auto', fontWeight: TYPOGRAPHY.weights.medium }}>
+              Purpose-built tools for every stakeholder in the medical journey, from administrative staff to specialist doctors.
             </Typography>
           </Box>
 
-          <Grid container spacing={3}>
+          <Grid container spacing={4}>
             {features.map((feature) => (
               <Grid size={{ xs: 12, sm: 6, md: 4 }} key={feature.title}>
                 <Card
                   sx={{
                     height: '100%',
-                    bgcolor: 'background.paper',
+                    bgcolor: COLORS.background.paper,
                     cursor: 'default',
-                    border: '1px solid rgba(0,188,212,0.06)',
+                    border: `1px solid ${COLORS.border.light}`,
+                    boxShadow: SHADOWS.medium,
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      boxShadow: SHADOWS.premium,
+                      borderColor: COLORS.primary.main,
+                      transform: 'translateY(-8px)'
+                    }
                   }}
                 >
-                  <CardContent sx={{ p: 3.5 }}>
+                  <CardContent sx={{ p: 4.5 }}>
                     <Avatar
                       sx={{
-                        width: 56,
-                        height: 56,
-                        bgcolor: 'rgba(0,188,212,0.08)',
-                        color: 'primary.main',
-                        mb: 2.5,
-                        borderRadius: 3,
+                        width: 64,
+                        height: 64,
+                        background: GRADIENTS.primary,
+                        color: 'white',
+                        mb: 4,
+                        borderRadius: BORDER_RADIUS.md,
+                        boxShadow: SHADOWS.medium,
                       }}
                     >
                       {feature.icon}
                     </Avatar>
-                    <Typography variant="h6" fontWeight={700} sx={{ mb: 1.5 }}>
+                    <Typography variant="h5" sx={{ fontWeight: TYPOGRAPHY.weights.black, mb: 2, color: COLORS.text.primary }}>
                       {feature.title}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" lineHeight={1.8}>
+                    <Typography variant="body1" sx={{ color: COLORS.text.secondary, lineHeight: 1.8 }}>
                       {feature.description}
                     </Typography>
                   </CardContent>
@@ -347,57 +381,54 @@ export default function LandingPage() {
       </Box>
 
       {/* ───────── HOW IT WORKS ───────── */}
-      <Box id="about" sx={{ py: { xs: 8, md: 12 }, background: 'linear-gradient(180deg, #F0FDFD 0%, #FFFFFF 100%)' }}>
+      <Box id="about" sx={{ py: { xs: 12, md: 18 }, bgcolor: COLORS.background.subtle }}>
         <Container maxWidth="lg">
-          <Box sx={{ textAlign: 'center', mb: 8 }}>
-            <Chip
-              label="How It Works"
-              sx={{
-                mb: 2,
-                bgcolor: 'rgba(0,150,136,0.08)',
-                color: 'secondary.dark',
-                fontWeight: 600,
-                fontSize: '0.8rem',
-              }}
-            />
-            <Typography variant="h2" fontWeight={800} sx={{ mb: 2 }}>
-              Get Started in{' '}
-              <Box component="span" sx={{ color: 'secondary.main' }}>
-                3 Simple Steps
+          <Box sx={{ textAlign: 'center', mb: 12 }}>
+            <Typography variant="overline" sx={{ color: COLORS.primary.main, fontWeight: TYPOGRAPHY.weights.black, letterSpacing: '2px', display: 'block' }}>
+              The Journey
+            </Typography>
+            <Typography variant="h3" sx={{ fontWeight: TYPOGRAPHY.weights.black, mt: 1, mb: 2, letterSpacing: '-1.5px' }}>
+              Built for{' '}
+              <Box component="span" sx={{
+                background: GRADIENTS.secondary,
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}>
+                Efficiency
               </Box>
             </Typography>
           </Box>
 
-          <Grid container spacing={4}>
+          <Grid container spacing={6}>
             {steps.map((step, index) => (
               <Grid size={{ xs: 12, md: 4 }} key={step.number}>
-                <Box sx={{ textAlign: 'center', position: 'relative' }}>
+                <Box sx={{ textAlign: 'center', position: 'relative', p: 4 }}>
                   <Typography
                     sx={{
-                      fontSize: '5rem',
-                      fontWeight: 900,
-                      color: 'rgba(0,188,212,0.08)',
+                      fontSize: '8rem',
+                      fontWeight: TYPOGRAPHY.weights.black,
+                      background: index === 1 ? GRADIENTS.secondary : GRADIENTS.primary,
+                      backgroundClip: 'text',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      opacity: 0.1,
                       lineHeight: 1,
-                      mb: -2,
+                      position: 'absolute',
+                      top: 0,
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      zIndex: 0
                     }}
                   >
                     {step.number}
                   </Typography>
-                  <Typography variant="h5" fontWeight={700} sx={{ mb: 1.5, position: 'relative', zIndex: 1 }}>
+                  <Typography variant="h4" sx={{ fontWeight: TYPOGRAPHY.weights.black, mb: 2, position: 'relative', zIndex: 1, color: COLORS.text.primary }}>
                     {step.title}
                   </Typography>
-                  <Typography variant="body2" color="text.secondary" lineHeight={1.8} sx={{ maxWidth: 300, mx: 'auto' }}>
+                  <Typography variant="body1" sx={{ color: COLORS.text.secondary, lineHeight: 1.8, position: 'relative', zIndex: 1, maxWidth: 320, mx: 'auto' }}>
                     {step.description}
                   </Typography>
-                  {index < steps.length - 1 && (
-                    <Box sx={{
-                      display: { xs: 'none', md: 'block' },
-                      position: 'absolute', top: '40%', right: -40,
-                      color: 'primary.light', fontSize: 30,
-                    }}>
-                      →
-                    </Box>
-                  )}
                 </Box>
               </Grid>
             ))}
@@ -409,38 +440,46 @@ export default function LandingPage() {
       <Box
         id="contact"
         sx={{
-          py: { xs: 8, md: 10 },
-          background: 'linear-gradient(135deg, #00BCD4 0%, #009688 100%)',
+          py: { xs: 12, md: 16 },
+          background: GRADIENTS.primary,
           textAlign: 'center',
+          position: 'relative',
+          overflow: 'hidden'
         }}
       >
-        <Container maxWidth="sm">
-          <Typography variant="h3" sx={{ color: 'white', fontWeight: 800, mb: 2 }}>
-            Ready to Transform Your Healthcare?
+        {/* Subtle pattern background */}
+        <Box sx={{ position: 'absolute', inset: 0, opacity: 0.1, background: 'radial-gradient(circle at 20% 50%, #fff 0%, transparent 40%), radial-gradient(circle at 80% 50%, #fff 0%, transparent 40%)' }} />
+
+        <Container maxWidth="md" sx={{ position: 'relative', zIndex: 1 }}>
+          <Typography variant="h3" sx={{ color: 'white', fontWeight: TYPOGRAPHY.weights.black, mb: 3, letterSpacing: '-2px' }}>
+            Transform Your Practice Today
           </Typography>
-          <Typography variant="body1" sx={{ color: 'rgba(255,255,255,0.85)', mb: 4, lineHeight: 1.8 }}>
-            Join thousands of patients and healthcare providers already using Aeyron Medical.
+          <Typography variant="h3" sx={{ color: 'rgba(255,255,255,0.9)', mb: 6, lineHeight: 1.8, maxWidth: 600, mx: 'auto', fontWeight: TYPOGRAPHY.weights.medium }}>
+            Scale your clinic with intelligent tools designed to reduce overhead and improve patient outcomes.
           </Typography>
-          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <Box sx={{ display: 'flex', gap: 3, justifyContent: 'center', flexWrap: 'wrap' }}>
             <Button
               component={Link}
               href="/register"
               variant="contained"
               size="large"
               sx={{
-                px: 5,
-                py: 1.5,
+                px: 6,
+                py: 2.5,
                 bgcolor: 'white',
-                color: 'primary.dark',
-                fontWeight: 700,
+                color: COLORS.primary.main,
+                fontWeight: TYPOGRAPHY.weights.black,
+                fontSize: TYPOGRAPHY.sizes.title,
+                borderRadius: BORDER_RADIUS.full,
+                boxShadow: SHADOWS.large,
                 '&:hover': {
-                  bgcolor: 'rgba(255,255,255,0.9)',
-                  transform: 'translateY(-2px)',
-                  boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
+                  bgcolor: '#f8ffff',
+                  transform: 'translateY(-5px)',
+                  boxShadow: '0 20px 40px rgba(0,0,0,0.2)',
                 },
               }}
             >
-              Create Free Account
+              Start Free Pilot
             </Button>
             <Button
               component={Link}
@@ -448,13 +487,19 @@ export default function LandingPage() {
               variant="outlined"
               size="large"
               sx={{
-                px: 5,
-                py: 1.5,
+                px: 6,
+                py: 2.5,
                 color: 'white',
-                borderColor: 'rgba(255,255,255,0.5)',
+                borderColor: 'rgba(255,255,255,0.4)',
+                borderWidth: 2,
+                fontSize: TYPOGRAPHY.sizes.title,
+                fontWeight: TYPOGRAPHY.weights.bold,
+                borderRadius: BORDER_RADIUS.full,
                 '&:hover': {
                   borderColor: 'white',
+                  borderWidth: 2,
                   bgcolor: 'rgba(255,255,255,0.1)',
+                  transform: 'translateY(-5px)',
                 },
               }}
             >

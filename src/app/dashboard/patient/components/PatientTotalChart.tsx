@@ -103,7 +103,7 @@ export default function PatientTotalChart() {
             <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 1, mb: 2 }}>
                     <Box sx={{ flex: 1, minWidth: 0 }}>
-                        <Typography variant="h6" fontWeight={700} color="#1A2B3C" noWrap>
+                        <Typography variant="h3" fontWeight={700} color="#1A2B3C" noWrap>
                             Total Appointments
                         </Typography>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>

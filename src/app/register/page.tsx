@@ -35,7 +35,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
 import { Gender, type RegisterRequest } from '@/lib/types';
-import '@/app/globals.css';
+import { GRADIENTS, COLORS, BORDER_RADIUS, SHADOWS } from '@/lib/constants/design-tokens';
 
 const steps = ['Account Details', 'Personal Information'];
 
@@ -133,8 +133,8 @@ export default function RegisterPage() {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                py: 4,
-                background: 'linear-gradient(135deg, #E0F7FA 0%, #B2EBF2 30%, #80DEEA 60%, #4DD0E1 100%)',
+                py: { xs: 4, md: 8 },
+                background: `linear-gradient(135deg, ${COLORS.background.subtle} 0%, #FFFFFF 100%)`,
                 position: 'relative',
                 overflow: 'hidden',
             }}
@@ -142,59 +142,67 @@ export default function RegisterPage() {
             {/* Decorative elements */}
             <Box sx={{
                 position: 'absolute', top: -100, right: -100, width: 400, height: 400,
-                borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%)',
+                borderRadius: '50%', background: `radial-gradient(circle, ${COLORS.primary.light}22 0%, transparent 70%)`,
             }} />
             <Box sx={{
                 position: 'absolute', bottom: -150, left: -150, width: 500, height: 500,
-                borderRadius: '50%', background: 'radial-gradient(circle, rgba(0,150,136,0.1) 0%, transparent 70%)',
+                borderRadius: '50%', background: `radial-gradient(circle, ${COLORS.secondary.light}1A 0%, transparent 70%)`,
             }} />
 
             <Container maxWidth="sm" sx={{ position: 'relative', zIndex: 1 }}>
                 <Card
                     sx={{
-                        borderRadius: 4,
-                        boxShadow: '0 20px 60px rgba(0,0,0,0.12)',
+                        borderRadius: BORDER_RADIUS.lg,
+                        boxShadow: SHADOWS.large,
                         backdropFilter: 'blur(20px)',
-                        bgcolor: 'rgba(255,255,255,0.95)',
-                        border: '1px solid rgba(255,255,255,0.5)',
+                        bgcolor: 'rgba(255,255,255,0.92)',
+                        border: `1px solid ${COLORS.border.light}`,
                     }}
                 >
-                    <CardContent sx={{ p: { xs: 3, sm: 5 } }}>
+                    <CardContent sx={{ p: { xs: 4, sm: 6 } }}>
                         {/* Logo */}
                         <Box sx={{ textAlign: 'center', mb: 3 }}>
                             <Box sx={{ display: 'inline-flex', mb: 2 }}>
                                 <Box
                                     sx={{
-                                        width: 48,
-                                        height: 48,
-                                        borderRadius: 3,
-                                        background: 'linear-gradient(135deg, #00BCD4 0%, #009688 100%)',
+                                        width: 56,
+                                        height: 56,
+                                        borderRadius: BORDER_RADIUS.md,
+                                        background: GRADIENTS.primary,
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
+                                        boxShadow: SHADOWS.small,
                                     }}
                                 >
-                                    <LocalHospitalIcon sx={{ color: 'white', fontSize: 28 }} />
+                                    <LocalHospitalIcon sx={{ color: 'white', fontSize: 32 }} />
                                 </Box>
                             </Box>
-                            <Typography variant="h4" fontWeight={800} sx={{ mb: 0.5 }}>
+                            <Typography variant="h4" fontWeight={900} sx={{ mb: 1, letterSpacing: '-1px' }}>
                                 Create Account
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant="body2" color="text.secondary" fontWeight={500}>
                                 Join Aeyron Medical as a patient
                             </Typography>
                         </Box>
 
                         {/* Stepper */}
-                        <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
+                        <Stepper activeStep={activeStep} sx={{ mb: 5 }}>
                             {steps.map((label) => (
                                 <Step key={label}>
                                     <StepLabel
                                         sx={{
                                             '& .MuiStepLabel-label': {
-                                                fontSize: '0.8rem',
-                                                fontWeight: 500,
+                                                fontSize: '0.85rem',
+                                                fontWeight: 700,
+                                                color: COLORS.text.muted
                                             },
+                                            '& .MuiStepLabel-label.Mui-active': {
+                                                color: COLORS.primary.main
+                                            },
+                                            '& .MuiStepLabel-label.Mui-completed': {
+                                                color: COLORS.success
+                                            }
                                         }}
                                     >
                                         {label}
@@ -205,7 +213,7 @@ export default function RegisterPage() {
 
                         {/* Error Alert */}
                         {error && (
-                            <Alert severity="error" onClose={() => setError('')} sx={{ mb: 3, borderRadius: 2 }}>
+                            <Alert severity="error" onClose={() => setError('')} sx={{ mb: 3, borderRadius: BORDER_RADIUS.md }}>
                                 {error}
                             </Alert>
                         )}
@@ -226,7 +234,7 @@ export default function RegisterPage() {
                                                     input: {
                                                         startAdornment: (
                                                             <InputAdornment position="start">
-                                                                <PersonIcon sx={{ color: 'primary.light', fontSize: 20 }} />
+                                                                <PersonIcon sx={{ color: COLORS.primary.main, fontSize: 20 }} />
                                                             </InputAdornment>
                                                         ),
                                                     },
@@ -244,7 +252,7 @@ export default function RegisterPage() {
                                                     input: {
                                                         startAdornment: (
                                                             <InputAdornment position="start">
-                                                                <PersonIcon sx={{ color: 'primary.light', fontSize: 20 }} />
+                                                                <PersonIcon sx={{ color: COLORS.primary.main, fontSize: 20 }} />
                                                             </InputAdornment>
                                                         ),
                                                     },
@@ -260,12 +268,12 @@ export default function RegisterPage() {
                                         value={formData.email}
                                         onChange={handleChange('email')}
                                         required
-                                        sx={{ mt: 2 }}
+                                        sx={{ mt: 2.5 }}
                                         slotProps={{
                                             input: {
                                                 startAdornment: (
                                                     <InputAdornment position="start">
-                                                        <EmailIcon sx={{ color: 'primary.light', fontSize: 20 }} />
+                                                        <EmailIcon sx={{ color: COLORS.primary.main, fontSize: 20 }} />
                                                     </InputAdornment>
                                                 ),
                                             },
@@ -280,12 +288,12 @@ export default function RegisterPage() {
                                         onChange={handleChange('password')}
                                         required
                                         helperText="Minimum 6 characters"
-                                        sx={{ mt: 2 }}
+                                        sx={{ mt: 2.5 }}
                                         slotProps={{
                                             input: {
                                                 startAdornment: (
                                                     <InputAdornment position="start">
-                                                        <LockIcon sx={{ color: 'primary.light', fontSize: 20 }} />
+                                                        <LockIcon sx={{ color: COLORS.primary.main, fontSize: 20 }} />
                                                     </InputAdornment>
                                                 ),
                                                 endAdornment: (
@@ -305,12 +313,12 @@ export default function RegisterPage() {
                                         value={formData.phone}
                                         onChange={handleChange('phone')}
                                         placeholder="+1234567890"
-                                        sx={{ mt: 2 }}
+                                        sx={{ mt: 2.5 }}
                                         slotProps={{
                                             input: {
                                                 startAdornment: (
                                                     <InputAdornment position="start">
-                                                        <PhoneIcon sx={{ color: 'primary.light', fontSize: 20 }} />
+                                                        <PhoneIcon sx={{ color: COLORS.primary.main, fontSize: 20 }} />
                                                     </InputAdornment>
                                                 ),
                                             },
@@ -323,12 +331,11 @@ export default function RegisterPage() {
                                         onClick={handleNext}
                                         endIcon={<ArrowForwardIcon />}
                                         sx={{
-                                            mt: 3,
-                                            py: 1.5,
-                                            background: 'linear-gradient(135deg, #00BCD4 0%, #009688 100%)',
-                                            '&:hover': {
-                                                background: 'linear-gradient(135deg, #00ACC1 0%, #00897B 100%)',
-                                            },
+                                            mt: 4,
+                                            py: 2,
+                                            fontWeight: 800,
+                                            borderRadius: BORDER_RADIUS.md,
+                                            boxShadow: SHADOWS.medium,
                                         }}
                                     >
                                         Continue
@@ -366,7 +373,7 @@ export default function RegisterPage() {
                                                     input: {
                                                         startAdornment: (
                                                             <InputAdornment position="start">
-                                                                <CalendarMonthIcon sx={{ color: 'primary.light', fontSize: 20 }} />
+                                                                <CalendarMonthIcon sx={{ color: COLORS.primary.main, fontSize: 20 }} />
                                                             </InputAdornment>
                                                         ),
                                                     },
@@ -381,7 +388,7 @@ export default function RegisterPage() {
                                         label="Blood Group"
                                         value={formData.bloodGroup || ''}
                                         onChange={handleChange('bloodGroup')}
-                                        sx={{ mt: 2 }}
+                                        sx={{ mt: 2.5 }}
                                     >
                                         <MenuItem value="">Select</MenuItem>
                                         {bloodGroups.map((bg) => (
@@ -396,12 +403,12 @@ export default function RegisterPage() {
                                         onChange={handleChange('address')}
                                         multiline
                                         rows={2}
-                                        sx={{ mt: 2 }}
+                                        sx={{ mt: 2.5 }}
                                         slotProps={{
                                             input: {
                                                 startAdornment: (
-                                                    <InputAdornment position="start" sx={{ alignSelf: 'flex-start', mt: 1 }}>
-                                                        <HomeIcon sx={{ color: 'primary.light', fontSize: 20 }} />
+                                                    <InputAdornment position="start" sx={{ alignSelf: 'flex-start', mt: 1.5 }}>
+                                                        <HomeIcon sx={{ color: COLORS.primary.main, fontSize: 20 }} />
                                                     </InputAdornment>
                                                 ),
                                             },
@@ -414,24 +421,31 @@ export default function RegisterPage() {
                                         value={formData.emergencyContact}
                                         onChange={handleChange('emergencyContact')}
                                         placeholder="+1987654321"
-                                        sx={{ mt: 2 }}
+                                        sx={{ mt: 2.5 }}
                                         slotProps={{
                                             input: {
                                                 startAdornment: (
                                                     <InputAdornment position="start">
-                                                        <PhoneIcon sx={{ color: 'error.light', fontSize: 20 }} />
+                                                        <PhoneIcon sx={{ color: COLORS.error, fontSize: 20 }} />
                                                     </InputAdornment>
                                                 ),
                                             },
                                         }}
                                     />
 
-                                    <Box sx={{ display: 'flex', gap: 2, mt: 3 }}>
+                                    <Box sx={{ display: 'flex', gap: 2, mt: 4 }}>
                                         <Button
                                             variant="outlined"
                                             onClick={handleBack}
                                             startIcon={<ArrowBackIcon />}
-                                            sx={{ flex: 1, py: 1.5 }}
+                                            sx={{
+                                                flex: 1,
+                                                py: 2,
+                                                fontWeight: 700,
+                                                borderRadius: BORDER_RADIUS.md,
+                                                borderWidth: 2,
+                                                '&:hover': { borderWidth: 2 }
+                                            }}
                                         >
                                             Back
                                         </Button>
@@ -442,13 +456,12 @@ export default function RegisterPage() {
                                             endIcon={isLoading ? <CircularProgress size={20} color="inherit" /> : <ArrowForwardIcon />}
                                             sx={{
                                                 flex: 2,
-                                                py: 1.5,
-                                                background: 'linear-gradient(135deg, #00BCD4 0%, #009688 100%)',
-                                                '&:hover': {
-                                                    background: 'linear-gradient(135deg, #00ACC1 0%, #00897B 100%)',
-                                                },
+                                                py: 2,
+                                                fontWeight: 800,
+                                                borderRadius: BORDER_RADIUS.md,
+                                                boxShadow: SHADOWS.medium,
                                                 '&.Mui-disabled': {
-                                                    background: 'rgba(0,188,212,0.3)',
+                                                    background: COLORS.border.strong,
                                                     color: 'white',
                                                 },
                                             }}
@@ -460,8 +473,10 @@ export default function RegisterPage() {
                             )}
                         </Box>
 
-                        <Divider sx={{ my: 3, color: 'text.secondary', fontSize: '0.8rem' }}>
-                            Already have an account?
+                        <Divider sx={{ my: 4 }}>
+                            <Typography variant="caption" sx={{ color: COLORS.text.muted, fontWeight: 600, px: 2 }}>
+                                ALREADY HAVE AN ACCOUNT?
+                            </Typography>
                         </Divider>
 
                         <Button
@@ -470,27 +485,30 @@ export default function RegisterPage() {
                             variant="outlined"
                             fullWidth
                             sx={{
-                                py: 1.2,
-                                borderColor: 'primary.light',
-                                color: 'primary.dark',
+                                py: 1.5,
+                                fontWeight: 700,
+                                borderRadius: BORDER_RADIUS.md,
+                                borderWidth: 2,
                                 '&:hover': {
-                                    borderColor: 'primary.main',
-                                    bgcolor: 'rgba(0,188,212,0.04)',
+                                    borderWidth: 2,
+                                    bgcolor: 'rgba(13, 148, 136, 0.04)',
                                 },
                             }}
                         >
                             Sign In Instead
                         </Button>
 
-                        <Box sx={{ textAlign: 'center', mt: 3 }}>
+                        <Box sx={{ textAlign: 'center', mt: 4 }}>
                             <Typography
                                 component={Link}
                                 href="/"
                                 variant="body2"
                                 sx={{
-                                    color: 'text.secondary',
+                                    color: COLORS.text.secondary,
+                                    fontWeight: 600,
                                     textDecoration: 'none',
-                                    '&:hover': { color: 'primary.main' },
+                                    transition: 'color 0.2s',
+                                    '&:hover': { color: COLORS.primary.main },
                                 }}
                             >
                                 ← Back to Home
@@ -502,3 +520,4 @@ export default function RegisterPage() {
         </Box>
     );
 }
+

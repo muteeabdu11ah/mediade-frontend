@@ -67,7 +67,7 @@ const PatientAppointmentCard: React.FC<PatientAppointmentCardProps> = ({ appoint
                 {/* Header: Name and More Icon */}
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                        <Typography variant="h6" fontWeight={700} color="#2D3748">
+                        <Typography variant="h3" fontWeight={700} color="#2D3748">
                             {doctorName}
                         </Typography>
                         <StatusChip status={appointment.status} />

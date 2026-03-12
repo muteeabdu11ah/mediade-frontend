@@ -16,7 +16,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { Appointment, AppointmentStatus } from '@/lib/types';
-import { GRADIENTS } from '@/lib/constants/design-tokens';
+import { GRADIENTS, COLORS, BORDER_RADIUS, SHADOWS } from '@/lib/constants/design-tokens';
 import StatusChip from '@/components/StatusChip';
 
 interface AppointmentCardProps {
@@ -30,17 +30,22 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment, onMenuOp
 
     return (
         <Card sx={{
-            borderRadius: 3,
-            boxShadow: '0 2px 12px rgba(0,0,0,0.04)',
-            border: '1px solid #f0f0f0',
+            borderRadius: BORDER_RADIUS.lg,
+            boxShadow: SHADOWS.small,
+            border: `1px solid ${COLORS.border.light}`,
             position: 'relative',
             overflow: 'hidden',
             height: '100%',
             display: 'flex',
-            flexDirection: 'column'
+            flexDirection: 'column',
+            transition: 'transform 0.2s, box-shadow 0.2s',
+            '&:hover': {
+                transform: 'translateY(-4px)',
+                boxShadow: SHADOWS.medium,
+            }
         }}>
             {/* Emergency Left Border indicator */}
-            {isEmergency && <Box sx={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 6, bgcolor: '#ef4444' }} />}
+            {isEmergency && <Box sx={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 6, bgcolor: COLORS.error.main }} />}
 
             <CardContent sx={{ p: 3, pl: isEmergency ? 4 : 3, flexGrow: 1 }}>
 
@@ -48,20 +53,20 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment, onMenuOp
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
                     <Box sx={{ display: 'flex', gap: 1.5 }}>
                         {!isEmergency && (
-                            <Avatar sx={{ width: 40, height: 40, bgcolor: '#f0f9ff', color: '#1fb2ba' }}>
+                            <Avatar sx={{ width: 40, height: 40, bgcolor: COLORS.primary.subtle, color: COLORS.primary.main }}>
                                 <PersonIcon />
                             </Avatar>
                         )}
                         <Box>
-                            <Typography variant="body1" fontWeight={700} color="#1A2B3C">
+                            <Typography variant="body1" fontWeight={800} color={COLORS.text.primary}>
                                 {patientName}
                             </Typography>
                             {isEmergency && appointment.escalatedBy ? (
-                                <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', fontWeight: 600 }}>
                                     {appointment.escalatedBy}
                                 </Typography>
                             ) : (
-                                <Typography variant="caption" color="text.secondary">
+                                <Typography variant="caption" color="text.secondary" fontWeight={500}>
                                     {appointment.type}
                                 </Typography>
                             )}
@@ -72,7 +77,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment, onMenuOp
                         <Chip
                             icon={<WarningIcon style={{ color: 'white' }} fontSize="small" />}
                             label="Emergency"
-                            sx={{ bgcolor: '#ef4444', color: 'white', fontWeight: 700, borderRadius: 2 }}
+                            sx={{ bgcolor: COLORS.error.main, color: 'white', fontWeight: 700, borderRadius: BORDER_RADIUS.sm }}
                         />
                     ) : (
                         <IconButton size="small" onClick={(e) => onMenuOpen(e, appointment)}>
@@ -85,10 +90,10 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment, onMenuOp
 
                 {/* Time Track */}
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, color: '#1fb2ba' }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8, color: COLORS.primary.main }}>
                         <AccessTimeIcon fontSize="small" />
-                        <Typography variant="body2" fontWeight={700}>{appointment.startTime.substring(0, 5)}</Typography>
-                        <Typography variant="caption" color="text.secondary">(30 min)</Typography>
+                        <Typography variant="body2" fontWeight={800}>{appointment.startTime.substring(0, 5)}</Typography>
+                        <Typography variant="caption" sx={{ color: COLORS.text.muted, fontWeight: 500 }}>(30 min)</Typography>
                     </Box>
 
                     {!isEmergency && (
@@ -102,20 +107,30 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment, onMenuOp
                         variant="outlined"
                         fullWidth
                         startIcon={<VisibilityIcon />}
-                        sx={{ borderColor: 'rgba(31,178,186,0.3)', color: '#1fb2ba', borderRadius: 2 }}
+                        sx={{
+                            borderRadius: BORDER_RADIUS.md,
+                            fontWeight: 700,
+                            borderWidth: 1.5,
+                            '&:hover': { borderWidth: 1.5 }
+                        }}
                     >
-                        {'Intake Notes'}
+                        {'Notes'}
                     </Button>
                     <Button
                         variant="contained"
                         fullWidth
                         startIcon={<PlayArrowIcon />}
                         disableElevation
-                        sx={{ color: 'white', borderRadius: 2, '&:hover': { bgcolor: '#148991' }, background: GRADIENTS.primary }}
+                        sx={{
+                            borderRadius: BORDER_RADIUS.md,
+                            fontWeight: 700,
+                            boxShadow: SHADOWS.small
+                        }}
                     >
-                        Start Consult
+                        Start
                     </Button>
                 </Box>
+
 
             </CardContent>
         </Card>

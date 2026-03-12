@@ -3,6 +3,7 @@
 import React from 'react';
 import { Box, Typography, Skeleton } from '@mui/material';
 import { useAuth } from '@/lib/auth-context';
+import { GRADIENTS, COLORS, BORDER_RADIUS, SHADOWS } from '@/lib/constants/design-tokens';
 import { usePatientStatsCards } from '@/hooks/use-appointments';
 
 export default function PatientHeroBanner() {
@@ -14,7 +15,7 @@ export default function PatientHeroBanner() {
             <Skeleton
                 variant="rectangular"
                 height={200}
-                sx={{ borderRadius: 4, mb: 4, width: '100%' }}
+                sx={{ borderRadius: BORDER_RADIUS.lg, mb: 4, width: '100%' }}
             />
         );
     }
@@ -27,33 +28,55 @@ export default function PatientHeroBanner() {
     };
 
     return (
-        <Box  
+        <Box
             sx={{
                 position: 'relative',
-                borderRadius: 4,
+                borderRadius: BORDER_RADIUS.lg,
                 overflow: 'hidden',
                 mb: 4,
-                height: 200,
+                height: { xs: 180, md: 220 },
                 display: 'flex',
                 alignItems: 'center',
-                px: 6,
-                background: `linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.3)), url('/patient-background.jpg')`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
+                px: { xs: 4, md: 8 },
+                background: GRADIENTS.primary,
+                boxShadow: SHADOWS.large,
                 color: 'white'
             }}
         >
-            <Box>
-                <Typography variant="body1" sx={{ opacity: 0.9, mb: 1, fontWeight: 500 }}>
-                    {greeting()}, 
+            {/* Decorative background element */}
+            <Box sx={{
+                position: 'absolute',
+                top: -50,
+                right: -50,
+                width: 250,
+                height: 250,
+                borderRadius: '50%',
+                background: 'rgba(255, 255, 255, 0.1)',
+                zIndex: 0
+            }} />
+
+            <Box sx={{ position: 'relative', zIndex: 1 }}>
+                <Typography variant="body1" sx={{ opacity: 0.9, mb: 1, fontWeight: 600, letterSpacing: '0.5px' }}>
+                    {greeting()},
                 </Typography>
-                <Typography variant="h3" fontWeight={800} sx={{ mb: 1, fontSize: { xs: '2rem', md: '3rem' } }}>
+                <Typography variant="h3" fontWeight={900} sx={{ mb: 1.5, fontSize: { xs: '2rem', md: '3.5rem' }, letterSpacing: '-1px' }}>
                     {user?.firstName} {user?.lastName}
                 </Typography>
-                <Typography variant="body1" sx={{ opacity: 0.9 }}>
-                    You have {stats?.today || 0} appointment today.
-                </Typography>
+                <Box sx={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    bgcolor: 'rgba(255, 255, 255, 0.2)',
+                    px: 2,
+                    py: 0.8,
+                    borderRadius: BORDER_RADIUS.full,
+                    backdropFilter: 'blur(10px)'
+                }}>
+                    <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                        📅 You have {stats?.today || 0} appointment today
+                    </Typography>
+                </Box>
             </Box>
         </Box>
     );
 }
+
