@@ -43,7 +43,7 @@ const DoctorGrid: React.FC<DoctorGridProps> = ({
         <Box>
             <Grid container spacing={3}>
                 {doctors.map((doctor) => (
-                    <Grid key={doctor.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
+                    <Grid key={doctor.id} size={{ xs: 12, md: 12, lg: 6, xl: 4 }}>
                         <DoctorCard doctor={doctor} onBook={onBook} />
                     </Grid>
                 ))}

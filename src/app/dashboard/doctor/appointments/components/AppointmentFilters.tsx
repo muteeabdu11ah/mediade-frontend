@@ -10,7 +10,7 @@ interface AppointmentFiltersProps {
 const AppointmentFilters: React.FC<AppointmentFiltersProps> = ({ selectedType, setSelectedType }) => {
     return (
         <Box sx={{ display: 'flex', gap: 2 }}>
-            <Select
+            {/* <Select
                 value={selectedType}
                 onChange={(e) => setSelectedType(e.target.value as string)}
                 displayEmpty
@@ -31,7 +31,7 @@ const AppointmentFilters: React.FC<AppointmentFiltersProps> = ({ selectedType, s
                 <MenuItem value="All">All Appointments</MenuItem>
                 <MenuItem value="Consultation">Consultation</MenuItem>
                 <MenuItem value="Emergency">Emergency</MenuItem>
-            </Select>
+            </Select> */}
         </Box>
     );
 };

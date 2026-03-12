@@ -28,6 +28,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
+import { GRADIENTS } from '@/lib/constants/design-tokens';
 
 const navLinks = [
     { label: 'Home', href: '/' },
@@ -68,7 +69,7 @@ export default function Navbar() {
                                 variant="h6"
                                 sx={{
                                     fontWeight: 800,
-                                    background: 'linear-gradient(135deg, #00BCD4 0%, #009688 100%)',
+                                    background: GRADIENTS.primary,
                                     backgroundClip: 'text',
                                     WebkitBackgroundClip: 'text',
                                     WebkitTextFillColor: 'transparent',
@@ -90,7 +91,7 @@ export default function Navbar() {
                                         component={Link}
                                         href={link.href}
                                         sx={{
-                                            color: 'text.secondary',
+                                            color: GRADIENTS.primary,
                                             fontWeight: 500,
                                             '&:hover': {
                                                 color: 'primary.main',

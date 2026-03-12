@@ -56,7 +56,7 @@ export default function OnsiteAppointmentsPage() {
 
     return (
         <ProtectedRoute allowedRoles={[Role.DOCTOR]}>
-            <DashboardLayout title="Onsite Appointments">
+            <DashboardLayout title="Direct Visit">
 
                 {onsiteError && <Alert severity="error" sx={{ mb: 3 }}>{(onsiteError as any)?.message || 'Failed to load data'}</Alert>}
 

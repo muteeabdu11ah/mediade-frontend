@@ -98,13 +98,13 @@ export default function BookAppointmentPage() {
     return (
         <ProtectedRoute allowedRoles={[Role.PATIENT]}>
             <DashboardLayout title="Book Appointment">
-                <Container maxWidth="xl" sx={{ py: 4 }}>
+                {/* <Container maxWidth="xl" sx={{ py: 0 }}> */}
                     {/* Header Section */}
                     <Box sx={{ mb: 4 }}>
-                        <Typography variant="h4" fontWeight={800} sx={{ color: '#2D3748', mb: 1 }}>
+                        {/* <Typography variant="h4" fontWeight={800} sx={{ color: '#2D3748', mb: 1 }}>
                             {step === BookingStep.SEARCH ? 'Book Appointment' : 'Select Date & Time'}
-                        </Typography>
-                        <Typography variant="body1" color="text.secondary">
+                        </Typography> */}
+                        <Typography variant="body1" color="text.primary">
                             {step === BookingStep.SEARCH
                                 ? 'Find a doctor and schedule your visit'
                                 : `Booking with Dr. ${selectedDoctor?.firstName} ${selectedDoctor?.lastName}`
@@ -183,7 +183,7 @@ export default function BookAppointmentPage() {
                             {error}
                         </Alert>
                     </Snackbar>
-                </Container>
+                {/* </Container> */}
             </DashboardLayout>
         </ProtectedRoute>
     );

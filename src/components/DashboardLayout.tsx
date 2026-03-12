@@ -37,6 +37,7 @@ import GridViewIcon from '@mui/icons-material/GridView';
 import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
 import SmartToyOutlinedIcon from '@mui/icons-material/SmartToyOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import { GRADIENTS } from '@/lib/constants/design-tokens';
 
 const DRAWER_WIDTH = 320;
 
@@ -96,15 +97,15 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
                                 href={item.href}
                                 onClick={() => isMobile && setMobileOpen(false)}
                                 sx={{
-                                    borderRadius: 2,
+                                    borderRadius: 1,
                                     px: 2.5,
                                     py: 1.5,
-                                    background: isActive ? 'linear-gradient(135deg, #2EC2C9 0%, #35C8C8 100%)' : 'transparent',
+                                    background: isActive ? GRADIENTS.primary : 'transparent',
                                     color: isActive ? 'white' : '#64748B',
                                     transition: 'all 0.2s',
                                     boxShadow: isActive ? '0 4px 12px rgba(46, 194, 201, 0.3)' : 'none',
                                     '&:hover': {
-                                        background: isActive ? 'linear-gradient(135deg, #2EC2C9 0%, #35C8C8 100%)' : 'rgba(46, 194, 201, 0.05)',
+                                        background: isActive ? GRADIENTS.primary : 'rgba(46, 194, 201, 0.05)',
                                         color: isActive ? 'white' : '#1fb2ba',
                                     },
                                 }}
@@ -121,7 +122,7 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
                                     primary={item.label}
                                     primaryTypographyProps={{
                                         fontWeight: isActive ? 700 : 500,
-                                        fontSize: '1rem',
+                                        fontSize: '14px',
                                     }}
                                 />
                             </ListItemButton>

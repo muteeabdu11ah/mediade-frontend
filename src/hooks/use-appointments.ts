@@ -20,6 +20,16 @@ export function useAppointments(params: AppointmentsParams) {
     });
 }
 
+export function useDoctorAppointmentStats(params: { startDate: string; endDate: string }) {
+    return useQuery<Record<string, number>>({
+        queryKey: [...QUERY_KEYS.APPOINTMENTS, 'doctor-stats', params],
+        queryFn: async () => {
+            const { data } = await api.get(API_ENDPOINTS.APPOINTMENTS.DOCTOR_STATS, { params });
+            return data;
+        },
+    });
+}
+
 export interface PatientAppointmentsParams {
     isHistory?: boolean;
     page?: number;

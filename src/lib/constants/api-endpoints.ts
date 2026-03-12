@@ -14,6 +14,7 @@ export const API_ENDPOINTS = {
     APPOINTMENTS: {
         BASE: '/appointments',
         DOCTOR_ME: '/appointments/doctor/me',
+        DOCTOR_STATS: '/appointments/doctor/me/stats',
         CLINIC: '/appointments/clinic',
         PATIENT_ME: '/appointments/me',
         ONSITE: '/onsite-consultations/doctor/me',

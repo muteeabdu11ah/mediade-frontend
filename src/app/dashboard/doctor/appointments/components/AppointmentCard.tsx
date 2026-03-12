@@ -16,6 +16,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { Appointment, AppointmentStatus } from '@/lib/types';
+import { GRADIENTS } from '@/lib/constants/design-tokens';
 
 interface AppointmentCardProps {
     appointment: Appointment;
@@ -117,7 +118,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment, onMenuOp
                         fullWidth
                         startIcon={<PlayArrowIcon />}
                         disableElevation
-                        sx={{ bgcolor: '#1fb2ba', color: 'white', borderRadius: 2, '&:hover': { bgcolor: '#148991' } }}
+                        sx={{ color: 'white', borderRadius: 2, '&:hover': { bgcolor: '#148991' }, background: GRADIENTS.primary }}
                     >
                         Start Consult
                     </Button>

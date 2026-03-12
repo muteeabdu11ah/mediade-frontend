@@ -10,8 +10,8 @@ export const SHADOWS = {
 };
 
 export const BORDER_RADIUS = {
-    small: 8,
-    medium: 12,
-    large: 20,
-    xlarge: 30,
+    small: '8px',
+    medium: '12px',
+    large: '20px',
+    xlarge: '30px',
 };

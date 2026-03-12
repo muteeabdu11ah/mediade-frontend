@@ -1,9 +1,5 @@
-import SettingsIcon from '@mui/icons-material/Settings';
-import BusinessIcon from '@mui/icons-material/Business';
-import PeopleIcon from '@mui/icons-material/People';
-import PersonIcon from '@mui/icons-material/Person';
 import { Role } from '@/lib/types';
-import { BusinessOutlined, CalendarMonthOutlined, DashboardOutlined, EventOutlined, LockClock, LockClockOutlined, PeopleOutline, SmartToy } from '@mui/icons-material';
+import { BusinessOutlined, CalendarMonthOutlined, DashboardOutlined, EventOutlined, LockClockOutlined, PeopleOutline, SettingsOutlined, SmartToyOutlined } from '@mui/icons-material';
 import PersonOutline from '@mui/icons-material/PersonOutline';
 
 export interface NavItem {
@@ -20,9 +16,9 @@ export const SUPER_ADMIN_ITEMS: NavItem[] = [
 export const DOCTOR_NAV_ITEMS: NavItem[] = [
     { label: 'Dashboard', href: '/dashboard/doctor', icon: <DashboardOutlined /> },
     { label: 'Appointments', href: '/dashboard/doctor/appointments', icon: <EventOutlined /> },
-    { label: 'Onsite Appointments', href: '/dashboard/doctor/onsite-appointments', icon: <CalendarMonthOutlined /> },
-    { label: 'AI Assistant', href: '/dashboard/doctor/ai-assistant', icon: <SmartToy /> },
-    { label: 'Settings', href: '/dashboard/doctor/settings', icon: <SettingsIcon /> },
+    { label: 'Direct Visit', href: '/dashboard/doctor/direct-visit', icon: <CalendarMonthOutlined /> },
+    { label: 'AI Assistant', href: '/dashboard/doctor/ai-assistant', icon: <SmartToyOutlined /> },
+    { label: 'Settings', href: '/dashboard/doctor/settings', icon: <SettingsOutlined /> },
 ];
 
 export const CLINIC_NAV_ITEMS: NavItem[] = [
