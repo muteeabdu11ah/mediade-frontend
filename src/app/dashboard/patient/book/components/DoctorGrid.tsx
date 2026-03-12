@@ -1,8 +1,9 @@
 'use client';
 
 import React from 'react';
-import { Grid, Box, Pagination, Typography, CircularProgress } from '@mui/material';
+import { Grid, Box, Pagination, Typography, Card, Skeleton, Stack } from '@mui/material';
 import DoctorCard from './DoctorCard';
+import { BORDER_RADIUS, SHADOWS } from '@/lib/constants/design-tokens';
 
 interface DoctorGridProps {
     doctors: any[];
@@ -11,6 +12,58 @@ interface DoctorGridProps {
     totalPages: number;
     onPageChange: (page: number) => void;
     onBook: (id: string) => void;
+}
+
+/** Mirrors DoctorCard layout exactly */
+function DoctorCardSkeleton() {
+    return (
+        <Card
+            sx={{
+                p: { xs: 2, sm: 2.5 },
+                borderRadius: BORDER_RADIUS.large,
+                boxShadow: SHADOWS.premium,
+                border: '1px solid rgba(0,0,0,0.05)',
+                display: 'flex',
+                flexDirection: { xs: 'column', sm: 'row' },
+                gap: 3,
+                height: '100%',
+                overflow: 'hidden',
+            }}
+        >
+            {/* Avatar / portrait shimmer */}
+            <Skeleton
+                variant="rectangular"
+                sx={{
+                    width: { xs: '100%', sm: 160 },
+                    height: { xs: 200, sm: 'auto' },
+                    minHeight: { sm: 180 },
+                    flexShrink: 0,
+                    borderRadius: 4,
+                }}
+            />
+
+            {/* Content shimmer */}
+            <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: 2 }}>
+                {/* Name */}
+                <Skeleton variant="text" width="70%" height={36} sx={{ borderRadius: 1 }} />
+
+                {/* Specialty row */}
+                <Stack direction="row" spacing={1.5} alignItems="center">
+                    <Skeleton variant="circular" width={40} height={40} />
+                    <Skeleton variant="text" width="50%" height={22} sx={{ borderRadius: 1 }} />
+                </Stack>
+
+                {/* Clinic row */}
+                <Stack direction="row" spacing={1.5} alignItems="center">
+                    <Skeleton variant="circular" width={40} height={40} />
+                    <Skeleton variant="text" width="45%" height={22} sx={{ borderRadius: 1 }} />
+                </Stack>
+
+                {/* Book button */}
+                <Skeleton variant="rectangular" width={100} height={44} sx={{ borderRadius: 2, mt: 1 }} />
+            </Box>
+        </Card>
+    );
 }
 
 const DoctorGrid: React.FC<DoctorGridProps> = ({
@@ -23,9 +76,13 @@ const DoctorGrid: React.FC<DoctorGridProps> = ({
 }) => {
     if (loading) {
         return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', py: 10 }}>
-                <CircularProgress sx={{ color: '#00BCD4' }} />
-            </Box>
+            <Grid container spacing={3}>
+                {Array.from({ length: 6 }).map((_, i) => (
+                    <Grid key={i} size={{ xs: 12, md: 12, lg: 6, xl: 4 }}>
+                        <DoctorCardSkeleton />
+                    </Grid>
+                ))}
+            </Grid>
         );
     }
 
@@ -60,9 +117,7 @@ const DoctorGrid: React.FC<DoctorGridProps> = ({
                                 '&.Mui-selected': {
                                     background: 'linear-gradient(135deg, #00BCD4 0%, #009688 100%)',
                                     color: 'white',
-                                    '&:hover': {
-                                        opacity: 0.9,
-                                    }
+                                    '&:hover': { opacity: 0.9 }
                                 }
                             }
                         }}
