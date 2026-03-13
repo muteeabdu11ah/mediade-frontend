@@ -172,7 +172,7 @@ export default function PatientAppointmentsPage() {
 
                     <Button
                         variant="contained"
-                        href="/dashboard/patient/book"
+                        href="/dashboard/patient/appointments/book"
                         disableElevation
                         sx={{ color: GRADIENTS.primary, borderRadius: 1, '&:hover': { color: GRADIENTS.primary } }}
                     >

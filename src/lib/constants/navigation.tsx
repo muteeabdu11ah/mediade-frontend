@@ -29,8 +29,8 @@ export const CLINIC_NAV_ITEMS: NavItem[] = [
 
 export const PATIENT_NAV_ITEMS: NavItem[] = [
     { label: 'Dashboard', href: '/dashboard/patient', icon: <DashboardOutlined /> },
-    { label: 'Book Appointment', href: '/dashboard/patient/book', icon: <CalendarMonthOutlined /> },
-    { label: 'My Appointments', href: '/dashboard/patient/appointments', icon: <EventOutlined /> },
+    // { label: 'Book Appointment', href: '/dashboard/patient/book', icon: <CalendarMonthOutlined /> },
+    { label: 'Appointments', href: '/dashboard/patient/appointments', icon: <EventOutlined /> },
     { label: 'History', href: '/dashboard/patient/history', icon: <LockClockOutlined /> },
     { label: 'Profile', href: '/dashboard/patient/profile', icon: <PersonOutline /> },
 ];
