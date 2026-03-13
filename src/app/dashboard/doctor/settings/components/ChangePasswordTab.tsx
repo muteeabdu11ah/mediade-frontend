@@ -14,14 +14,15 @@ import {
 } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import api from '@/lib/api';
+import { useChangePassword } from '@/hooks/use-auth-mutations';
 import { useAuth } from '@/lib/auth-context';
 import { COLORS, GRADIENTS } from '@/lib/constants/design-tokens';
 import { isValidPassword, PASSWORD_REQUIREMENTS_TEXT } from '@/lib/utils/validation';
 
 export default function ChangePasswordTab() {
     const { logout } = useAuth();
-    const [loading, setLoading] = useState(false);
+    const changePassword = useChangePassword();
+
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [showCurrent, setShowCurrent] = useState(false);
@@ -54,9 +55,8 @@ export default function ChangePasswordTab() {
             return;
         }
 
-        setLoading(true);
         try {
-            await api.patch('/auth/change-password', {
+            await changePassword.mutateAsync({
                 currentPassword: formData.currentPassword,
                 newPassword: formData.newPassword,
             });
@@ -70,8 +70,6 @@ export default function ChangePasswordTab() {
         } catch (err: any) {
             // Failure case: do not logout, just show error
             setError(err.response?.data?.message || 'Failed to change password');
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -191,7 +189,7 @@ export default function ChangePasswordTab() {
                 <Button
                     type="submit"
                     variant="contained"
-                    disabled={loading}
+                    disabled={changePassword.isPending}
                     sx={{
                         px: 4,
                         py: 1,
@@ -201,7 +199,7 @@ export default function ChangePasswordTab() {
                         background: GRADIENTS.primary,
                     }}
                 >
-                    {loading ? <CircularProgress size={24} color="inherit" /> : 'Update Password'}
+                    {changePassword.isPending ? <CircularProgress size={24} color="inherit" /> : 'Update Password'}
                 </Button>
             </Box>
         </Box>

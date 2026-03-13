@@ -20,6 +20,19 @@ export function useAppointments(params: AppointmentsParams) {
     });
 }
 
+export function useAvailableSlots(doctorId: string, date: string) {
+    return useQuery<string[]>({
+        queryKey: [...QUERY_KEYS.APPOINTMENTS, 'slots', doctorId, date],
+        queryFn: async () => {
+            const { data } = await api.get('/appointments/slots', {
+                params: { doctorId, date },
+            });
+            return data;
+        },
+        enabled: !!doctorId && !!date,
+    });
+}
+
 export function useDoctorAppointmentStats(params: { startDate: string; endDate: string }) {
     return useQuery<Record<string, number>>({
         queryKey: [...QUERY_KEYS.APPOINTMENTS, 'doctor-stats', params],
@@ -186,6 +199,27 @@ export function useUpdateAppointmentStatus() {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: QUERY_KEYS.APPOINTMENTS });
             queryClient.invalidateQueries({ queryKey: QUERY_KEYS.CLINIC_APPOINTMENTS });
+        },
+    });
+}
+
+export function useBookAppointment() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async (payload: {
+            doctorId: string;
+            appointmentDate: string;
+            startTime: string;
+            type: string;
+        }) => {
+            const { data } = await api.post(API_ENDPOINTS.APPOINTMENTS.BASE, payload);
+            return data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: QUERY_KEYS.APPOINTMENTS });
+            queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PATIENT_STATS_CARDS });
+            queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PATIENT_UPCOMING_LIST });
         },
     });
 }

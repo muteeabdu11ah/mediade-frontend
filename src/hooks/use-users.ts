@@ -41,6 +41,34 @@ export function useUsers(params?: UserParams) {
     });
 }
 
+export interface DoctorParams {
+    page?: number;
+    limit?: number;
+    search?: string;
+    specialty?: string;
+}
+
+export function useDoctors(params?: DoctorParams) {
+    return useQuery<PaginatedResponse<User>>({
+        queryKey: [...QUERY_KEYS.USERS, 'doctors', params],
+        queryFn: async () => {
+            const { data } = await api.get('/users/doctors', { params });
+            return data;
+        },
+    });
+}
+
+export function useUser(id: string | undefined) {
+    return useQuery<User>({
+        queryKey: [...QUERY_KEYS.USERS, 'detail', id],
+        queryFn: async () => {
+            const { data } = await api.get(API_ENDPOINTS.USERS.ONE(id!));
+            return data;
+        },
+        enabled: !!id,
+    });
+}
+
 export function useCreateClinicAdmin() {
     const queryClient = useQueryClient();
 

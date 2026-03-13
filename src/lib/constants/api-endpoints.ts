@@ -64,6 +64,7 @@ export const QUERY_KEYS = {
     PATIENT_STATS_CARDS: ['patient', 'stats-cards'],
     PATIENT_UPCOMING_LIST: ['patient', 'upcoming-list'],
     PATIENT_TOTAL_CHART: ['patient', 'total-chart'],
+    PATIENT_PROFILE: ['patient', 'profile'],
     ONSITE_CONSULTATIONS: ['onsite_consultations'],
     DOCTOR_SCHEDULES: ['doctor_schedules'],
     CLINICS: ['clinics'],

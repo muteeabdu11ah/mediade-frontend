@@ -31,7 +31,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
 import { Role } from '@/lib/types';
-import { getNavItemsByRole } from '@/lib/constants/navigation';
+import { getNavItemsByRole, ROLE_DASHBOARD_ROUTES } from '@/lib/constants/navigation';
 import Image from 'next/image';
 import GridViewIcon from '@mui/icons-material/GridView';
 import CalendarTodayOutlinedIcon from '@mui/icons-material/CalendarTodayOutlined';
@@ -90,7 +90,9 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
             {/* Navigation */}
             <List sx={{ px: 2, flex: 1, mt: 2 }}>
                 {navItems.map((item) => {
-                    const isActive = pathname === item.href;
+                    const dashboardRoot = user ? ROLE_DASHBOARD_ROUTES[user.role] : '';
+                    const isDashboardLink = item.href === dashboardRoot;
+                    const isActive = isDashboardLink ? pathname === item.href : (pathname === item.href || pathname.startsWith(item.href + '/'));
                     return (
                         <ListItem key={item.href} disablePadding sx={{ mb: 1.5 }}>
                             <ListItemButton

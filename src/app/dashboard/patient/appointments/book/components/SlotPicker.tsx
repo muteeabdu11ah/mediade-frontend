@@ -5,7 +5,7 @@ import { Box, Typography, Card, Grid, Button, IconButton, Stack, CircularProgres
 import { ChevronLeft, ChevronRight, CheckCircle } from '@mui/icons-material';
 import { format, addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, isSameMonth, isSameDay, addDays, isBefore, startOfDay } from 'date-fns';
 import { BORDER_RADIUS, SHADOWS, GRADIENTS, COLORS } from '@/lib/constants/design-tokens';
-import api from '@/lib/api';
+import { useAvailableSlots } from '@/hooks/use-appointments';
 
 interface SlotPickerProps {
     doctorId: string;
@@ -15,28 +15,15 @@ interface SlotPickerProps {
 const SlotPicker: React.FC<SlotPickerProps> = ({ doctorId, onSlotSelect }) => {
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [selectedDate, setSelectedDate] = useState(new Date());
-    const [slots, setSlots] = useState<string[]>([]);
-    const [loadingSlots, setLoadingSlots] = useState(false);
     const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
 
-    useEffect(() => {
-        const fetchSlots = async () => {
-            setLoadingSlots(true);
-            try {
-                const dateStr = format(selectedDate, 'yyyy-MM-dd');
-                const res = await api.get(`/appointments/slots?doctorId=${doctorId}&date=${dateStr}`);
-                setSlots(res.data);
-                setSelectedSlot(null);
-            } catch (err) {
-                console.error('Failed to fetch slots', err);
-                setSlots([]);
-            } finally {
-                setLoadingSlots(false);
-            }
-        };
+    const dateStr = format(selectedDate, 'yyyy-MM-dd');
+    const { data: slots = [], isLoading: loadingSlots } = useAvailableSlots(doctorId, dateStr);
 
-        fetchSlots();
-    }, [doctorId, selectedDate]);
+    // Reset selected slot when date changes
+    useEffect(() => {
+        setSelectedSlot(null);
+    }, [dateStr]);
 
     const renderHeader = () => {
         return (

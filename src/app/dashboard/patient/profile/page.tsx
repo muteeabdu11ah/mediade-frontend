@@ -28,36 +28,30 @@ import { Role, Gender, PatientProfile } from '@/lib/types';
 import api from '@/lib/api';
 import { GRADIENTS } from '@/lib/constants/design-tokens';
 
+import { usePatientProfile, useUpdatePatientProfile } from '@/hooks/use-patients';
+
 const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
 export default function PatientProfilePage() {
-    const [profile, setProfile] = useState<PatientProfile | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [saving, setSaving] = useState(false);
+    const { data: profile, isLoading: loading, error: fetchError } = usePatientProfile();
+    const updateProfile = useUpdatePatientProfile();
+
     const [error, setError] = useState('');
     const [successMsg, setSuccessMsg] = useState('');
     const [isEditing, setIsEditing] = useState(false);
-
     const [formData, setFormData] = useState<Partial<PatientProfile>>({});
 
-    const fetchProfile = async () => {
-        try {
-            setLoading(true);
-            setError('');
-            const res = await api.get<PatientProfile>('/patients/profile');
-            setProfile(res.data);
-            setFormData(res.data);
-        } catch (err: unknown) {
-            console.error(err);
-            setError('Failed to load profile. Please try again.');
-        } finally {
-            setLoading(false);
+    useEffect(() => {
+        if (profile) {
+            setFormData(profile);
         }
-    };
+    }, [profile]);
 
     useEffect(() => {
-        fetchProfile();
-    }, []);
+        if (fetchError) {
+            setError('Failed to load profile. Please try again.');
+        }
+    }, [fetchError]);
 
     const handleChange = (field: keyof PatientProfile) => (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -67,12 +61,10 @@ export default function PatientProfilePage() {
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
-        setSaving(true);
         setError('');
         setSuccessMsg('');
 
         try {
-            // Create update payload, ensuring empty strings become null for optional fields
             const payload: Partial<PatientProfile> = {
                 firstName: formData.firstName,
                 lastName: formData.lastName,
@@ -85,9 +77,7 @@ export default function PatientProfilePage() {
                 medicalHistory: formData.medicalHistory || null,
             };
 
-            const res = await api.patch<PatientProfile>('/patients/profile', payload);
-            setProfile(res.data);
-            setFormData(res.data);
+            await updateProfile.mutateAsync(payload);
             setSuccessMsg('Profile updated successfully!');
             setIsEditing(false);
         } catch (err: unknown) {
@@ -95,8 +85,6 @@ export default function PatientProfilePage() {
                 (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
                 'Failed to update profile.';
             setError(errorMessage);
-        } finally {
-            setSaving(false);
         }
     };
 
@@ -308,10 +296,10 @@ export default function PatientProfilePage() {
                                                 <Button
                                                     type="submit"
                                                     variant="contained"
-                                                    disabled={saving}
+                                                    disabled={updateProfile.isPending}
                                                     sx={{ background: GRADIENTS.primary }}
                                                 >
-                                                    {saving ? <CircularProgress size={24} color="inherit" /> : 'Save Changes'}
+                                                    {updateProfile.isPending ? <CircularProgress size={24} color="inherit" /> : 'Save Changes'}
                                                 </Button>
                                             </Box>
                                         )}

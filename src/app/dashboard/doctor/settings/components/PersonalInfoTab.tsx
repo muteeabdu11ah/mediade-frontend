@@ -17,14 +17,15 @@ import {
 } from '@mui/material';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import { useAuth } from '@/lib/auth-context';
-import api from '@/lib/api';
+import { useUpdateProfile, useUpdateProfileImage } from '@/hooks/use-auth-mutations';
 import { Specialty, Language } from '@/lib/types';
 import { COLORS, GRADIENTS } from '@/lib/constants/design-tokens';
 
 export default function PersonalInfoTab() {
     const { user, refreshProfile } = useAuth();
-    const [loading, setLoading] = useState(false);
-    const [uploading, setUploading] = useState(false);
+    const updateProfileImage = useUpdateProfileImage();
+    const updateProfile = useUpdateProfile();
+
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -51,29 +52,20 @@ export default function PersonalInfoTab() {
         const file = e.target.files?.[0];
         if (!file) return;
 
-        setUploading(true);
         setError('');
         setSuccess('');
 
-        const data = new FormData();
-        data.append('file', file);
-
         try {
-            await api.post('/auth/profile-image', data, {
-                headers: { 'Content-Type': 'multipart/form-data' },
-            });
+            await updateProfileImage.mutateAsync(file);
             await refreshProfile();
             setSuccess('Profile image updated successfully!');
         } catch (err: any) {
             setError(err.response?.data?.message || 'Failed to upload image');
-        } finally {
-            setUploading(false);
         }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setLoading(true);
         setError('');
         setSuccess('');
 
@@ -90,13 +82,11 @@ export default function PersonalInfoTab() {
                 payload.languages = formData.languages.length > 0 ? formData.languages : undefined;
             }
 
-            await api.patch('/auth/profile', payload);
+            await updateProfile.mutateAsync(payload);
             await refreshProfile();
             setSuccess('Profile updated successfully!');
         } catch (err: any) {
             setError(err.response?.data?.message || 'Failed to update profile');
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -131,7 +121,7 @@ export default function PersonalInfoTab() {
                 </Avatar>
                 <IconButton
                     onClick={handleImageClick}
-                    disabled={uploading}
+                    disabled={updateProfileImage.isPending}
                     sx={{
                         position: 'absolute',
                         bottom: 0,
@@ -142,7 +132,7 @@ export default function PersonalInfoTab() {
                     }}
                     size="small"
                 >
-                    {uploading ? <CircularProgress size={18} /> : <CameraAltIcon sx={{ fontSize: 18, color: 'text.secondary' }} />}
+                    {updateProfileImage.isPending ? <CircularProgress size={18} /> : <CameraAltIcon sx={{ fontSize: 18, color: 'text.secondary' }} />}
                 </IconButton>
             </Box>
 
@@ -322,7 +312,7 @@ export default function PersonalInfoTab() {
                 <Button
                     type="submit"
                     variant="contained"
-                    disabled={loading}
+                    disabled={updateProfile.isPending}
                     sx={{
                         px: 4,
                         py: 1,
@@ -332,7 +322,7 @@ export default function PersonalInfoTab() {
                         background: GRADIENTS.primary,
                     }}
                 >
-                    {loading ? <CircularProgress size={24} color="inherit" /> : 'Save'}
+                    {updateProfile.isPending ? <CircularProgress size={24} color="inherit" /> : 'Save'}
                 </Button>
             </Box>
         </Box>
