@@ -36,7 +36,7 @@ const statusOptions = [
     { value: AppointmentStatus.UPCOMING, label: 'Upcoming' },
     { value: AppointmentStatus.COMPLETED, label: 'Completed' },
     { value: AppointmentStatus.CANCELLED, label: 'Cancelled' },
-    { value: AppointmentStatus.MISSED, label: 'No-Show' },
+    { value: AppointmentStatus.MISSED, label: 'Missed' },
     { value: AppointmentStatus.LATE, label: 'Late' },
 ];
 
@@ -197,7 +197,7 @@ export default function ClinicAppointmentsPage() {
                         onClick={() => handleUpdateStatus(AppointmentStatus.MISSED)}
                         sx={{ color: '#AB47BC', fontWeight: 600 }}
                     >
-                        <HelpOutlineIcon fontSize="small" sx={{ mr: 1 }} /> Mark No-Show
+                        <HelpOutlineIcon fontSize="small" sx={{ mr: 1 }} /> Mark Missed
                     </MenuItem>
                     <MenuItem
                         onClick={() => handleUpdateStatus(AppointmentStatus.CANCELLED)}

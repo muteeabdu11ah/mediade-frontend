@@ -24,7 +24,7 @@ const StatusUpdateMenu: React.FC<StatusUpdateMenuProps> = ({ anchorEl, onClose, 
                 <CheckCircleIcon fontSize="small" sx={{ mr: 1 }} /> Mark Completed
             </MenuItem>
             <MenuItem onClick={() => onStatusUpdate(AppointmentStatus.MISSED)} sx={{ color: COLORS.warning.main }}>
-                <HelpOutlineIcon fontSize="small" sx={{ mr: 1 }} /> Mark No-Show
+                <HelpOutlineIcon fontSize="small" sx={{ mr: 1 }} /> Mark Missed
             </MenuItem>
             <MenuItem onClick={() => onStatusUpdate(AppointmentStatus.CANCELLED)} sx={{ color: COLORS.error.main }}>
                 <CancelIcon fontSize="small" sx={{ mr: 1 }} /> Cancel Appointment
