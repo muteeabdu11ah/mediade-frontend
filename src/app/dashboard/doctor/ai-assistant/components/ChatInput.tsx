@@ -55,12 +55,10 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage }) => {
                     onKeyPress={(e) => e.key === 'Enter' && handleSend()}
                     sx={{
                         fontSize: '1rem',
-                        fontWeight: 600,
                         color: COLORS.text.primary,
                         '& input::placeholder': {
                             color: COLORS.text.muted,
                             opacity: 1,
-                            fontWeight: 500
                         },
                     }}
                 />

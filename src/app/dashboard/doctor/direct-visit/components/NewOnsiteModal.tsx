@@ -9,6 +9,7 @@ import {
     TextField,
     CircularProgress,
 } from '@mui/material';
+import { COLORS } from '@/lib/constants/design-tokens';
 
 interface NewOnsiteModalProps {
     open: boolean;
@@ -22,7 +23,7 @@ interface NewOnsiteModalProps {
 const NewOnsiteModal: React.FC<NewOnsiteModalProps> = ({ open, onClose, formData, setFormData, onSubmit, isSubmitting }) => {
     return (
         <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-            <DialogTitle sx={{ fontWeight: 700, color: '#1A2B3C' }}>New Onsite Consultation</DialogTitle>
+            <DialogTitle sx={{ color: COLORS.text.primary }}>New Onsite Consultation</DialogTitle>
             <DialogContent dividers>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
                     <Box sx={{ display: 'flex', gap: 2 }}>
@@ -63,7 +64,7 @@ const NewOnsiteModal: React.FC<NewOnsiteModalProps> = ({ open, onClose, formData
                     variant="contained"
                     disabled={!formData.firstName || !formData.lastName || isSubmitting}
                     onClick={onSubmit}
-                    sx={{ bgcolor: '#1fb2ba', color: 'white', '&:hover': { bgcolor: '#148991' } }}
+                    sx={{ bgcolor: COLORS.primary.main, color: 'white', '&:hover': { bgcolor: COLORS.primary.dark } }}
                 >
                     {isSubmitting ? <CircularProgress size={24} color="inherit" /> : 'Create & Start'}
                 </Button>

@@ -42,10 +42,10 @@ export default function DoctorDurationChart() {
                             </>
                         ) : (
                             <>
-                                <Typography variant="h3" sx={{ fontWeight: 800, color: COLORS.text.primary }}>
+                                <Typography variant="h5" sx={{ color: COLORS.text.primary }}>
                                     Consultation Duration
                                 </Typography>
-                                <Typography variant="body2" sx={{ color: COLORS.text.muted, fontWeight: 600 }}>
+                                <Typography variant="body2" sx={{ color: COLORS.text.muted }}>
                                     Average minutes per day
                                 </Typography>
                             </>
@@ -53,7 +53,7 @@ export default function DoctorDurationChart() {
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center', bgcolor: COLORS.background.subtle, px: 2, py: 0.8, borderRadius: BORDER_RADIUS.md, border: `1px solid ${COLORS.border.light}` }}>
                         <AccessTimeIcon sx={{ fontSize: 16, mr: 0.8, color: COLORS.primary.main }} />
-                        <Typography variant="caption" sx={{ color: COLORS.text.primary, fontWeight: 700 }}>This Week</Typography>
+                        <Typography variant="caption" sx={{ color: COLORS.text.primary }}>This Week</Typography>
                     </Box>
                 </Box>
 

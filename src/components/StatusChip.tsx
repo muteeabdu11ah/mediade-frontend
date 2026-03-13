@@ -112,13 +112,9 @@ export default function StatusChip({ status, label, bgcolor, color, border }: St
             }}
         >
             <Typography
-                variant="caption"
+                variant="overline"
                 sx={{
                     color: chipColor,
-                    fontWeight: 700,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.05em',
-                    fontSize: '0.7rem'
                 }}
             >
                 {chipLabel}

@@ -26,6 +26,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { Role, Gender, PatientProfile } from '@/lib/types';
 import api from '@/lib/api';
+import { GRADIENTS } from '@/lib/constants/design-tokens';
 
 const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 
@@ -308,7 +309,7 @@ export default function PatientProfilePage() {
                                                     type="submit"
                                                     variant="contained"
                                                     disabled={saving}
-                                                    sx={{ background: 'linear-gradient(135deg, #00BCD4 0%, #009688 100%)' }}
+                                                    sx={{ background: GRADIENTS.primary }}
                                                 >
                                                     {saving ? <CircularProgress size={24} color="inherit" /> : 'Save Changes'}
                                                 </Button>

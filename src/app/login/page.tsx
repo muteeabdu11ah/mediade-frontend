@@ -186,8 +186,6 @@ export default function LoginPage() {
                                 endIcon={isLoading ? <CircularProgress size={20} color="inherit" /> : <ArrowForwardIcon />}
                                 sx={{
                                     py: 2,
-                                    fontSize: '1.1rem',
-                                    fontWeight: 800,
                                     borderRadius: BORDER_RADIUS.md,
                                     boxShadow: SHADOWS.medium,
                                     '&.Mui-disabled': {
@@ -201,7 +199,7 @@ export default function LoginPage() {
                         </Box>
 
                         <Divider sx={{ my: 4 }}>
-                            <Typography variant="caption" sx={{ color: COLORS.text.muted, fontWeight: 600, px: 2 }}>
+                            <Typography variant="caption" sx={{ color: COLORS.text.muted, px: 2 }}>
                                 NEW TO Medaide?
                             </Typography>
                         </Divider>
@@ -213,7 +211,6 @@ export default function LoginPage() {
                             fullWidth
                             sx={{
                                 py: 1.5,
-                                fontWeight: 700,
                                 borderRadius: BORDER_RADIUS.md,
                                 borderWidth: 2,
                                 '&:hover': {
@@ -233,7 +230,6 @@ export default function LoginPage() {
                                 variant="body2"
                                 sx={{
                                     color: COLORS.text.secondary,
-                                    fontWeight: 600,
                                     textDecoration: 'none',
                                     transition: 'color 0.2s',
                                     '&:hover': { color: COLORS.primary.main },

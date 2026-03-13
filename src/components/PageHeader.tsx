@@ -36,9 +36,7 @@ export default function PageHeader({
                 <Typography
                     variant="h4"
                     sx={{
-                        fontWeight: 900,
                         color: COLORS.text.primary,
-                        letterSpacing: '-1.5px',
                         fontSize: { xs: '1.75rem', md: '2.25rem' }
                     }}
                 >
@@ -46,11 +44,10 @@ export default function PageHeader({
                 </Typography>
                 {subtitle && (
                     <Typography
-                        variant="body1"
+                        variant="body2"
                         sx={{
                             color: COLORS.text.muted,
                             mt: 1,
-                            fontWeight: 600,
                             maxWidth: 500
                         }}
                     >
@@ -67,10 +64,8 @@ export default function PageHeader({
                         borderRadius: BORDER_RADIUS.full,
                         px: 4,
                         py: 1.5,
-                        fontWeight: 800,
                         background: GRADIENTS.primary,
                         boxShadow: SHADOWS.medium,
-                        letterSpacing: '0.5px',
                         '&:hover': {
                             background: GRADIENTS.hover,
                             boxShadow: SHADOWS.hover,

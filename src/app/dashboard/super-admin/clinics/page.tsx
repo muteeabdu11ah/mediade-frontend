@@ -104,7 +104,7 @@ export default function ClinicsPage() {
                     <Box sx={{ p: 1, borderRadius: BORDER_RADIUS.sm, bgcolor: COLORS.primary.subtle, display: 'flex' }}>
                         <BusinessIcon sx={{ color: COLORS.primary.main, fontSize: 24 }} />
                     </Box>
-                    <Typography variant="body2" fontWeight={800} color={COLORS.text.primary} sx={{ letterSpacing: '-0.2px' }}>
+                    <Typography variant="body2" color={COLORS.text.primary} sx={{ letterSpacing: '-0.2px' }}>
                         {clinic.name}
                     </Typography>
                 </Box>
@@ -114,15 +114,15 @@ export default function ClinicsPage() {
             header: 'Contact Details',
             render: (clinic) => (
                 <Box>
-                    <Typography variant="body2" fontWeight={600} color={COLORS.text.secondary}>{clinic.email}</Typography>
-                    <Typography variant="caption" color={COLORS.text.muted} fontWeight={500}>{clinic.phone}</Typography>
+                    <Typography variant="body2" color={COLORS.text.secondary}>{clinic.email}</Typography>
+                    <Typography variant="caption" color={COLORS.text.muted}>{clinic.phone}</Typography>
                 </Box>
             ),
         },
         {
             header: 'Address',
             render: (clinic) => (
-                <Typography variant="body2" color={COLORS.text.secondary} fontWeight={500} noWrap title={clinic.address} sx={{ maxWidth: 200 }}>
+                <Typography variant="body2" color={COLORS.text.secondary} noWrap title={clinic.address} sx={{ maxWidth: 200 }}>
                     {clinic.address}
                 </Typography>
             ),
@@ -200,7 +200,7 @@ export default function ClinicsPage() {
                             }
                         }}
                     >
-                        <DialogTitle sx={{ fontWeight: 900, color: COLORS.text.primary, pt: 4, px: 4 }}>
+                        <DialogTitle sx={{ color: COLORS.text.primary, pt: 4, px: 4 }}>
                             {selectedClinic ? 'Edit Clinic' : 'Add New Clinic'}
                         </DialogTitle>
                         <DialogContent sx={{ px: 4, py: 2 }}>
@@ -212,14 +212,13 @@ export default function ClinicsPage() {
                             </Box>
                         </DialogContent>
                         <DialogActions sx={{ p: 4 }}>
-                            <Button onClick={() => setOpen(false)} sx={{ color: COLORS.text.secondary, fontWeight: 700 }}>Cancel</Button>
+                            <Button onClick={() => setOpen(false)} sx={{ color: COLORS.text.secondary }}>Cancel</Button>
                             <Button
                                 variant="contained"
                                 onClick={handleSubmit}
                                 sx={{
                                     borderRadius: BORDER_RADIUS.md,
                                     px: 4,
-                                    fontWeight: 800,
                                     boxShadow: SHADOWS.medium
                                 }}
                             >

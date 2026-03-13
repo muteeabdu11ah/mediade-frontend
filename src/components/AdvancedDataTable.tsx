@@ -165,8 +165,6 @@ export default function AdvancedDataTable<T>({
                             onChange={handleSearchChange}
                             sx={{
                                 flex: 1,
-                                fontSize: '0.95rem',
-                                fontWeight: 500,
                                 color: COLORS.text.primary,
                                 '& input::placeholder': {
                                     color: COLORS.text.muted,
@@ -278,7 +276,7 @@ export default function AdvancedDataTable<T>({
                                         }}
                                         onChange={(e) => onDateChange(e.target.value, undefined)}
                                     />
-                                    <Typography variant="body2" color={COLORS.text.muted} sx={{ fontWeight: 800 }}>-</Typography>
+                                    <Typography variant="body2" color={COLORS.text.muted}>-</Typography>
                                     <input
                                         type="date"
                                         style={{
@@ -323,11 +321,11 @@ export default function AdvancedDataTable<T>({
                                     key={col.header + index}
                                     align={col.align || 'left'}
                                     sx={{
-                                        fontWeight: 800,
+                                        fontWeight: 600,
                                         color: COLORS.text.primary,
                                         fontSize: '0.8rem',
                                         textTransform: 'uppercase',
-                                        letterSpacing: '1px',
+                                        letterSpacing: '0.5px',
                                         minWidth: col.minWidth,
                                         py: 1.25,
                                         borderBottom: `0px solid ${COLORS.border.medium}`,
@@ -341,11 +339,11 @@ export default function AdvancedDataTable<T>({
                                 <TableCell
                                     align="center"
                                     sx={{
-                                        fontWeight: 800,
+                                        fontWeight: 600,
                                         color: COLORS.text.primary,
                                         fontSize: '0.8rem',
                                         textTransform: 'uppercase',
-                                        letterSpacing: '1px',
+                                        letterSpacing: '0.5px',
                                         py: 1.25,
                                         borderBottom: `1px solid ${COLORS.border.light}`
                                     }}
@@ -387,7 +385,7 @@ export default function AdvancedDataTable<T>({
                                     <Box sx={{ opacity: 0.5, mb: 1.5 }}>
                                         <SearchIcon sx={{ fontSize: 48 }} />
                                     </Box>
-                                    <Typography variant="body1" fontWeight={600}>{emptyMessage}</Typography>
+                                    <Typography variant="body1">{emptyMessage}</Typography>
                                 </TableCell>
                             </TableRow>
                         ) : (
@@ -512,7 +510,7 @@ export default function AdvancedDataTable<T>({
                     }}
                 >
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                        <Typography variant="body2" color={COLORS.text.muted} fontWeight={600}>
+                        <Typography variant="body2" color={COLORS.text.muted}>
                             Jump to page:
                         </Typography>
                         <Select
@@ -533,7 +531,7 @@ export default function AdvancedDataTable<T>({
                                 <MenuItem key={num} value={String(num)}>{num}</MenuItem>
                             ))}
                         </Select>
-                        <Typography variant="body2" color={COLORS.text.muted} fontWeight={600}>
+                        <Typography variant="body2" color={COLORS.text.muted}>
                             of {pagination.totalPages}
                         </Typography>
                     </Box>

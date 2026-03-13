@@ -30,11 +30,11 @@ export default function PatientUpcomingList() {
         <Card sx={{ borderRadius: 3, boxShadow: '0 2px 10px rgba(0,0,0,0.02)', border: '1px solid #f0f0f0', height: '100%' }}>
             <CardContent sx={{ p: 3 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                    <Typography variant="h3" fontWeight={700} color="#1A2B3C">
+                    <Typography variant="h5" color="#1A2B3C">
                         Upcoming Appointments
                     </Typography>
                     <Link href="/dashboard/patient/appointments" style={{ textDecoration: 'none' }}>
-                        <Typography variant="caption" sx={{ color: '#00BCD4', fontWeight: 600, cursor: 'pointer' }}>
+                        <Typography variant="caption" sx={{ color: '#00BCD4', cursor: 'pointer' }}>
                             View All &gt;
                         </Typography>
                     </Link>
@@ -61,7 +61,7 @@ export default function PatientUpcomingList() {
                                     </ListItemAvatar>
                                     <ListItemText
                                         primary={
-                                            <Typography variant="body2" fontWeight={700} color="#1A2B3C">
+                                            <Typography variant="body2" color="#1A2B3C">
                                                 {appt.doctorName}
                                             </Typography>
                                         }
@@ -74,7 +74,7 @@ export default function PatientUpcomingList() {
                                     <Box sx={{ textAlign: 'right', minWidth: 80 }}>
                                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, justifyContent: 'flex-end', mb: 0.5 }}>
                                             <CalendarTodayIcon sx={{ fontSize: 12, color: '#00BCD4' }} />
-                                            <Typography variant="caption" fontWeight={700} color={appt.isToday ? '#00BCD4' : 'text.primary'}>
+                                            <Typography variant="caption" color={appt.isToday ? '#00BCD4' : 'text.primary'}>
                                                 {appt.isToday ? 'Today' : new Date(appt.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                                             </Typography>
                                         </Box>

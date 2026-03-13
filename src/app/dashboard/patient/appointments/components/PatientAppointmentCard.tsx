@@ -8,6 +8,7 @@ import ScheduleOutlinedIcon from '@mui/icons-material/ScheduleOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { Appointment, AppointmentStatus } from '@/lib/types';
 import StatusChip from '@/components/StatusChip';
+import { COLORS, BORDER_RADIUS } from '@/lib/constants/design-tokens';
 
 interface PatientAppointmentCardProps {
     appointment: Appointment;
@@ -38,9 +39,9 @@ const PatientAppointmentCard: React.FC<PatientAppointmentCardProps> = ({ appoint
 
     return (
         <Card sx={{
-            borderRadius: 2,
+            borderRadius: BORDER_RADIUS.md,
             boxShadow: '0 4px 12px rgba(0,0,0,0.03)',
-            border: '1px solid #f0f0f0',
+            border: `1px solid ${COLORS.border.light}`,
             display: 'flex',
             flexDirection: 'row',
             p: 2,
@@ -67,7 +68,7 @@ const PatientAppointmentCard: React.FC<PatientAppointmentCardProps> = ({ appoint
                 {/* Header: Name and More Icon */}
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-                        <Typography variant="h3" fontWeight={700} color="#2D3748">
+                        <Typography variant="h3" color={COLORS.text.primary}>
                             {doctorName}
                         </Typography>
                         <StatusChip status={appointment.status} />
@@ -84,19 +85,19 @@ const PatientAppointmentCard: React.FC<PatientAppointmentCardProps> = ({ appoint
                     {/* Row 1: Specialty & Clinic */}
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                            <Box sx={{ width: 24, height: 24, borderRadius: '50%', bgcolor: '#E6FBFC', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#00BCD4' }}>
+                            <Box sx={{ width: 24, height: 24, borderRadius: '50%', bgcolor: COLORS.primary.subtle, display: 'flex', alignItems: 'center', justifyContent: 'center', color: COLORS.primary.main }}>
                                 <WorkOutlineIcon sx={{ fontSize: 14 }} />
                             </Box>
-                            <Typography variant="body2" color="text.secondary" fontWeight={500}>
+                            <Typography variant="body2" color="text.secondary">
                                 {specialty}
                             </Typography>
                         </Box>
 
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                            <Box sx={{ width: 24, height: 24, borderRadius: '50%', bgcolor: '#E6FBFC', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#00BCD4' }}>
+                            <Box sx={{ width: 24, height: 24, borderRadius: '50%', bgcolor: COLORS.primary.subtle, display: 'flex', alignItems: 'center', justifyContent: 'center', color: COLORS.primary.main }}>
                                 <LocalHospitalOutlinedIcon sx={{ fontSize: 14 }} />
                             </Box>
-                            <Typography variant="body2" color="text.secondary" fontWeight={500}>
+                            <Typography variant="body2" color="text.secondary">
                                 {clinicName}
                             </Typography>
                         </Box>
@@ -105,19 +106,19 @@ const PatientAppointmentCard: React.FC<PatientAppointmentCardProps> = ({ appoint
                     {/* Row 2: Date & Time */}
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flexWrap: 'wrap' }}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                            <Box sx={{ width: 24, height: 24, borderRadius: '50%', bgcolor: '#E6FBFC', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#00BCD4' }}>
+                            <Box sx={{ width: 24, height: 24, borderRadius: '50%', bgcolor: COLORS.primary.subtle, display: 'flex', alignItems: 'center', justifyContent: 'center', color: COLORS.primary.main }}>
                                 <CalendarTodayOutlinedIcon sx={{ fontSize: 14 }} />
                             </Box>
-                            <Typography variant="body2" color="#1A202C" fontWeight={600}>
+                            <Typography variant="body2" color={COLORS.text.primary}>
                                 {dateStr}
                             </Typography>
                         </Box>
 
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                            <Box sx={{ width: 24, height: 24, borderRadius: '50%', bgcolor: '#E6FBFC', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#00BCD4' }}>
+                            <Box sx={{ width: 24, height: 24, borderRadius: '50%', bgcolor: COLORS.primary.subtle, display: 'flex', alignItems: 'center', justifyContent: 'center', color: COLORS.primary.main }}>
                                 <ScheduleOutlinedIcon sx={{ fontSize: 14 }} />
                             </Box>
-                            <Typography variant="body2" color="text.secondary" fontWeight={500}>
+                            <Typography variant="body2" color="text.secondary">
                                 {timeStr}
                             </Typography>
                         </Box>
@@ -130,15 +131,14 @@ const PatientAppointmentCard: React.FC<PatientAppointmentCardProps> = ({ appoint
                         variant="outlined"
                         startIcon={<VisibilityOutlinedIcon />}
                         sx={{
-                            color: '#00BCD4',
-                            borderColor: '#00BCD4',
-                            borderRadius: '8px',
+                            color: COLORS.primary.main,
+                            borderColor: COLORS.primary.main,
+                            borderRadius: BORDER_RADIUS.md,
                             textTransform: 'none',
-                            fontWeight: 600,
                             px: 3,
                             '&:hover': {
-                                borderColor: '#0097A7',
-                                bgcolor: '#F0FDFE'
+                                borderColor: COLORS.primary.dark,
+                                bgcolor: COLORS.primary.subtle
                             }
                         }}
                     >

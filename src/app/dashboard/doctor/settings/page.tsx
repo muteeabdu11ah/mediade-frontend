@@ -78,7 +78,8 @@ export default function DoctorSettingsPage() {
                                             primary={item.label}
                                             primaryTypographyProps={{
                                                 fontWeight: activeTab === item.id ? 700 : 500,
-                                                variant: 'body2'
+                                                variant: 'body2',
+                                                color: activeTab === item.id ? 'white' : 'text.secondary',
                                             }}
                                         />
                                     </ListItemButton>

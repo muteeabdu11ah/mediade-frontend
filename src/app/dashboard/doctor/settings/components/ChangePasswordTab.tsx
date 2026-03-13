@@ -16,6 +16,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import api from '@/lib/api';
 import { useAuth } from '@/lib/auth-context';
+import { COLORS, GRADIENTS } from '@/lib/constants/design-tokens';
 
 export default function ChangePasswordTab() {
     const { logout } = useAuth();
@@ -69,7 +70,7 @@ export default function ChangePasswordTab() {
 
     return (
         <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: 500 }}>
-            <Typography variant="h5" fontWeight={700} sx={{ mb: 1, color: '#2D3748' }}>
+            <Typography variant="h5" sx={{ mb: 1, color: COLORS.text.primary }}>
                 Change Password
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
@@ -80,7 +81,7 @@ export default function ChangePasswordTab() {
             {success && <Alert severity="success" sx={{ mb: 3 }}>{success}</Alert>}
 
             <Box sx={{ mb: 3 }}>
-                <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1, color: '#4A5568' }}>
+                <Typography variant="subtitle2" sx={{ mb: 1, color: COLORS.text.secondary }}>
                     Current Password
                 </Typography>
                 <TextField
@@ -110,7 +111,7 @@ export default function ChangePasswordTab() {
             </Box>
 
             <Box sx={{ mb: 3 }}>
-                <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1, color: '#4A5568' }}>
+                <Typography variant="subtitle2" sx={{ mb: 1, color: COLORS.text.secondary }}>
                     New Password
                 </Typography>
                 <TextField
@@ -140,7 +141,7 @@ export default function ChangePasswordTab() {
             </Box>
 
             <Box sx={{ mb: 3 }}>
-                <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1, color: '#4A5568' }}>
+                <Typography variant="subtitle2" sx={{ mb: 1, color: COLORS.text.secondary }}>
                     Confirm New Password
                 </Typography>
                 <TextField
@@ -174,7 +175,7 @@ export default function ChangePasswordTab() {
             <Box sx={{ display: 'flex', flexDirection: { xs: 'column-reverse', sm: 'row' }, justifyContent: 'flex-end', gap: 2 }}>
                 <Button
                     variant="outlined"
-                    sx={{ px: 4, py: 1, borderRadius: 3, textTransform: 'none', fontWeight: 600, width: { xs: '100%', sm: 'auto' } }}
+                    sx={{ px: 4, py: 1, borderRadius: 3, textTransform: 'none', width: { xs: '100%', sm: 'auto' } }}
                     onClick={() => setFormData({ currentPassword: '', newPassword: '', confirmPassword: '' })}
                 >
                     Cancel
@@ -188,9 +189,8 @@ export default function ChangePasswordTab() {
                         py: 1,
                         borderRadius: 3,
                         textTransform: 'none',
-                        fontWeight: 600,
                         width: { xs: '100%', sm: 'auto' },
-                        background: 'linear-gradient(135deg, #00BCD4 0%, #009688 100%)',
+                        background: GRADIENTS.primary,
                     }}
                 >
                     {loading ? <CircularProgress size={24} color="inherit" /> : 'Update Password'}

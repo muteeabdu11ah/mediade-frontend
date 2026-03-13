@@ -19,6 +19,7 @@ import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import { useAuth } from '@/lib/auth-context';
 import api from '@/lib/api';
 import { Specialty, Language } from '@/lib/types';
+import { COLORS, GRADIENTS } from '@/lib/constants/design-tokens';
 
 export default function PersonalInfoTab() {
     const { user, refreshProfile } = useAuth();
@@ -108,7 +109,7 @@ export default function PersonalInfoTab() {
                 onChange={handleImageChange}
                 accept="image/jpeg,image/png,image/webp"
             />
-            <Typography variant="h5" fontWeight={700} sx={{ mb: 1, color: '#2D3748' }}>
+            <Typography variant="h5" sx={{ mb: 1, color: COLORS.text.primary }}>
                 Profile Info
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
@@ -124,7 +125,6 @@ export default function PersonalInfoTab() {
                         border: '4px solid #F0F9FA',
                         bgcolor: 'primary.main',
                         fontSize: { xs: '2rem', md: '2.5rem' },
-                        fontWeight: 700,
                     }}
                 >
                     {user?.profileImageUrl ? null : (formData.firstName?.[0] || 'D')}
@@ -170,7 +170,7 @@ export default function PersonalInfoTab() {
                     />
                 </Grid>
                 <Grid size={{ xs: 12, sm: 6, md: 6 }}>
-                    <Typography variant="subtitle2" fontWeight={700} sx={{ mb: 1, color: '#4A5568' }}>
+                    <Typography variant="subtitle2" sx={{ mb: 1, color: COLORS.text.secondary }}>
                         Last Name
                     </Typography>
                     <TextField
@@ -315,7 +315,7 @@ export default function PersonalInfoTab() {
                 <Button
                     variant="outlined"
                     fullWidth={false}
-                    sx={{ px: 4, py: 1, borderRadius: 3, textTransform: 'none', fontWeight: 600, width: { xs: '100%', sm: 'auto' } }}
+                    sx={{ px: 4, py: 1, borderRadius: 3, textTransform: 'none', width: { xs: '100%', sm: 'auto' } }}
                 >
                     Cancel
                 </Button>
@@ -328,9 +328,8 @@ export default function PersonalInfoTab() {
                         py: 1,
                         borderRadius: 3,
                         textTransform: 'none',
-                        fontWeight: 600,
                         width: { xs: '100%', sm: 'auto' },
-                        background: 'linear-gradient(135deg, #00BCD4 0%, #009688 100%)',
+                        background: GRADIENTS.primary,
                     }}
                 >
                     {loading ? <CircularProgress size={24} color="inherit" /> : 'Save'}

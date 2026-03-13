@@ -3,7 +3,7 @@
 import React from 'react';
 import { Grid, Box, Pagination, Typography, Card, Skeleton, Stack } from '@mui/material';
 import DoctorCard from './DoctorCard';
-import { BORDER_RADIUS, SHADOWS } from '@/lib/constants/design-tokens';
+import { BORDER_RADIUS, GRADIENTS, SHADOWS } from '@/lib/constants/design-tokens';
 
 interface DoctorGridProps {
     doctors: any[];
@@ -115,7 +115,7 @@ const DoctorGrid: React.FC<DoctorGridProps> = ({
                             '& .MuiPaginationItem-root': {
                                 borderRadius: 2,
                                 '&.Mui-selected': {
-                                    background: 'linear-gradient(135deg, #00BCD4 0%, #009688 100%)',
+                                    background: GRADIENTS.primary,
                                     color: 'white',
                                     '&:hover': { opacity: 0.9 }
                                 }

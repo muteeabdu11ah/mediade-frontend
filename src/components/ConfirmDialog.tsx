@@ -48,11 +48,11 @@ export default function ConfirmDialog({
                 }
             }}
         >
-            <DialogTitle sx={{ fontWeight: 900, color: COLORS.text.primary, pt: 4, px: 4 }}>
+            <DialogTitle sx={{ color: COLORS.text.primary, pt: 4, px: 4 }}>
                 {title}
             </DialogTitle>
             <DialogContent sx={{ px: 4, pb: 1 }}>
-                <DialogContentText sx={{ color: COLORS.text.secondary, fontWeight: 500 }}>
+                <DialogContentText sx={{ color: COLORS.text.secondary }}>
                     {message}
                 </DialogContentText>
             </DialogContent>
@@ -61,7 +61,6 @@ export default function ConfirmDialog({
                     onClick={onCancel}
                     sx={{
                         color: COLORS.text.muted,
-                        fontWeight: 700,
                         '&:hover': { color: COLORS.text.secondary }
                     }}
                 >
@@ -74,7 +73,6 @@ export default function ConfirmDialog({
                     disabled={isLoading}
                     sx={{
                         borderRadius: BORDER_RADIUS.md,
-                        fontWeight: 800,
                         px: 4,
                         boxShadow: confirmColor === 'error' ? 'none' : SHADOWS.medium,
                     }}

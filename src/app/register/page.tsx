@@ -178,10 +178,10 @@ export default function RegisterPage() {
                                     <LocalHospitalIcon sx={{ color: 'white', fontSize: 32 }} />
                                 </Box>
                             </Box>
-                            <Typography variant="h4" fontWeight={900} sx={{ mb: 1, letterSpacing: '-1px' }}>
+                            <Typography variant="h4" sx={{ mb: 1 }}>
                                 Create Account
                             </Typography>
-                            <Typography variant="body2" color="text.secondary" fontWeight={500}>
+                            <Typography variant="body2" color="text.secondary">
                                 Join Medaide as a patient
                             </Typography>
                         </Box>
@@ -193,8 +193,6 @@ export default function RegisterPage() {
                                     <StepLabel
                                         sx={{
                                             '& .MuiStepLabel-label': {
-                                                fontSize: '0.85rem',
-                                                fontWeight: 700,
                                                 color: COLORS.text.muted
                                             },
                                             '& .MuiStepLabel-label.Mui-active': {
@@ -333,7 +331,6 @@ export default function RegisterPage() {
                                         sx={{
                                             mt: 4,
                                             py: 2,
-                                            fontWeight: 800,
                                             borderRadius: BORDER_RADIUS.md,
                                             boxShadow: SHADOWS.medium,
                                         }}
@@ -441,7 +438,6 @@ export default function RegisterPage() {
                                             sx={{
                                                 flex: 1,
                                                 py: 2,
-                                                fontWeight: 700,
                                                 borderRadius: BORDER_RADIUS.md,
                                                 borderWidth: 2,
                                                 '&:hover': { borderWidth: 2 }
@@ -457,7 +453,6 @@ export default function RegisterPage() {
                                             sx={{
                                                 flex: 2,
                                                 py: 2,
-                                                fontWeight: 800,
                                                 borderRadius: BORDER_RADIUS.md,
                                                 boxShadow: SHADOWS.medium,
                                                 '&.Mui-disabled': {
@@ -474,7 +469,7 @@ export default function RegisterPage() {
                         </Box>
 
                         <Divider sx={{ my: 4 }}>
-                            <Typography variant="caption" sx={{ color: COLORS.text.muted, fontWeight: 600, px: 2 }}>
+                            <Typography variant="caption" sx={{ color: COLORS.text.muted, px: 2 }}>
                                 ALREADY HAVE AN ACCOUNT?
                             </Typography>
                         </Divider>
@@ -486,7 +481,6 @@ export default function RegisterPage() {
                             fullWidth
                             sx={{
                                 py: 1.5,
-                                fontWeight: 700,
                                 borderRadius: BORDER_RADIUS.md,
                                 borderWidth: 2,
                                 '&:hover': {
@@ -505,7 +499,6 @@ export default function RegisterPage() {
                                 variant="body2"
                                 sx={{
                                     color: COLORS.text.secondary,
-                                    fontWeight: 600,
                                     textDecoration: 'none',
                                     transition: 'color 0.2s',
                                     '&:hover': { color: COLORS.primary.main },

@@ -89,6 +89,20 @@ const theme = createTheme({
       lineHeight: 1.4,
       color: COLORS.text.muted,
     },
+    subtitle1: {
+      fontSize: TYPOGRAPHY.sizes.bodyLarge,
+      fontWeight: TYPOGRAPHY.weights.semibold,
+      lineHeight: 1.5,
+      color: COLORS.text.primary,
+    },
+    subtitle2: {
+      fontSize: TYPOGRAPHY.sizes.bodyMedium,
+      fontWeight: TYPOGRAPHY.weights.semibold,
+      lineHeight: 1.5,
+      textTransform: 'uppercase',
+      letterSpacing: '1px',
+      color: COLORS.text.primary,
+    },
     overline: {
       fontSize: TYPOGRAPHY.sizes.overline,
       fontWeight: TYPOGRAPHY.weights.semibold,

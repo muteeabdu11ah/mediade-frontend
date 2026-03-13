@@ -89,9 +89,7 @@ export default function Navbar() {
                                         href={link.href}
                                         sx={{
                                             color: COLORS.text.secondary,
-                                            fontWeight: 700,
                                             px: 2.5,
-                                            fontSize: '0.95rem',
                                             borderRadius: BORDER_RADIUS.md,
                                             '&:hover': {
                                                 color: COLORS.primary.main,
@@ -116,7 +114,6 @@ export default function Navbar() {
                                                 borderRadius: BORDER_RADIUS.full,
                                                 background: GRADIENTS.primary,
                                                 boxShadow: SHADOWS.medium,
-                                                fontWeight: 800,
                                                 px: 3,
                                                 '&:hover': {
                                                     boxShadow: SHADOWS.hover,
@@ -144,7 +141,6 @@ export default function Navbar() {
                                                     height: 40,
                                                     background: GRADIENTS.secondary,
                                                     fontSize: '0.9rem',
-                                                    fontWeight: 800,
                                                     boxShadow: SHADOWS.small
                                                 }}
                                             >
@@ -172,20 +168,20 @@ export default function Navbar() {
                                             }}
                                         >
                                             <Box sx={{ px: 2, py: 2, mb: 1, bgcolor: COLORS.background.subtle, borderRadius: BORDER_RADIUS.md }}>
-                                                <Typography variant="body2" fontWeight={800} sx={{ color: COLORS.text.primary, mb: 0.5 }}>
+                                                <Typography variant="h6" sx={{ color: COLORS.text.primary, mb: 0.5 }}>
                                                     {user.firstName} {user.lastName}
                                                 </Typography>
-                                                <Typography variant="caption" sx={{ color: COLORS.text.muted, fontWeight: 600 }}>
+                                                <Typography variant="caption" sx={{ color: COLORS.text.muted }}>
                                                     {user.email}
                                                 </Typography>
                                             </Box>
                                             <Box sx={{ p: 0.5 }}>
-                                                <MenuItem onClick={handleMenuClose} component={Link} href={getDashboardRoute()} sx={{ borderRadius: BORDER_RADIUS.md, py: 1.5, mb: 0.5, fontWeight: 700 }}>
+                                                <MenuItem onClick={handleMenuClose} component={Link} href={getDashboardRoute()} sx={{ borderRadius: BORDER_RADIUS.md, py: 1.5, mb: 0.5 }}>
                                                     <DashboardIcon fontSize="small" sx={{ mr: 1.5, color: COLORS.primary.main }} />
                                                     My Dashboard
                                                 </MenuItem>
                                                 <Divider sx={{ my: 1, opacity: 0.5 }} />
-                                                <MenuItem onClick={handleLogout} sx={{ borderRadius: BORDER_RADIUS.md, py: 1.5, color: COLORS.error.main, fontWeight: 700, '&:hover': { bgcolor: COLORS.error.subtle } }}>
+                                                <MenuItem onClick={handleLogout} sx={{ borderRadius: BORDER_RADIUS.md, py: 1.5, color: COLORS.error.main, '&:hover': { bgcolor: COLORS.error.subtle } }}>
                                                     <LogoutIcon fontSize="small" sx={{ mr: 1.5 }} />
                                                     Logout
                                                 </MenuItem>
@@ -200,7 +196,6 @@ export default function Navbar() {
                                             href="/login"
                                             sx={{
                                                 color: COLORS.primary.main,
-                                                fontWeight: 800,
                                                 '&:hover': { bgcolor: COLORS.primary.subtle }
                                             }}
                                         >
@@ -213,7 +208,6 @@ export default function Navbar() {
                                             sx={{
                                                 borderRadius: BORDER_RADIUS.full,
                                                 background: GRADIENTS.primary,
-                                                fontWeight: 800,
                                                 px: 4,
                                                 boxShadow: SHADOWS.medium,
                                                 '&:hover': {
@@ -288,7 +282,7 @@ export default function Navbar() {
                                 >
                                     <ListItemText
                                         primary={link.label}
-                                        primaryTypographyProps={{ fontWeight: 700, fontSize: '1rem' }}
+                                        primaryTypographyProps={{ variant: 'body1' }}
                                     />
                                 </ListItemButton>
                             </ListItem>
@@ -300,10 +294,10 @@ export default function Navbar() {
                     {isAuthenticated && user ? (
                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                             <Box sx={{ px: 2, py: 2, bgcolor: COLORS.background.subtle, borderRadius: BORDER_RADIUS.md, mb: 2 }}>
-                                <Typography variant="body1" fontWeight={800} color={COLORS.text.primary}>
+                                <Typography variant="h6" color={COLORS.text.primary}>
                                     {user.firstName} {user.lastName}
                                 </Typography>
-                                <Typography variant="caption" fontWeight={600} color={COLORS.text.muted}>
+                                <Typography variant="caption" color={COLORS.text.muted}>
                                     {user.role.replace('_', ' ')}
                                 </Typography>
                             </Box>
@@ -318,7 +312,6 @@ export default function Navbar() {
                                     borderRadius: BORDER_RADIUS.md,
                                     py: 1.5,
                                     background: GRADIENTS.primary,
-                                    fontWeight: 800
                                 }}
                             >
                                 Dashboard
@@ -333,7 +326,6 @@ export default function Navbar() {
                                 }}
                                 sx={{
                                     color: COLORS.error.main,
-                                    fontWeight: 700,
                                     py: 1.5,
                                     '&:hover': { bgcolor: COLORS.error.subtle }
                                 }}
@@ -349,7 +341,7 @@ export default function Navbar() {
                                 variant="outlined"
                                 fullWidth
                                 onClick={() => setDrawerOpen(false)}
-                                sx={{ borderRadius: BORDER_RADIUS.md, py: 1.5, fontWeight: 700, borderWidth: 2 }}
+                                sx={{ borderRadius: BORDER_RADIUS.md, py: 1.5, borderWidth: 2 }}
                             >
                                 Sign In
                             </Button>
@@ -363,7 +355,6 @@ export default function Navbar() {
                                     borderRadius: BORDER_RADIUS.md,
                                     py: 1.5,
                                     background: GRADIENTS.primary,
-                                    fontWeight: 800,
                                     boxShadow: SHADOWS.medium
                                 }}
                             >

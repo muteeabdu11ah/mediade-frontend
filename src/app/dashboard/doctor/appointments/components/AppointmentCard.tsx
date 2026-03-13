@@ -58,11 +58,11 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment, onMenuOp
                             </Avatar>
                         )}
                         <Box>
-                            <Typography variant="body1" fontWeight={800} color={COLORS.text.primary}>
+                            <Typography variant="body1" color={COLORS.text.primary}>
                                 {patientName}
                             </Typography>
                             {isEmergency && appointment.escalatedBy ? (
-                                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', fontWeight: 600 }}>
+                                <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
                                     {appointment.escalatedBy}
                                 </Typography>
                             ) : (
@@ -77,7 +77,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment, onMenuOp
                         <Chip
                             icon={<WarningIcon style={{ color: 'white' }} fontSize="small" />}
                             label="Emergency"
-                            sx={{ bgcolor: COLORS.error.main, color: 'white', fontWeight: 700, borderRadius: BORDER_RADIUS.sm }}
+                            sx={{ bgcolor: COLORS.error.main, color: 'white', borderRadius: BORDER_RADIUS.sm }}
                         />
                     ) : (
                         <IconButton size="small" onClick={(e) => onMenuOpen(e, appointment)}>
@@ -92,8 +92,8 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment, onMenuOp
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.8, color: COLORS.primary.main }}>
                         <AccessTimeIcon fontSize="small" />
-                        <Typography variant="body2" fontWeight={800}>{appointment.startTime.substring(0, 5)}</Typography>
-                        <Typography variant="caption" sx={{ color: COLORS.text.muted, fontWeight: 500 }}>(30 min)</Typography>
+                        <Typography variant="body2">{appointment.startTime.substring(0, 5)}</Typography>
+                        <Typography variant="caption" sx={{ color: COLORS.text.muted }}>(30 min)</Typography>
                     </Box>
 
                     {!isEmergency && (
@@ -109,7 +109,6 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment, onMenuOp
                         startIcon={<VisibilityIcon />}
                         sx={{
                             borderRadius: BORDER_RADIUS.md,
-                            fontWeight: 700,
                             borderWidth: 1.5,
                             '&:hover': { borderWidth: 1.5 }
                         }}
@@ -123,7 +122,6 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment, onMenuOp
                         disableElevation
                         sx={{
                             borderRadius: BORDER_RADIUS.md,
-                            fontWeight: 700,
                             boxShadow: SHADOWS.small
                         }}
                     >

@@ -8,11 +8,12 @@ import {
     Button,
     Divider,
 } from '@mui/material';
+import { COLORS, GRADIENTS } from '@/lib/constants/design-tokens';
 
 export default function IntakeQuestionsTab() {
     return (
         <Box sx={{ maxWidth: 600 }}>
-            <Typography variant="h5" fontWeight={700} sx={{ mb: 1, color: '#2D3748' }}>
+            <Typography variant="h5" sx={{ mb: 1, color: COLORS.text.primary }}>
                 Intake Questions
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
@@ -20,7 +21,7 @@ export default function IntakeQuestionsTab() {
             </Typography>
 
             <Box sx={{ p: 4, bgcolor: '#F0F9FA', borderRadius: 4, textAlign: 'center', border: '2px dashed #1fb2ba', mb: 4 }}>
-                <Typography variant="body1" fontWeight={600} color="#0f7e85">
+                <Typography variant="body1" color="#0f7e85">
                     Feature Coming Soon
                 </Typography>
                 <Typography variant="body2" color="#1fb2ba">
@@ -33,15 +34,14 @@ export default function IntakeQuestionsTab() {
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <Button
                     variant="contained"
-                    disabled
+                    // disabled
                     sx={{
                         px: 4,
                         py: 1,
                         borderRadius: 3,
                         textTransform: 'none',
-                        fontWeight: 600,
                         width: { xs: '100%', sm: 'auto' },
-                        background: 'linear-gradient(135deg, #00BCD4 0%, #009688 100%)',
+                        background: GRADIENTS.primary,
                     }}
                 >
                     Save Changes

@@ -3,7 +3,7 @@
 import React from 'react';
 import { Card, Box, Typography, Avatar, Button, Stack } from '@mui/material';
 import { MedicalServices, AddHomeWork, Star } from '@mui/icons-material';
-import { GRADIENTS, SHADOWS, BORDER_RADIUS } from '@/lib/constants/design-tokens';
+import { GRADIENTS, SHADOWS, BORDER_RADIUS, COLORS } from '@/lib/constants/design-tokens';
 
 interface DoctorCardProps {
     doctor: {
@@ -22,7 +22,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor, onBook }) => {
         <Card
             sx={{
                 p: { xs: 2, sm: 2.5 },
-                borderRadius: BORDER_RADIUS.large,
+                borderRadius: BORDER_RADIUS.lg,
                 boxShadow: SHADOWS.premium,
                 transition: 'transform 0.2s, box-shadow 0.2s',
                 '&:hover': {
@@ -47,8 +47,8 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor, onBook }) => {
                     height: { xs: 200, sm: 'auto' },
                     flexShrink: 0,
                     borderRadius: 4,
-                    bgcolor: 'rgba(0, 188, 212, 0.05)',
-                    color: '#00BCD4',
+                    bgcolor: `${COLORS.primary.main}0d`,
+                    color: COLORS.primary.main,
                     fontSize: '3rem',
                     '& img': {
                         objectFit: 'cover'
@@ -62,9 +62,8 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor, onBook }) => {
             <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                 <Typography
                     variant="h5"
-                    fontWeight={800}
                     sx={{
-                        color: '#2D3748',
+                        color: COLORS.text.primary,
                         mb: 2,
                         fontSize: { xs: '1.25rem', md: '1.5rem' }
                     }}
@@ -80,16 +79,16 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor, onBook }) => {
                                 width: 40,
                                 height: 40,
                                 borderRadius: '50%',
-                                bgcolor: 'rgba(0, 188, 212, 0.1)',
+                                bgcolor: `${COLORS.primary.main}1a`,
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                color: '#00BCD4'
+                                color: COLORS.primary.main
                             }}
                         >
                             <MedicalServices sx={{ fontSize: 20 }} />
                         </Box>
-                        <Typography variant="body1" sx={{ color: '#718096', fontWeight: 500 }}>
+                        <Typography variant="body1" sx={{ color: COLORS.text.secondary }}>
                             {doctor.doctorProfile?.specialty || 'Cardiologist'}
                         </Typography>
                     </Stack>
@@ -101,16 +100,16 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor, onBook }) => {
                                 width: 40,
                                 height: 40,
                                 borderRadius: '50%',
-                                bgcolor: 'rgba(0, 188, 212, 0.1)',
+                                bgcolor: `${COLORS.primary.main}1a`,
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                color: '#00BCD4'
+                                color: COLORS.primary.main
                             }}
                         >
                             <AddHomeWork sx={{ fontSize: 20 }} />
                         </Box>
-                        <Typography variant="body1" sx={{ color: '#718096', fontWeight: 500 }}>
+                        <Typography variant="body1" sx={{ color: COLORS.text.secondary }}>
                             {doctor.clinic?.name || 'Evergreen Clinic'}
                         </Typography>
                     </Stack>
@@ -120,19 +119,18 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor, onBook }) => {
                     variant="contained"
                     onClick={() => onBook(doctor.id)}
                     sx={{
-                        borderRadius: BORDER_RADIUS.medium,
+                        borderRadius: BORDER_RADIUS.md,
                         textTransform: 'none',
-                        fontWeight: 700,
                         fontSize: '1rem',
                         background: GRADIENTS.primary,
-                        boxShadow: '0 4px 14px 0 rgba(0, 188, 212, 0.39)',
+                        boxShadow: `0 4px 14px 0 ${COLORS.primary.main}63`,
                         px: 4,
                         py: 1.5,
                         width: 'fit-content',
                         '&:hover': {
                             background: GRADIENTS.primary,
                             opacity: 0.9,
-                            boxShadow: '0 6px 20px rgba(0, 188, 212, 0.23)',
+                            boxShadow: `0 6px 20px ${COLORS.primary.main}3b`,
                         },
                     }}
                 >

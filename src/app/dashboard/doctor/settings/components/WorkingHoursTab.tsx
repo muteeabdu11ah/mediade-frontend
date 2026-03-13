@@ -16,6 +16,7 @@ import {
 import SaveIcon from '@mui/icons-material/Save';
 import { DayOfWeek } from '@/lib/types';
 import { useSchedules, ScheduleFormData } from '@/hooks/use-schedules';
+import { COLORS, GRADIENTS } from '@/lib/constants/design-tokens';
 
 const DAYS_ORDER: DayOfWeek[] = [
     DayOfWeek.MONDAY,
@@ -99,7 +100,7 @@ export default function WorkingHoursTab() {
 
     return (
         <Box>
-            <Typography variant="h5" fontWeight={700} sx={{ mb: 1, color: '#2D3748' }}>
+            <Typography variant="h5" sx={{ mb: 1, color: COLORS.text.primary }}>
                 Working Hours
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
@@ -118,7 +119,7 @@ export default function WorkingHoursTab() {
                         <Box key={day} sx={{ py: 2.5, borderBottom: index === DAYS_ORDER.length - 1 ? 'none' : '1px solid rgba(0,0,0,0.05)' }}>
                             <Grid container spacing={2} alignItems="center">
                                 <Grid size={{ xs: 12, sm: 4, md: 2 }}>
-                                    <Typography variant="subtitle1" fontWeight={700} sx={{ textTransform: 'capitalize', color: '#4A5568' }}>
+                                    <Typography variant="subtitle1" sx={{ textTransform: 'capitalize', color: COLORS.text.secondary }}>
                                         {day}
                                     </Typography>
                                 </Grid>
@@ -216,7 +217,7 @@ export default function WorkingHoursTab() {
             <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
                 <Button
                     variant="outlined"
-                    sx={{ px: 4, py: 1, borderRadius: 3, textTransform: 'none', fontWeight: 600 }}
+                    sx={{ px: 4, py: 1, borderRadius: 3, textTransform: 'none' }}
                 >
                     Cancel
                 </Button>
@@ -230,8 +231,7 @@ export default function WorkingHoursTab() {
                         py: 1,
                         borderRadius: 3,
                         textTransform: 'none',
-                        fontWeight: 600,
-                        background: 'linear-gradient(135deg, #00BCD4 0%, #009688 100%)',
+                        background: GRADIENTS.primary,
                     }}
                 >
                     Save Changes

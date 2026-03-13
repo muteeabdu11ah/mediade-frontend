@@ -56,10 +56,10 @@ export default function PatientHeroBanner() {
             }} />
 
             <Box sx={{ position: 'relative', zIndex: 1 }}>
-                <Typography variant="body1" sx={{ opacity: 0.9, mb: 1, fontWeight: 600, letterSpacing: '0.5px' }}>
-                    {greeting()},
+                <Typography variant="body1" color="white" sx={{ opacity: 0.9, mb: 1 }}>
+                    {greeting()}
                 </Typography>
-                <Typography variant="h3" fontWeight={900} sx={{ mb: 1.5, fontSize: { xs: '2rem', md: '3.5rem' }, letterSpacing: '-1px' }}>
+                <Typography variant="h3" sx={{ mb: 1.5, fontSize: { xs: '2rem', md: '3.5rem' } }}>
                     {user?.firstName} {user?.lastName}
                 </Typography>
                 <Box sx={{
@@ -71,7 +71,7 @@ export default function PatientHeroBanner() {
                     borderRadius: BORDER_RADIUS.full,
                     backdropFilter: 'blur(10px)'
                 }}>
-                    <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                    <Typography variant="body2" color="text.primary">
                         📅 You have {stats?.today || 0} appointment today
                     </Typography>
                 </Box>

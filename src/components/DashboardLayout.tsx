@@ -132,8 +132,7 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
                                     primary={item.label}
                                     primaryTypographyProps={{
                                         fontWeight: isActive ? 800 : 600,
-                                        fontSize: '0.875rem',
-                                        letterSpacing: isActive ? '0.2px' : '0',
+                                        variant: 'body2',
                                         color: isActive ? 'white' : 'inherit'
                                     }}
                                 />
@@ -173,9 +172,7 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
                         <ListItemText
                             primary="Logout"
                             primaryTypographyProps={{
-                                fontSize: '0.875rem',
-                                fontWeight: 800,
-                                letterSpacing: '0.5px'
+                                variant: 'body2',
                             }}
                         />
                     </ListItemButton>
@@ -265,7 +262,7 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
                                     <MenuIcon />
                                 </IconButton>
                             )}
-                            <Typography variant="h4" sx={{ flex: 1, color: COLORS.text.primary, fontWeight: 900, letterSpacing: '-1px' }}>
+                            <Typography variant="h4" sx={{ flex: 1, color: COLORS.text.primary }}>
                                 {title}
                             </Typography>
 
@@ -351,10 +348,10 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
                                         </Avatar>
                                         {!isMobile && (
                                             <Box sx={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
-                                                <Typography variant="body2" sx={{ fontWeight: 800, color: COLORS.text.primary, fontSize: '0.9rem' }}>
+                                                <Typography variant="h6" sx={{ color: COLORS.text.primary }}>
                                                     {user.role === Role.DOCTOR ? `Dr. ${user.firstName} ${user.lastName}` : `${user.firstName} ${user.lastName}`}
                                                 </Typography>
-                                                <Typography variant="caption" sx={{ fontSize: '0.7rem', fontWeight: 800, color: roleColors[user.role], textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                                                <Typography variant="overline" sx={{ color: roleColors[user.role] }}>
                                                     {roleLabels[user.role] || user.role}
                                                 </Typography>
                                             </Box>

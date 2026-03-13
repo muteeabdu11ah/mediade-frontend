@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Box, Typography, Card, Grid, Button, IconButton, Stack, CircularProgress } from '@mui/material';
 import { ChevronLeft, ChevronRight, CheckCircle } from '@mui/icons-material';
 import { format, addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, isSameMonth, isSameDay, addDays, isBefore, startOfDay } from 'date-fns';
-import { BORDER_RADIUS, SHADOWS, GRADIENTS } from '@/lib/constants/design-tokens';
+import { BORDER_RADIUS, SHADOWS, GRADIENTS, COLORS } from '@/lib/constants/design-tokens';
 import api from '@/lib/api';
 
 interface SlotPickerProps {
@@ -44,7 +44,7 @@ const SlotPicker: React.FC<SlotPickerProps> = ({ doctorId, onSlotSelect }) => {
                 <IconButton onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}>
                     <ChevronLeft />
                 </IconButton>
-                <Typography variant="h3" fontWeight={700} color="#2D3748">
+                <Typography variant="h3" color={COLORS.text.primary}>
                     {format(currentMonth, 'MMMM yyyy')}
                 </Typography>
                 <IconButton onClick={() => setCurrentMonth(addMonths(currentMonth, 1))}>
@@ -60,7 +60,7 @@ const SlotPicker: React.FC<SlotPickerProps> = ({ doctorId, onSlotSelect }) => {
             <Grid container spacing={1} sx={{ mb: 1 }}>
                 {days.map((day, i) => (
                     <Grid size={1.7} key={i}>
-                        <Typography variant="caption" fontWeight={600} color="#718096" display="block" align="center">
+                        <Typography variant="caption" color={COLORS.text.muted} display="block" align="center">
                             {day}
                         </Typography>
                     </Grid>
@@ -99,11 +99,11 @@ const SlotPicker: React.FC<SlotPickerProps> = ({ doctorId, onSlotSelect }) => {
                                 cursor: isDisabled ? 'default' : 'pointer',
                                 borderRadius: 2,
                                 transition: 'all 0.2s',
-                                bgcolor: isSelected ? '#00BCD4' : 'transparent',
-                                color: isSelected ? 'white' : isDisabled ? '#CBD5E0' : '#2D3748',
-                                fontWeight: isSelected ? 700 : 500,
+                                bgcolor: isSelected ? COLORS.primary.main : 'transparent',
+                                color: isSelected ? 'white' : isDisabled ? COLORS.text.muted : COLORS.text.primary,
+                                fontWeight: isSelected ? 700 : 400,
                                 '&:hover': {
-                                    bgcolor: isSelected ? '#00BCD4' : isDisabled ? 'transparent' : 'rgba(0, 188, 212, 0.1)',
+                                    bgcolor: isSelected ? COLORS.primary.main : isDisabled ? 'transparent' : `${COLORS.primary.main}1a`,
                                 }
                             }}
                         >
@@ -124,8 +124,8 @@ const SlotPicker: React.FC<SlotPickerProps> = ({ doctorId, onSlotSelect }) => {
     };
 
     return (
-        <Card sx={{ p: 3, borderRadius: BORDER_RADIUS.large, boxShadow: SHADOWS.premium, height: '100%' }}>
-            <Typography variant="h3" fontWeight={700} color="#2D3748" sx={{ mb: 3 }}>
+        <Card sx={{ p: 3, borderRadius: BORDER_RADIUS.lg, boxShadow: SHADOWS.premium, height: '100%' }}>
+            <Typography variant="h5" color={COLORS.text.primary} sx={{ mb: 3 }}>
                 Select Date & Time
             </Typography>
 
@@ -136,13 +136,13 @@ const SlotPicker: React.FC<SlotPickerProps> = ({ doctorId, onSlotSelect }) => {
             </Box>
 
             <Box sx={{ pt: 3, borderTop: '1px solid rgba(0,0,0,0.05)' }}>
-                <Typography variant="subtitle1" fontWeight={700} color="#2D3748" sx={{ mb: 2 }}>
+                <Typography variant="subtitle1" color={COLORS.text.primary} sx={{ mb: 2 }}>
                     Available Slots
                 </Typography>
 
                 {loadingSlots ? (
                     <Box sx={{ display: 'flex', justifyContent: 'center', py: 2 }}>
-                        <CircularProgress size={24} sx={{ color: '#00BCD4' }} />
+                        <CircularProgress size={24} sx={{ color: COLORS.primary.main }} />
                     </Box>
                 ) : slots.length === 0 ? (
                     <Typography color="textSecondary" variant="body2">
@@ -166,9 +166,9 @@ const SlotPicker: React.FC<SlotPickerProps> = ({ doctorId, onSlotSelect }) => {
                                             borderColor: 'transparent',
                                             '&:hover': { background: GRADIENTS.primary, opacity: 0.9 }
                                         } : {
-                                            borderColor: '#E2E8F0',
-                                            color: '#4A5568',
-                                            '&:hover': { borderColor: '#00BCD4', color: '#00BCD4', bgcolor: 'rgba(0,188,212,0.05)' }
+                                            borderColor: COLORS.border.medium,
+                                            color: COLORS.text.secondary,
+                                            '&:hover': { borderColor: COLORS.primary.main, color: COLORS.primary.main, bgcolor: `${COLORS.primary.main}0d` }
                                         })
                                     }}
                                 >
@@ -187,12 +187,11 @@ const SlotPicker: React.FC<SlotPickerProps> = ({ doctorId, onSlotSelect }) => {
                     onClick={() => onSlotSelect(format(selectedDate, 'yyyy-MM-dd'), selectedSlot as string)}
                     startIcon={<CheckCircle />}
                     sx={{
-                        borderRadius: BORDER_RADIUS.medium,
+                        borderRadius: BORDER_RADIUS.md,
                         background: GRADIENTS.primary,
                         textTransform: 'none',
                         px: 4,
                         py: 1.2,
-                        fontWeight: 700,
                         '&:hover': { background: GRADIENTS.primary, opacity: 0.9 }
                     }}
                 >

@@ -55,21 +55,18 @@ export default function Footer() {
                                 <LocalHospitalIcon sx={{ color: 'white', fontSize: 24 }} />
                             </Box>
                             <Typography
-                                variant="h3"
+                                variant="h5"
                                 sx={{
-                                    fontWeight: 900,
                                     background: GRADIENTS.primary,
                                     backgroundClip: 'text',
                                     WebkitBackgroundClip: 'text',
                                     WebkitTextFillColor: 'transparent',
-                                    letterSpacing: '-1px',
-                                    fontSize: '1.4rem',
                                 }}
                             >
                                 Medaide
                             </Typography>
                         </Box>
-                        <Typography variant="body2" color={COLORS.text.secondary} sx={{ maxWidth: 300, mb: 4, lineHeight: 1.8, fontWeight: 500 }}>
+                        <Typography variant="body2" color={COLORS.text.secondary} sx={{ maxWidth: 300, mb: 4 }}>
                             A complete healthcare ecosystem designed to modernize patient-doctor interactions and streamline clinic operations with state-of-the-art technology.
                         </Typography>
                         <Box sx={{ display: 'flex', gap: 1.5 }}>
@@ -103,7 +100,7 @@ export default function Footer() {
                     {/* Links */}
                     {Object.entries(footerLinks).map(([category, links]) => (
                         <Grid size={{ xs: 6, sm: 4, md: 2 }} key={category}>
-                            <Typography variant="subtitle2" fontWeight={800} color={COLORS.text.primary} sx={{ mb: 3, textTransform: 'uppercase', letterSpacing: '1px' }}>
+                            <Typography variant="subtitle2" color={COLORS.text.primary} sx={{ mb: 3 }}>
                                 {category}
                             </Typography>
                             {links.map((link) => (
@@ -117,7 +114,6 @@ export default function Footer() {
                                         color: COLORS.text.secondary,
                                         mb: 2,
                                         fontSize: '0.9rem',
-                                        fontWeight: 600,
                                         transition: 'all 0.2s',
                                         '&:hover': {
                                             color: COLORS.primary.main,
@@ -135,14 +131,14 @@ export default function Footer() {
                 <Divider sx={{ my: 6, opacity: 0.5 }} />
 
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
-                    <Typography variant="caption" sx={{ color: COLORS.text.muted, fontWeight: 600 }}>
+                    <Typography variant="caption" sx={{ color: COLORS.text.muted }}>
                         © {new Date().getFullYear()} Medaide. All rights reserved.
                     </Typography>
                     <Box sx={{ display: 'flex', gap: 3 }}>
-                        <Typography variant="caption" sx={{ color: COLORS.text.muted, fontWeight: 600 }}>
+                        <Typography variant="caption" sx={{ color: COLORS.text.muted }}>
                             Privacy Policy
                         </Typography>
-                        <Typography variant="caption" sx={{ color: COLORS.text.muted, fontWeight: 600 }}>
+                        <Typography variant="caption" sx={{ color: COLORS.text.muted }}>
                             Terms of Service
                         </Typography>
                     </Box>

@@ -36,7 +36,6 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ content, time, isAi, sender }
                         width: 32,
                         height: 32,
                         fontSize: '0.75rem',
-                        fontWeight: 800,
                         bgcolor: isAi ? COLORS.primary.subtle : COLORS.secondary.subtle,
                         color: isAi ? COLORS.primary.main : COLORS.secondary.main,
                         border: `1px solid ${isAi ? COLORS.primary.light : COLORS.secondary.light}44`,
@@ -54,7 +53,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ content, time, isAi, sender }
                         border: `1px solid ${isAi ? COLORS.border.light : COLORS.primary.subtle}`,
                     }}
                 >
-                    <Typography variant="body2" sx={{ lineHeight: 1.6, fontSize: '0.95rem', fontWeight: 500 }}>
+                    <Typography variant="body2" sx={{ lineHeight: 1.6, fontSize: '0.95rem' }}>
                         {content}
                     </Typography>
                 </Box>
@@ -64,9 +63,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ content, time, isAi, sender }
                 sx={{
                     mt: 1,
                     color: COLORS.text.muted,
-                    fontWeight: 600,
                     px: isAi ? 6 : 6,
-                    letterSpacing: '0.5px'
                 }}
             >
                 {time}

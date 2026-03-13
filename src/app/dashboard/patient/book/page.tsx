@@ -23,7 +23,7 @@ import DoctorSearchFilters from './components/DoctorSearchFilters';
 import DoctorGrid from './components/DoctorGrid';
 import DoctorProfileSection from './components/DoctorProfileSection';
 import SlotPicker from './components/SlotPicker';
-import { GRADIENTS } from '@/lib/constants/design-tokens';
+import { GRADIENTS, COLORS } from '@/lib/constants/design-tokens';
 
 enum BookingStep {
     SEARCH = 0,
@@ -99,90 +99,90 @@ export default function BookAppointmentPage() {
         <ProtectedRoute allowedRoles={[Role.PATIENT]}>
             <DashboardLayout title="Book Appointment">
                 {/* <Container maxWidth="xl" sx={{ py: 0 }}> */}
-                    {/* Header Section */}
-                    <Box sx={{ mb: 4 }}>
-                        {/* <Typography variant="h4" fontWeight={800} sx={{ color: '#2D3748', mb: 1 }}>
+                {/* Header Section */}
+                <Box sx={{ mb: 4 }}>
+                    {/* <Typography variant="h4" fontWeight={800} sx={{ color: '#2D3748', mb: 1 }}>
                             {step === BookingStep.SEARCH ? 'Book Appointment' : 'Select Date & Time'}
                         </Typography> */}
-                        <Typography variant="body1" color="text.primary">
-                            {step === BookingStep.SEARCH
-                                ? 'Find a doctor and schedule your visit'
-                                : `Booking with Dr. ${selectedDoctor?.firstName} ${selectedDoctor?.lastName}`
-                            }
-                        </Typography>
+                    <Typography variant="h3" color="text.primary">
+                        {step === BookingStep.SEARCH
+                            ? 'Find a doctor and schedule your visit'
+                            : `Booking with Dr. ${selectedDoctor?.firstName} ${selectedDoctor?.lastName}`
+                        }
+                    </Typography>
+                </Box>
+
+                {/* Step Navigation for Slots View */}
+                {step === BookingStep.SLOTS && (
+                    <Box sx={{ mb: 4 }}>
+                        <Button
+                            startIcon={<ArrowBack />}
+                            onClick={() => setStep(BookingStep.SEARCH)}
+                            sx={{ textTransform: 'none', color: COLORS.primary.main }}
+                        >
+                            Back to Doctors
+                        </Button>
                     </Box>
+                )}
 
-                    {/* Step Navigation for Slots View */}
-                    {step === BookingStep.SLOTS && (
-                        <Box sx={{ mb: 4 }}>
-                            <Button
-                                startIcon={<ArrowBack />}
-                                onClick={() => setStep(BookingStep.SEARCH)}
-                                sx={{ textTransform: 'none', color: '#00BCD4', fontWeight: 600 }}
-                            >
-                                Back to Doctors
-                            </Button>
-                        </Box>
-                    )}
-
-                    {/* Content Section */}
-                    <Fade in timeout={500}>
-                        <Box>
-                            {step === BookingStep.SEARCH ? (
-                                <>
-                                    <DoctorSearchFilters
-                                        search={search}
-                                        onSearchChange={(val) => { setSearch(val); setPage(1); }}
-                                        specialty={specialty}
-                                        onSpecialtyChange={(val) => { setSpecialty(val); setPage(1); }}
-                                    />
-                                    <DoctorGrid
-                                        doctors={doctorsRes?.data || []}
-                                        loading={loadingDoctors}
-                                        page={page}
-                                        totalPages={doctorsRes?.meta.totalPages || 1}
-                                        onPageChange={setPage}
-                                        onBook={handleDoctorSelect}
-                                    />
-                                </>
-                            ) : (
-                                <Grid container spacing={4}>
-                                    <Grid size={{xs:12, md:4, lg:3}} >
-                                        <DoctorProfileSection doctor={selectedDoctor} />
-                                    </Grid>
-                                    <Grid size={{ xs:12, md:8, lg:9}}>
-                                        <SlotPicker
-                                            doctorId={selectedDoctor?.id || ''}
-                                            onSlotSelect={handleSlotSelect}
-                                        />
-                                    </Grid>
+                {/* Content Section */}
+                <Fade in timeout={500}>
+                    <Box>
+                        {step === BookingStep.SEARCH ? (
+                            <>
+                                <DoctorSearchFilters
+                                    search={search}
+                                    onSearchChange={(val) => { setSearch(val); setPage(1); }}
+                                    specialty={specialty}
+                                    onSpecialtyChange={(val) => { setSpecialty(val); setPage(1); }}
+                                />
+                                <DoctorGrid
+                                    doctors={doctorsRes?.data || []}
+                                    loading={loadingDoctors}
+                                    page={page}
+                                    totalPages={doctorsRes?.meta.totalPages || 1}
+                                    onPageChange={setPage}
+                                    onBook={handleDoctorSelect}
+                                />
+                            </>
+                        ) : (
+                            <Grid container spacing={4}>
+                                <Grid size={{ xs: 12, md: 4, lg: 3 }} >
+                                    <DoctorProfileSection doctor={selectedDoctor} />
                                 </Grid>
-                            )}
-                        </Box>
-                    </Fade>
+                                <Grid size={{ xs: 12, md: 8, lg: 9 }}>
+                                    <SlotPicker
+                                        doctorId={selectedDoctor?.id || ''}
+                                        onSlotSelect={handleSlotSelect}
+                                    />
+                                </Grid>
+                            </Grid>
+                        )}
+                    </Box>
+                </Fade>
 
-                    {/* Notifications */}
-                    <Snackbar
-                        open={!!successMsg}
-                        autoHideDuration={6000}
-                        onClose={() => setSuccessMsg('')}
-                        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                    >
-                        <Alert severity="success" sx={{ width: '100%', borderRadius: 3 }}>
-                            {successMsg}
-                        </Alert>
-                    </Snackbar>
+                {/* Notifications */}
+                <Snackbar
+                    open={!!successMsg}
+                    autoHideDuration={6000}
+                    onClose={() => setSuccessMsg('')}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                >
+                    <Alert severity="success" sx={{ width: '100%', borderRadius: 3 }}>
+                        {successMsg}
+                    </Alert>
+                </Snackbar>
 
-                    <Snackbar
-                        open={!!error}
-                        autoHideDuration={6000}
-                        onClose={() => setError('')}
-                        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                    >
-                        <Alert severity="error" sx={{ width: '100%', borderRadius: 3 }}>
-                            {error}
-                        </Alert>
-                    </Snackbar>
+                <Snackbar
+                    open={!!error}
+                    autoHideDuration={6000}
+                    onClose={() => setError('')}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                >
+                    <Alert severity="error" sx={{ width: '100%', borderRadius: 3 }}>
+                        {error}
+                    </Alert>
+                </Snackbar>
                 {/* </Container> */}
             </DashboardLayout>
         </ProtectedRoute>

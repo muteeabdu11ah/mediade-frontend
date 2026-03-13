@@ -65,7 +65,7 @@ export default function DoctorStatsCards() {
                     >
                         <CardContent sx={{ p: 3, display: 'flex', flexDirection: 'column', gap: 1.5 }}>
                             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <Typography variant="subtitle2" sx={{ color: COLORS.text.muted, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                                <Typography variant="subtitle2" sx={{ color: COLORS.text.muted }}>
                                     {card.title}
                                 </Typography>
                                 <Avatar
@@ -82,10 +82,10 @@ export default function DoctorStatsCards() {
                                 </Avatar>
                             </Box>
                             <Box>
-                                <Typography variant="h3" sx={{ fontWeight: 900, color: COLORS.text.primary, letterSpacing: '-1px' }}>
+                                <Typography variant="h3" sx={{ color: COLORS.text.primary }}>
                                     {card.value}
                                 </Typography>
-                                <Typography variant="caption" sx={{ color: COLORS.success.main, fontWeight: 700, display: 'flex', alignItems: 'center', mt: 0.5 }}>
+                                <Typography variant="caption" sx={{ color: COLORS.success.main, display: 'flex', alignItems: 'center', mt: 0.5 }}>
                                     +12% vs last week
                                 </Typography>
                             </Box>

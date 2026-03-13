@@ -4,6 +4,7 @@ import React from 'react';
 import { Box, InputBase, Select, MenuItem } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { Specialty } from '@/lib/types';
+import { COLORS } from '@/lib/constants/design-tokens';
 
 interface DoctorSearchFiltersProps {
     search: string;
@@ -13,10 +14,10 @@ interface DoctorSearchFiltersProps {
 }
 
 const PILL_SX = {
-    bgcolor: 'white',
+    bgcolor: COLORS.background.paper,
     borderRadius: '50px',
     boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
-    border: '1px solid #eef0f3',
+    border: `1px solid ${COLORS.border.light}`,
     display: 'flex',
     alignItems: 'center',
 };
@@ -39,7 +40,7 @@ const DoctorSearchFilters: React.FC<DoctorSearchFiltersProps> = ({
         >
             {/* Search pill — takes up most of the row */}
             <Box sx={{ ...PILL_SX, flex: 1, px: 2, py: 0.75, gap: 1, maxWidth: 400 }}>
-                <SearchIcon sx={{ color: '#b0bec5', fontSize: 20, flexShrink: 0 }} />
+                <SearchIcon sx={{ color: COLORS.text.muted, fontSize: 20, flexShrink: 0 }} />
                 <InputBase
                     fullWidth
                     placeholder="Search by doctor name, specialty, or hospital"
@@ -64,8 +65,7 @@ const DoctorSearchFilters: React.FC<DoctorSearchFiltersProps> = ({
                     renderValue={(val) => (val === '' ? 'Specialty' : val as string)}
                     sx={{
                         fontSize: '0.875rem',
-                        fontWeight: 500,
-                        color: '#546e7a',
+                        color: COLORS.text.secondary,
                         '& .MuiSelect-select': {
                             py: 0.5,
                             pr: '28px !important',
@@ -73,7 +73,7 @@ const DoctorSearchFilters: React.FC<DoctorSearchFiltersProps> = ({
                             bgcolor: 'transparent',
                             '&:focus': { bgcolor: 'transparent' },
                         },
-                        '& .MuiSelect-icon': { color: '#546e7a', right: 0 },
+                        '& .MuiSelect-icon': { color: COLORS.text.secondary, right: 0 },
                     }}
                     MenuProps={{
                         PaperProps: {

@@ -23,7 +23,7 @@ export default function ReceptionistDashboard() {
         <ProtectedRoute allowedRoles={[Role.RECEPTIONIST]}>
             <DashboardLayout title="Reception Dashboard">
                 <Box sx={{ mb: 4 }}>
-                    <Typography variant="h4" fontWeight={800} sx={{ mb: 1 }}>
+                    <Typography variant="h4" sx={{ mb: 1 }}>
                         Welcome, {user?.firstName}! 📋
                     </Typography>
                     <Typography variant="body1" color="text.secondary">
@@ -40,10 +40,10 @@ export default function ReceptionistDashboard() {
                                         <Avatar sx={{ bgcolor: `${card.color}14`, color: card.color, width: 48, height: 48, borderRadius: 3 }}>
                                             {card.icon}
                                         </Avatar>
-                                        <Chip label="Live" size="small" sx={{ bgcolor: 'rgba(102,187,106,0.1)', color: '#66BB6A', fontWeight: 600, fontSize: '0.65rem' }} />
+                                        <Chip label="Live" size="small" sx={{ bgcolor: 'rgba(102,187,106,0.1)', color: '#66BB6A', fontSize: '0.65rem' }} />
                                     </Box>
-                                    <Typography variant="h4" fontWeight={800} sx={{ mb: 0.5, color: card.color }}>{card.value}</Typography>
-                                    <Typography variant="body2" color="text.secondary" fontWeight={500}>{card.title}</Typography>
+                                    <Typography variant="h4" sx={{ mb: 0.5, color: card.color }}>{card.value}</Typography>
+                                    <Typography variant="body2" color="text.secondary">{card.title}</Typography>
                                 </CardContent>
                             </Card>
                         </Grid>
@@ -51,7 +51,7 @@ export default function ReceptionistDashboard() {
                 </Grid>
 
                 <Card sx={{ bgcolor: 'white', p: 4, textAlign: 'center' }}>
-                    <Typography variant="h3" fontWeight={600} sx={{ mb: 1, color: 'text.secondary' }}>
+                    <Typography variant="h3" sx={{ mb: 1, color: 'text.secondary' }}>
                         🚧 Dashboard Content Coming Soon
                     </Typography>
                     <Typography variant="body2" color="text.secondary">

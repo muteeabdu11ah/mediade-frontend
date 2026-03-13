@@ -55,14 +55,14 @@ export default function PatientStatsCards() {
                     <Card sx={{ borderRadius: 3, boxShadow: '0 2px 10px rgba(0,0,0,0.02)', border: '1px solid #f0f0f0' }}>
                         <CardContent sx={{ p: 2.5, display: 'flex', flexDirection: 'column', gap: 1 }}>
                             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                                <Typography variant="body2" color="text.secondary" fontWeight={500}>
+                                <Typography variant="subtitle2" color="text.secondary">
                                     {card.title}
                                 </Typography>
                                 <Avatar sx={{ width: 32, height: 32, bgcolor: `${card.color}14`, color: card.color }}>
                                     {card.icon}
                                 </Avatar>
                             </Box>
-                            <Typography variant="h4" fontWeight={800} color="#1A2B3C">
+                            <Typography variant="h4" color="#1A2B3C">
                                 {card.value}
                             </Typography>
                         </CardContent>

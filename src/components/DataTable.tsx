@@ -1,5 +1,7 @@
 'use client';
 
+import { COLORS } from '@/lib/constants/design-tokens';
+
 import React from 'react';
 import {
     Table,
@@ -78,8 +80,11 @@ export default function DataTable<T>({
                                 key={col.header}
                                 align={col.align || 'left'}
                                 sx={{
-                                    fontWeight: 700,
-                                    color: '#64748B',
+                                    fontWeight: 600,
+                                    color: COLORS.text.secondary,
+                                    textTransform: 'uppercase',
+                                    fontSize: '0.8rem',
+                                    letterSpacing: '0.5px',
                                     minWidth: col.minWidth,
                                 }}
                             >

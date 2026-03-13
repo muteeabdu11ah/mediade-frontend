@@ -90,7 +90,7 @@ export default function DoctorConsultationsChart() {
 
     const dateRangeForm = (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5 }}>
-            <Typography variant="subtitle2" sx={{ fontWeight: 800, color: COLORS.text.primary }}>
+            <Typography variant="subtitle2" sx={{ color: COLORS.text.primary }}>
                 Select Custom Date Range
             </Typography>
             <TextField
@@ -142,11 +142,11 @@ export default function DoctorConsultationsChart() {
                             </>
                         ) : (
                             <>
-                                <Typography variant="h3" sx={{ fontWeight: 900, color: COLORS.text.primary, mb: 0.5 }} noWrap>
+                                <Typography variant="h5" sx={{ color: COLORS.text.primary, mb: 0.5 }} noWrap>
                                     Total Consultations
                                 </Typography>
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
-                                    <Typography variant="body2" sx={{ color: COLORS.text.muted, fontWeight: 600 }}>
+                                    <Typography variant="body2" sx={{ color: COLORS.text.muted }}>
                                         Consultations trend
                                     </Typography>
                                     {timeframe === 'custom' && appliedCustomRange.start && (
@@ -228,7 +228,6 @@ export default function DoctorConsultationsChart() {
                             sx={{
                                 flex: 1,
                                 borderRadius: BORDER_RADIUS.md,
-                                fontWeight: 700,
                                 color: COLORS.text.secondary
                             }}
                         >
@@ -243,7 +242,6 @@ export default function DoctorConsultationsChart() {
                                 flex: 1,
                                 background: GRADIENTS.primary,
                                 borderRadius: BORDER_RADIUS.md,
-                                fontWeight: 800,
                                 boxShadow: SHADOWS.medium
                             }}
                         >
@@ -266,7 +264,7 @@ export default function DoctorConsultationsChart() {
                         }
                     }}
                 >
-                    <DialogTitle sx={{ fontWeight: 900, color: COLORS.text.primary, pt: 3, pb: 2, letterSpacing: '-0.5px' }}>
+                    <DialogTitle sx={{ color: COLORS.text.primary, pt: 3, pb: 2 }}>
                         Custom Date Range
                     </DialogTitle>
                     <DialogContent sx={{ pt: 1 }}>
@@ -276,7 +274,7 @@ export default function DoctorConsultationsChart() {
                         <Button
                             onClick={handleCancelCustomRange}
                             variant="outlined"
-                            sx={{ flex: 1, borderRadius: BORDER_RADIUS.md, py: 1.2, fontWeight: 700 }}
+                            sx={{ flex: 1, borderRadius: BORDER_RADIUS.md, py: 1.2 }}
                         >
                             Cancel
                         </Button>
@@ -289,7 +287,6 @@ export default function DoctorConsultationsChart() {
                                 background: GRADIENTS.primary,
                                 borderRadius: BORDER_RADIUS.md,
                                 py: 1.2,
-                                fontWeight: 800,
                                 boxShadow: SHADOWS.medium
                             }}
                         >

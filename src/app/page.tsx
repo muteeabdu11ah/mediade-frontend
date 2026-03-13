@@ -110,7 +110,7 @@ export default function LandingPage() {
                   mb: 4,
                   bgcolor: COLORS.primary.subtle,
                   color: COLORS.primary.main,
-                  fontWeight: TYPOGRAPHY.weights.black,
+                  fontWeight: 600,
                   fontSize: TYPOGRAPHY.sizes.overline,
                   textTransform: 'uppercase',
                   letterSpacing: '1px',
@@ -124,7 +124,6 @@ export default function LandingPage() {
                 variant="h1"
                 sx={{
                   fontSize: { xs: '2.5rem', sm: '3.5rem', md: '4.5rem' },
-                  fontWeight: TYPOGRAPHY.weights.black,
                   lineHeight: 1.05,
                   mb: 3,
                   color: COLORS.text.primary,
@@ -149,7 +148,6 @@ export default function LandingPage() {
                 variant="h4"
                 sx={{
                   color: COLORS.text.secondary,
-                  fontWeight: TYPOGRAPHY.weights.medium,
                   lineHeight: 1.6,
                   mb: 5,
                   maxWidth: 580,
@@ -170,8 +168,6 @@ export default function LandingPage() {
                     px: 4,
                     py: 2,
                     borderRadius: BORDER_RADIUS.full,
-                    fontSize: TYPOGRAPHY.sizes.bodyLarge,
-                    fontWeight: TYPOGRAPHY.weights.bold,
                     boxShadow: SHADOWS.medium
                   }}
                 >
@@ -186,8 +182,6 @@ export default function LandingPage() {
                     px: 4,
                     py: 2,
                     borderRadius: BORDER_RADIUS.full,
-                    fontSize: TYPOGRAPHY.sizes.bodyLarge,
-                    fontWeight: TYPOGRAPHY.weights.semibold,
                     borderWidth: 2,
                     '&:hover': { borderWidth: 2 }
                   }}
@@ -200,7 +194,7 @@ export default function LandingPage() {
                 {['HIPAA Compliant', 'Zero Setup Cost', '24/7 Priority Support'].map((item) => (
                   <Box key={item} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <CheckCircleIcon sx={{ fontSize: 20, color: COLORS.success.main }} />
-                    <Typography variant="body2" sx={{ color: COLORS.text.primary, fontWeight: TYPOGRAPHY.weights.bold }}>
+                    <Typography variant="body2" sx={{ color: COLORS.text.primary }}>
                       {item}
                     </Typography>
                   </Box>
@@ -239,8 +233,8 @@ export default function LandingPage() {
                         <LocalHospitalIcon />
                       </Avatar>
                       <Box>
-                        <Typography variant="h3" sx={{ fontSize: TYPOGRAPHY.sizes.title, fontWeight: TYPOGRAPHY.weights.black, color: COLORS.text.primary, display: 'block' }}>Dr. Elena Rodriguez</Typography>
-                        <Typography variant="overline" sx={{ color: COLORS.primary.main, fontWeight: TYPOGRAPHY.weights.bold, letterSpacing: '1px' }}>Neurologist • 12Y Exp</Typography>
+                        <Typography variant="h5" sx={{ color: COLORS.text.primary, display: 'block' }}>Dr. Elena Rodriguez</Typography>
+                        <Typography variant="overline" sx={{ color: COLORS.primary.main }}>Neurologist • 12Y Exp</Typography>
                       </Box>
                       <StatusChip status="active" />
                     </Box>
@@ -264,7 +258,7 @@ export default function LandingPage() {
                         </Box>
                       ))}
                     </Box>
-                    <Button variant="contained" fullWidth sx={{ borderRadius: BORDER_RADIUS.md, py: 1.5, fontWeight: TYPOGRAPHY.weights.black }}>
+                    <Button variant="contained" fullWidth sx={{ borderRadius: BORDER_RADIUS.md, py: 1.5 }}>
                       Confirm Booking
                     </Button>
                   </Box>
@@ -298,10 +292,10 @@ export default function LandingPage() {
             {stats.map((stat) => (
               <Grid size={{ xs: 6, sm: 3 }} key={stat.label}>
                 <Box sx={{ textAlign: 'center' }}>
-                  <Typography variant="h3" sx={{ fontWeight: TYPOGRAPHY.weights.black, color: 'white', mb: 0.5, letterSpacing: '-1px' }}>
+                  <Typography variant="h3" sx={{ color: 'white', mb: 0.5 }}>
                     {stat.value}
                   </Typography>
-                  <Typography variant="overline" sx={{ color: 'rgba(255,255,255,0.8)', fontWeight: TYPOGRAPHY.weights.bold, letterSpacing: '1px', display: 'block' }}>
+                  <Typography variant="overline" sx={{ color: 'rgba(255,255,255,0.8)', display: 'block' }}>
                     {stat.label}
                   </Typography>
                 </Box>
@@ -315,10 +309,10 @@ export default function LandingPage() {
       <Box id="features" sx={{ py: { xs: 12, md: 18 }, bgcolor: COLORS.background.paper }}>
         <Container maxWidth="lg">
           <Box sx={{ textAlign: 'center', mb: 10 }}>
-            <Typography variant="overline" sx={{ color: COLORS.primary.main, fontWeight: TYPOGRAPHY.weights.black, letterSpacing: '2px', display: 'block' }}>
+            <Typography variant="overline" sx={{ color: COLORS.primary.main, display: 'block' }}>
               Core Capabilities
             </Typography>
-            <Typography variant="h3" sx={{ fontWeight: TYPOGRAPHY.weights.black, mt: 1, mb: 3, letterSpacing: '-1.5px' }}>
+            <Typography variant="h3" sx={{ mt: 1, mb: 3, letterSpacing: '-1.5px' }}>
               Advanced Healthcare{' '}
               <Box component="span" sx={{
                 background: GRADIENTS.primary,
@@ -329,7 +323,7 @@ export default function LandingPage() {
                 Operating System
               </Box>
             </Typography>
-            <Typography variant="h3" sx={{ color: COLORS.text.secondary, maxWidth: 700, mx: 'auto', fontWeight: TYPOGRAPHY.weights.medium }}>
+            <Typography variant="body1" sx={{ color: COLORS.text.secondary, maxWidth: 700, mx: 'auto' }}>
               Purpose-built tools for every stakeholder in the medical journey, from administrative staff to specialist doctors.
             </Typography>
           </Box>
@@ -366,7 +360,7 @@ export default function LandingPage() {
                     >
                       {feature.icon}
                     </Avatar>
-                    <Typography variant="h5" sx={{ fontWeight: TYPOGRAPHY.weights.black, mb: 2, color: COLORS.text.primary }}>
+                    <Typography variant="h5" sx={{ mb: 2, color: COLORS.text.primary }}>
                       {feature.title}
                     </Typography>
                     <Typography variant="body1" sx={{ color: COLORS.text.secondary, lineHeight: 1.8 }}>
@@ -384,10 +378,10 @@ export default function LandingPage() {
       <Box id="about" sx={{ py: { xs: 12, md: 18 }, bgcolor: COLORS.background.subtle }}>
         <Container maxWidth="lg">
           <Box sx={{ textAlign: 'center', mb: 12 }}>
-            <Typography variant="overline" sx={{ color: COLORS.primary.main, fontWeight: TYPOGRAPHY.weights.black, letterSpacing: '2px', display: 'block' }}>
+            <Typography variant="overline" sx={{ color: COLORS.primary.main, display: 'block' }}>
               The Journey
             </Typography>
-            <Typography variant="h3" sx={{ fontWeight: TYPOGRAPHY.weights.black, mt: 1, mb: 2, letterSpacing: '-1.5px' }}>
+            <Typography variant="h3" sx={{ mt: 1, mb: 2, letterSpacing: '-1.5px' }}>
               Built for{' '}
               <Box component="span" sx={{
                 background: GRADIENTS.secondary,
@@ -407,7 +401,6 @@ export default function LandingPage() {
                   <Typography
                     sx={{
                       fontSize: '8rem',
-                      fontWeight: TYPOGRAPHY.weights.black,
                       background: index === 1 ? GRADIENTS.secondary : GRADIENTS.primary,
                       backgroundClip: 'text',
                       WebkitBackgroundClip: 'text',
@@ -423,7 +416,7 @@ export default function LandingPage() {
                   >
                     {step.number}
                   </Typography>
-                  <Typography variant="h4" sx={{ fontWeight: TYPOGRAPHY.weights.black, mb: 2, position: 'relative', zIndex: 1, color: COLORS.text.primary }}>
+                  <Typography variant="h4" sx={{ mb: 2, position: 'relative', zIndex: 1, color: COLORS.text.primary }}>
                     {step.title}
                   </Typography>
                   <Typography variant="body1" sx={{ color: COLORS.text.secondary, lineHeight: 1.8, position: 'relative', zIndex: 1, maxWidth: 320, mx: 'auto' }}>
@@ -451,10 +444,10 @@ export default function LandingPage() {
         <Box sx={{ position: 'absolute', inset: 0, opacity: 0.1, background: 'radial-gradient(circle at 20% 50%, #fff 0%, transparent 40%), radial-gradient(circle at 80% 50%, #fff 0%, transparent 40%)' }} />
 
         <Container maxWidth="md" sx={{ position: 'relative', zIndex: 1 }}>
-          <Typography variant="h3" sx={{ color: 'white', fontWeight: TYPOGRAPHY.weights.black, mb: 3, letterSpacing: '-2px' }}>
+          <Typography variant="h3" sx={{ color: 'white', mb: 3, letterSpacing: '-2px' }}>
             Transform Your Practice Today
           </Typography>
-          <Typography variant="h3" sx={{ color: 'rgba(255,255,255,0.9)', mb: 6, lineHeight: 1.8, maxWidth: 600, mx: 'auto', fontWeight: TYPOGRAPHY.weights.medium }}>
+          <Typography variant="body1" sx={{ color: 'rgba(255,255,255,0.9)', mb: 6, lineHeight: 1.8, maxWidth: 600, mx: 'auto' }}>
             Scale your clinic with intelligent tools designed to reduce overhead and improve patient outcomes.
           </Typography>
           <Box sx={{ display: 'flex', gap: 3, justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -468,8 +461,6 @@ export default function LandingPage() {
                 py: 2.5,
                 bgcolor: 'white',
                 color: COLORS.primary.contrast,
-                fontWeight: TYPOGRAPHY.weights.black,
-                fontSize: TYPOGRAPHY.sizes.title,
                 borderRadius: BORDER_RADIUS.full,
                 boxShadow: SHADOWS.large,
                 '&:hover': {
@@ -492,8 +483,6 @@ export default function LandingPage() {
                 color: 'white',
                 borderColor: 'rgba(255,255,255,0.4)',
                 borderWidth: 2,
-                fontSize: TYPOGRAPHY.sizes.title,
-                fontWeight: TYPOGRAPHY.weights.bold,
                 borderRadius: BORDER_RADIUS.full,
                 '&:hover': {
                   borderColor: 'white',

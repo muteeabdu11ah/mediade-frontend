@@ -32,7 +32,7 @@ import { Role, AppointmentStatus, Appointment, Specialty } from '@/lib/types';
 import PatientAppointmentCard from './components/PatientAppointmentCard';
 import CalendarWeekly from '@/components/Calendar/CalendarWeekly';
 import CalendarMonthly from '@/components/Calendar/CalendarMonthly';
-import { GRADIENTS } from '@/lib/constants/design-tokens';
+import { GRADIENTS, COLORS } from '@/lib/constants/design-tokens';
 
 import { usePatientAppointments, usePatientAppointmentStats, useUpdateAppointmentStatus } from '@/hooks/use-appointments';
 
@@ -248,7 +248,7 @@ export default function PatientAppointmentsPage() {
                     onClose={handleMenuClose}
                     PaperProps={{ elevation: 3, sx: { borderRadius: 2, minWidth: 150, mt: 1 } }}
                 >
-                    <MenuItem onClick={handleCancelClick} sx={{ color: '#EF5350', fontWeight: 600 }}>
+                    <MenuItem onClick={handleCancelClick} sx={{ color: COLORS.error.main }}>
                         Cancel Appointment
                     </MenuItem>
                 </Menu>

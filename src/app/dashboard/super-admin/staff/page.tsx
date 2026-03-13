@@ -118,10 +118,10 @@ export default function StaffPage() {
                         {user.firstName[0]}
                     </Avatar>
                     <Box>
-                        <Typography variant="body2" fontWeight={800} color={COLORS.text.primary}>
+                        <Typography variant="body2" color={COLORS.text.primary}>
                             {user.firstName} {user.lastName}
                         </Typography>
-                        <Typography variant="caption" color={COLORS.text.secondary} fontWeight={500}>
+                        <Typography variant="caption" color={COLORS.text.secondary}>
                             {user.email}
                         </Typography>
                     </Box>
@@ -136,7 +136,6 @@ export default function StaffPage() {
                     size="small"
                     sx={{
                         textTransform: 'capitalize',
-                        fontWeight: 700,
                         bgcolor: COLORS.primary.subtle,
                         color: COLORS.primary.main,
                         borderRadius: BORDER_RADIUS.sm,
@@ -148,7 +147,7 @@ export default function StaffPage() {
         {
             header: 'Clinic',
             render: (user) => (
-                <Typography variant="body2" color={COLORS.text.secondary} fontWeight={500}>
+                <Typography variant="body2" color={COLORS.text.secondary}>
                     {user.clinic?.name || '-'}
                 </Typography>
             ),
@@ -220,7 +219,7 @@ export default function StaffPage() {
                             }
                         }}
                     >
-                        <DialogTitle sx={{ fontWeight: 900, color: COLORS.text.primary, pt: 4, px: 4 }}>
+                        <DialogTitle sx={{ color: COLORS.text.primary, pt: 4, px: 4 }}>
                             {selectedUser ? 'Edit User' : 'Create New Clinic Admin'}
                         </DialogTitle>
                         <DialogContent sx={{ px: 4, py: 2 }}>
@@ -246,7 +245,7 @@ export default function StaffPage() {
                             </Box>
                         </DialogContent>
                         <DialogActions sx={{ p: 4 }}>
-                            <Button onClick={() => setOpen(false)} sx={{ color: COLORS.text.secondary, fontWeight: 700 }}>Cancel</Button>
+                            <Button onClick={() => setOpen(false)} sx={{ color: COLORS.text.secondary }}>Cancel</Button>
                             <Button
                                 variant="contained"
                                 onClick={handleSubmit}
@@ -254,7 +253,6 @@ export default function StaffPage() {
                                 sx={{
                                     borderRadius: BORDER_RADIUS.md,
                                     px: 4,
-                                    fontWeight: 800,
                                     boxShadow: SHADOWS.medium
                                 }}
                             >
