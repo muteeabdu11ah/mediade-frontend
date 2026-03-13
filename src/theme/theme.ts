@@ -61,7 +61,7 @@ const theme = createTheme({
     },
     h4: {
       fontSize: TYPOGRAPHY.sizes.title,
-      fontWeight: TYPOGRAPHY.weights.semibold,
+      fontWeight: TYPOGRAPHY.weights.medium,
       lineHeight: 1.4,
     },
     h5: {
@@ -81,7 +81,7 @@ const theme = createTheme({
     },
     body2: {
       fontSize: TYPOGRAPHY.sizes.bodyMedium,
-      lineHeight: 1.6,
+      lineHeight: 1.5,
       color: COLORS.text.secondary,
     },
     caption: {

@@ -32,7 +32,7 @@ export const COLORS = {
     },
     // Functional Backgrounds
     background: {
-        default: '#F6F8FF', // Background Color from Image
+        default: '#F6FBFF', // Background Color from Image
         paper: '#FFFFFF',
         subtle: '#F0F1F3',  // greyscale-50
     },
@@ -44,7 +44,7 @@ export const COLORS = {
     },
     // Semantic Border Mapping
     border: {
-        light: '#F0F1F3',
+        light: '#E3EEF5',
         medium: '#D0D3D9',
         strong: '#B9BDC7',
     },
@@ -117,7 +117,7 @@ export const TYPOGRAPHY = {
         h1: '2.0625rem',      // 33px
         h2: '1.75rem',        // 28px
         h3: '1.4375rem',      // 23px
-        title: '1.1875rem',    // 19px
+        title: '1.4875rem',    // 19px
         bodyLarge: '1rem',     // 16px
         bodyMedium: '0.8125rem',// 13px
         bodySmall: '0.6875rem', // 11px

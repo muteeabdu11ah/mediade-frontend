@@ -310,13 +310,13 @@ export default function AdvancedDataTable<T>({
                 sx={{
                     borderRadius: BORDER_RADIUS.md,
                     border: `1px solid ${COLORS.border.light}`,
-                    mb: 4,
+                    mb: 2,
                     overflow: 'hidden',
                     background: COLORS.background.paper
                 }}
             >
                 <Table sx={{ minWidth: 700 }} aria-label="advanced data table">
-                    <TableHead sx={{ bgcolor: COLORS.background.subtle }}>
+                    <TableHead sx={{ bgcolor: COLORS.background.default }}>
                         <TableRow>
                             {columns.map((col, index) => (
                                 <TableCell
@@ -329,8 +329,8 @@ export default function AdvancedDataTable<T>({
                                         textTransform: 'uppercase',
                                         letterSpacing: '1px',
                                         minWidth: col.minWidth,
-                                        py: 2.5,
-                                        borderBottom: `2px solid ${COLORS.border.light}`,
+                                        py: 1.25,
+                                        borderBottom: `0px solid ${COLORS.border.medium}`,
                                         borderRight: (index < columns.length - 1 || (actions && actions.length > 0)) ? `1px solid ${COLORS.border.light}` : 'none'
                                     }}
                                 >
@@ -346,8 +346,8 @@ export default function AdvancedDataTable<T>({
                                         fontSize: '0.8rem',
                                         textTransform: 'uppercase',
                                         letterSpacing: '1px',
-                                        py: 2.5,
-                                        borderBottom: `2px solid ${COLORS.border.light}`
+                                        py: 1.25,
+                                        borderBottom: `1px solid ${COLORS.border.light}`
                                     }}
                                 >
                                     Actions
@@ -363,16 +363,16 @@ export default function AdvancedDataTable<T>({
                                         <TableCell
                                             key={colIndex}
                                             sx={{
-                                                py: 2.5,
-                                                borderRight: (colIndex < columns.length - 1 || (actions && actions.length > 0)) ? `1px solid ${COLORS.border.light}44` : 'none',
-                                                borderBottom: `1px solid ${COLORS.border.light}44`
+                                                py: 1.25,
+                                                borderRight: (colIndex < columns.length - 1 || (actions && actions.length > 0)) ? `1px solid ${COLORS.border.light}` : 'none',
+                                                borderBottom: `1px solid ${COLORS.border.light}`
                                             }}
                                         >
                                             <Skeleton animation="wave" height={24} width={colIndex === 0 ? "80%" : "60%"} />
                                         </TableCell>
                                     ))}
                                     {actions && actions.length > 0 && (
-                                        <TableCell align="center" sx={{ borderBottom: `1px solid ${COLORS.border.light}44`, py: 2.5 }}>
+                                        <TableCell align="center" sx={{ borderBottom: `1px solid ${COLORS.border.light}`, py: 1.25 }}>
                                             <Skeleton animation="wave" variant="circular" width={24} height={24} sx={{ mx: 'auto' }} />
                                         </TableCell>
                                     )}
@@ -399,7 +399,7 @@ export default function AdvancedDataTable<T>({
                                         transition: 'background-color 0.2s',
                                         '&:hover': { bgcolor: `${COLORS.primary.subtle}22 !important` },
                                         '&:last-child td': { borderBottom: 0 },
-                                        '& td': { borderBottom: `1px solid ${COLORS.border.light}`, py: 2.5 }
+                                        '& td': { borderBottom: `1px solid ${COLORS.border.light}`, py: 1.25 }
                                     }}
                                 >
                                     {columns.map((col, index) => (
@@ -407,7 +407,7 @@ export default function AdvancedDataTable<T>({
                                             color: COLORS.text.secondary,
                                             fontSize: '0.9rem',
                                             fontWeight: 500,
-                                            borderRight: (index < columns.length - 1 || (actions && actions.length > 0)) ? `1px solid ${COLORS.border.light}44` : 'none'
+                                            borderRight: (index < columns.length - 1 || (actions && actions.length > 0)) ? `1px solid ${COLORS.border.light}` : 'none'
                                         }}>
                                             {col.render
                                                 ? col.render(row)
