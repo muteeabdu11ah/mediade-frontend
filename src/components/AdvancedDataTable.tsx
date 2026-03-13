@@ -22,6 +22,8 @@ import {
     ListItemIcon,
     ListItemText,
     Skeleton,
+    useMediaQuery,
+    useTheme
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -91,6 +93,10 @@ export default function AdvancedDataTable<T>({
     onDateChange,
     actions,
 }: AdvancedDataTableProps<T>) {
+
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isTinyMobile = useMediaQuery(theme.breakpoints.down('xs'));
 
     // Actions Menu State
     const [anchorEl, setAnchorEl] = useState<{ element: HTMLElement; row: T } | null>(null);
@@ -176,7 +182,14 @@ export default function AdvancedDataTable<T>({
                 )}
 
                 {/* Filters */}
-                <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', ml: 'auto' }}>
+                <Box sx={{
+                    display: 'flex',
+                    flexDirection: { xs: 'column', sm: 'row' },
+                    gap: 2,
+                    alignItems: { xs: 'stretch', sm: 'center' },
+                    width: { xs: '100%', md: 'auto' },
+                    ml: { xs: 0, md: 'auto' }
+                }}>
                     {statusOptions && onStatusChange && (
                         <Select
                             value={statusValue}
@@ -190,7 +203,7 @@ export default function AdvancedDataTable<T>({
                                 '& .MuiOutlinedInput-notchedOutline': {
                                     border: 'none',
                                 },
-                                minWidth: 140,
+                                minWidth: { xs: '100%', sm: 140 },
                                 height: 44,
                                 '& .MuiSelect-select': {
                                     py: 0,
@@ -212,7 +225,13 @@ export default function AdvancedDataTable<T>({
 
                     {/* Date Filters (Dropdown + Inputs) */}
                     {onDateChange !== undefined && (
-                        <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center' }}>
+                        <Box sx={{
+                            display: 'flex',
+                            flexDirection: { xs: 'column', sm: 'row' },
+                            gap: 1.5,
+                            alignItems: { xs: 'stretch', sm: 'center' },
+                            width: { xs: '100%', sm: 'auto' }
+                        }}>
                             <Select
                                 value={dateFilterType}
                                 onChange={(e) => setDateFilterType(e.target.value as 'Date' | 'Date Range')}
@@ -224,7 +243,7 @@ export default function AdvancedDataTable<T>({
                                     '& .MuiOutlinedInput-notchedOutline': {
                                         border: 'none',
                                     },
-                                    minWidth: 110,
+                                    minWidth: { xs: '100%', sm: 110 },
                                     height: 44,
                                     '& .MuiSelect-select': {
                                         py: 0,
@@ -253,7 +272,8 @@ export default function AdvancedDataTable<T>({
                                         fontSize: '0.9rem',
                                         fontWeight: 500,
                                         height: '44px',
-                                        boxSizing: 'border-box'
+                                        boxSizing: 'border-box',
+                                        width: '100%'
                                     }}
                                     onChange={(e) => onDateChange(e.target.value, e.target.value)}
                                 />
@@ -272,11 +292,12 @@ export default function AdvancedDataTable<T>({
                                             fontSize: '0.9rem',
                                             fontWeight: 500,
                                             height: '44px',
-                                            boxSizing: 'border-box'
+                                            boxSizing: 'border-box',
+                                            width: '100%'
                                         }}
                                         onChange={(e) => onDateChange(e.target.value, undefined)}
                                     />
-                                    <Typography variant="body2" color={COLORS.text.muted}>-</Typography>
+                                    <Typography variant="body2" color={COLORS.text.muted} sx={{ display: { xs: 'none', sm: 'block' } }}>-</Typography>
                                     <input
                                         type="date"
                                         style={{
@@ -290,7 +311,8 @@ export default function AdvancedDataTable<T>({
                                             fontSize: '0.9rem',
                                             fontWeight: 500,
                                             height: '44px',
-                                            boxSizing: 'border-box'
+                                            boxSizing: 'border-box',
+                                            width: '100%'
                                         }}
                                         onChange={(e) => onDateChange(undefined, e.target.value)}
                                     />
@@ -309,7 +331,7 @@ export default function AdvancedDataTable<T>({
                     borderRadius: BORDER_RADIUS.md,
                     border: `1px solid ${COLORS.border.light}`,
                     mb: 2,
-                    overflow: 'hidden',
+                    overflowX: 'auto',
                     background: COLORS.background.paper
                 }}
             >
@@ -542,8 +564,9 @@ export default function AdvancedDataTable<T>({
                         onChange={(_, val) => pagination.onPageChange(val)}
                         color="primary"
                         shape="rounded"
-                        showFirstButton
-                        showLastButton
+                        size={isMobile ? 'small' : 'medium'}
+                        showFirstButton={!isMobile}
+                        showLastButton={!isMobile}
                         sx={{
                             '& .MuiPaginationItem-root': {
                                 fontWeight: 700,

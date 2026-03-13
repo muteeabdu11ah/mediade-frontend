@@ -157,11 +157,16 @@ export function usePatientTotalChart(
 }
 
 export interface ClinicAppointmentsParams {
-    date?: string;
+    page?: number;
+    limit?: number;
+    search?: string;
+    status?: string;
+    startDate?: string;
+    endDate?: string;
 }
 
 export function useClinicAppointments(params?: ClinicAppointmentsParams) {
-    return useQuery<Appointment[]>({
+    return useQuery<PaginatedResponse<Appointment>>({
         queryKey: [...QUERY_KEYS.CLINIC_APPOINTMENTS, params],
         queryFn: async () => {
             const { data } = await api.get(API_ENDPOINTS.APPOINTMENTS.CLINIC, { params });

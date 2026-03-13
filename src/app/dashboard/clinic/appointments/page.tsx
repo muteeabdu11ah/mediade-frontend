@@ -30,32 +30,38 @@ const statusPresetMap: Record<string, string> = {
     [AppointmentStatus.MISSED]: 'missed',
 };
 
-// ─── Page Component ─────────────────────────────────────────────────────────
+// ─── Status presets for filter select ───────────────────────────────────────
+
+const statusOptions = [
+    { value: AppointmentStatus.UPCOMING, label: 'Upcoming' },
+    { value: AppointmentStatus.COMPLETED, label: 'Completed' },
+    { value: AppointmentStatus.CANCELLED, label: 'Cancelled' },
+    { value: AppointmentStatus.MISSED, label: 'No-Show' },
+    { value: AppointmentStatus.LATE, label: 'Late' },
+];
 
 export default function ClinicAppointmentsPage() {
-    const { data: appointments = [], isLoading } = useClinicAppointments();
+    // ── Pagination & Filter State ───────────────────────────────────────────
+    const [page, setPage] = useState(1);
+    const [limit, setLimit] = useState(10);
+    const [search, setSearch] = useState('');
+    const [status, setStatus] = useState('all');
+    const [dateRange, setDateRange] = useState<{ start?: string; end?: string }>({});
+
+    // Fetch Data
+    const { data, isLoading } = useClinicAppointments({
+        page,
+        limit,
+        search,
+        status,
+        startDate: dateRange.start,
+        endDate: dateRange.end,
+    });
+
+    const appointments = data?.data || [];
+    const pagination = data?.meta;
+
     const updateStatus = useUpdateAppointmentStatus();
-    const [searchTerm, setSearchTerm] = useState('');
-
-    // Sort by date/time ascending
-    const sorted = useMemo(() => {
-        let filtered = [...appointments];
-        if (searchTerm) {
-            const lower = searchTerm.toLowerCase();
-            filtered = filtered.filter(a =>
-                a.patient?.firstName.toLowerCase().includes(lower) ||
-                a.patient?.lastName.toLowerCase().includes(lower) ||
-                a.doctor?.firstName.toLowerCase().includes(lower) ||
-                a.doctor?.lastName.toLowerCase().includes(lower)
-            );
-        }
-
-        return filtered.sort((a, b) => {
-            const dateA = new Date(`${a.appointmentDate}T${a.startTime}`);
-            const dateB = new Date(`${b.appointmentDate}T${b.startTime}`);
-            return dateA.getTime() - dateB.getTime();
-        });
-    }, [appointments, searchTerm]);
 
     // Menu state
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -71,9 +77,9 @@ export default function ClinicAppointmentsPage() {
         setSelectedAppointment(null);
     };
 
-    const handleUpdateStatus = async (status: AppointmentStatus) => {
+    const handleUpdateStatus = async (newStatus: AppointmentStatus) => {
         if (!selectedAppointment) return;
-        await updateStatus.mutateAsync({ id: selectedAppointment.id, status });
+        await updateStatus.mutateAsync({ id: selectedAppointment.id, status: newStatus });
         handleMenuClose();
     };
 
@@ -139,53 +145,69 @@ export default function ClinicAppointmentsPage() {
     return (
         <ProtectedRoute allowedRoles={[Role.CLINIC_ADMIN, Role.RECEPTIONIST]}>
             <DashboardLayout title="Clinic Appointments">
-                <Box sx={{ p: 4 }}>
-                    <PageHeader
-                        title="Clinic Appointments"
-                        subtitle="View and manage all appointments across your clinic."
-                    />
+                <AdvancedDataTable<Appointment>
+                    columns={columns}
+                    data={appointments}
+                    isLoading={isLoading}
+                    emptyMessage="No appointments found."
+                    rowKey={(a) => a.id}
+                    // Search
+                    onSearch={(val) => {
+                        setSearch(val);
+                        setPage(1);
+                    }}
+                    searchPlaceholder="Search by doctor or patient name..."
+                    // Status
+                    statusOptions={statusOptions}
+                    statusValue={status}
+                    onStatusChange={(val) => {
+                        setStatus(val);
+                        setPage(1);
+                    }}
+                    // Date
+                    onDateChange={(start, end) => {
+                        setDateRange({ start, end });
+                        setPage(1);
+                    }}
+                    // Pagination
+                    pagination={pagination ? {
+                        page: pagination.page,
+                        totalPages: pagination.totalPages,
+                        onPageChange: (p) => setPage(p),
+                    } : undefined}
+                />
 
-                    <AdvancedDataTable<Appointment>
-                        columns={columns}
-                        data={sorted}
-                        isLoading={isLoading}
-                        emptyMessage="No appointments found."
-                        rowKey={(a) => a.id}
-                        onSearch={setSearchTerm}
-                        searchPlaceholder="Search by doctor or patient name..."
-                    />
-
-                    {/* Status Update Menu */}
-                    <Menu
-                        anchorEl={anchorEl}
-                        open={Boolean(anchorEl)}
-                        onClose={handleMenuClose}
-                        PaperProps={{
-                            elevation: 3,
-                            sx: { borderRadius: 2, minWidth: 150, mt: 1 },
-                        }}
+                {/* Status Update Menu */}
+                <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleMenuClose}
+                    PaperProps={{
+                        elevation: 3,
+                        sx: { borderRadius: 2, minWidth: 150, mt: 1 },
+                    }}
+                >
+                    <MenuItem
+                        onClick={() => handleUpdateStatus(AppointmentStatus.COMPLETED)}
+                        sx={{ color: '#66BB6A', fontWeight: 600 }}
                     >
-                        <MenuItem
-                            onClick={() => handleUpdateStatus(AppointmentStatus.COMPLETED)}
-                            sx={{ color: '#66BB6A', fontWeight: 600 }}
-                        >
-                            <CheckCircleIcon fontSize="small" sx={{ mr: 1 }} /> Mark Completed
-                        </MenuItem>
-                        <MenuItem
-                            onClick={() => handleUpdateStatus(AppointmentStatus.MISSED)}
-                            sx={{ color: '#AB47BC', fontWeight: 600 }}
-                        >
-                            <HelpOutlineIcon fontSize="small" sx={{ mr: 1 }} /> Mark No-Show
-                        </MenuItem>
-                        <MenuItem
-                            onClick={() => handleUpdateStatus(AppointmentStatus.CANCELLED)}
-                            sx={{ color: '#EF5350', fontWeight: 600 }}
-                        >
-                            <CancelIcon fontSize="small" sx={{ mr: 1 }} /> Cancel Appointment
-                        </MenuItem>
-                    </Menu>
-                </Box>
+                        <CheckCircleIcon fontSize="small" sx={{ mr: 1 }} /> Mark Completed
+                    </MenuItem>
+                    <MenuItem
+                        onClick={() => handleUpdateStatus(AppointmentStatus.MISSED)}
+                        sx={{ color: '#AB47BC', fontWeight: 600 }}
+                    >
+                        <HelpOutlineIcon fontSize="small" sx={{ mr: 1 }} /> Mark No-Show
+                    </MenuItem>
+                    <MenuItem
+                        onClick={() => handleUpdateStatus(AppointmentStatus.CANCELLED)}
+                        sx={{ color: '#EF5350', fontWeight: 600 }}
+                    >
+                        <CancelIcon fontSize="small" sx={{ mr: 1 }} /> Cancel Appointment
+                    </MenuItem>
+                </Menu>
             </DashboardLayout>
         </ProtectedRoute>
     );
 }
+

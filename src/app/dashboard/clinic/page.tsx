@@ -24,14 +24,14 @@ export default function ClinicDashboard() {
     return (
         <ProtectedRoute allowedRoles={[Role.CLINIC_ADMIN]}>
             <DashboardLayout title="Clinic Dashboard">
-                <Box sx={{ mb: 4 }}>
+                {/* <Box sx={{ mb: 4 }}>
                     <Typography variant="h4" fontWeight={800} sx={{ mb: 1 }}>
                         Welcome, {user?.firstName}! 🏥
                     </Typography>
                     <Typography variant="body1" color="text.secondary">
                         Manage your clinic staff, schedules, and appointments.
                     </Typography>
-                </Box>
+                </Box> */}
 
                 <Grid container spacing={3} sx={{ mb: 4 }}>
                     {statCards.map((card) => (

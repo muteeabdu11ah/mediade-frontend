@@ -294,13 +294,13 @@ export default function ClinicStaffManagementPage() {
     return (
         <ProtectedRoute allowedRoles={[Role.CLINIC_ADMIN]}>
             <DashboardLayout title="Staff Management">
-                <Box sx={{ p: 4 }}>
-                    <PageHeader
+                {/* <Box sx={{ p: 4 }}> */}
+                    {/* <PageHeader
                         title="Clinic Staff"
                         subtitle="Manage doctors and receptionists in your clinic."
                         actionLabel="Add Staff"
                         onAction={handleOpenAdd}
-                    />
+                    /> */}
 
                     <AdvancedDataTable<User>
                         columns={columns}
@@ -510,7 +510,7 @@ export default function ClinicStaffManagementPage() {
                         onCancel={() => setConfirmOpen(false)}
                         isLoading={deactivateUser.isPending}
                     />
-                </Box>
+                {/* </Box> */}
             </DashboardLayout>
         </ProtectedRoute>
     );
