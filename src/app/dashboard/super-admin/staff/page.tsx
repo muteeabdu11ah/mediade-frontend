@@ -34,8 +34,8 @@ import {
 } from '@/hooks/use-users';
 import { useClinics } from '@/hooks/use-clinics';
 import { Role, User } from '@/lib/types';
-
 import { GRADIENTS, COLORS, BORDER_RADIUS, SHADOWS, TYPOGRAPHY } from '@/lib/constants/design-tokens';
+import { isValidPassword, PASSWORD_REQUIREMENTS_TEXT } from '@/lib/utils/validation';
 
 export default function StaffPage() {
     const [page, setPage] = useState(1);
@@ -102,6 +102,11 @@ export default function StaffPage() {
         if (selectedUser) {
             await updateUser.mutateAsync({ id: selectedUser.id, payload: formData });
         } else {
+            const passwordValidation = isValidPassword(formData.password);
+            if (!passwordValidation.isValid) {
+                alert(passwordValidation.error);
+                return;
+            }
             await createClinicAdmin.mutateAsync(formData);
         }
         setOpen(false);
@@ -235,7 +240,14 @@ export default function StaffPage() {
                                 <TextField fullWidth label="Email Address" type="email" value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
                                 <TextField fullWidth label="Phone Number" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} />
                                 {!selectedUser && (
-                                    <TextField fullWidth label="Initial Password" type="password" value={formData.password} onChange={(e) => setFormData({ ...formData, password: e.target.value })} />
+                                    <TextField
+                                        fullWidth
+                                        label="Initial Password"
+                                        type="password"
+                                        value={formData.password}
+                                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                        helperText={PASSWORD_REQUIREMENTS_TEXT}
+                                    />
                                 )}
                                 <TextField fullWidth select label="Assign to Clinic" value={formData.clinicId} onChange={(e) => setFormData({ ...formData, clinicId: e.target.value })}>
                                     {clinics.map((clinic) => (

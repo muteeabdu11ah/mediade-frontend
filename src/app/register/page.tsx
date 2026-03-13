@@ -36,6 +36,7 @@ import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
 import { Gender, type RegisterRequest } from '@/lib/types';
 import { GRADIENTS, COLORS, BORDER_RADIUS, SHADOWS } from '@/lib/constants/design-tokens';
+import { isValidPassword, PASSWORD_REQUIREMENTS_TEXT } from '@/lib/utils/validation';
 
 const steps = ['Account Details', 'Personal Information'];
 
@@ -81,8 +82,9 @@ export default function RegisterPage() {
                 setError('Please fill in all required fields.');
                 return;
             }
-            if (formData.password.length < 6) {
-                setError('Password must be at least 6 characters.');
+            const passwordValidation = isValidPassword(formData.password);
+            if (!passwordValidation.isValid) {
+                setError(passwordValidation.error || 'Invalid password.');
                 return;
             }
             setError('');
@@ -285,7 +287,7 @@ export default function RegisterPage() {
                                         value={formData.password}
                                         onChange={handleChange('password')}
                                         required
-                                        helperText="Minimum 6 characters"
+                                        helperText={PASSWORD_REQUIREMENTS_TEXT}
                                         sx={{ mt: 2.5 }}
                                         slotProps={{
                                             input: {

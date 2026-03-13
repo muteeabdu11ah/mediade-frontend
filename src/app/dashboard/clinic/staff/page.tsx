@@ -38,6 +38,7 @@ import {
 
 import { Role, User, Specialty, Language } from '@/lib/types';
 import { GRADIENTS, COLORS, BORDER_RADIUS, SHADOWS, TYPOGRAPHY } from '@/lib/constants/design-tokens';
+import { isValidPassword, PASSWORD_REQUIREMENTS_TEXT } from '@/lib/utils/validation';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -161,6 +162,14 @@ export default function ClinicStaffManagementPage() {
 
     const handleSave = async () => {
         if (dialogMode === 'add') {
+            const passwordValidation = isValidPassword(formData.password);
+            if (!passwordValidation.isValid) {
+                // We don't have a local error state for the dialog, 
+                // but we can use alert or add an error state if needed.
+                // For now, let's keep it simple as the other forms.
+                alert(passwordValidation.error);
+                return;
+            }
             const payload: any = {
                 email: formData.email,
                 password: formData.password,
@@ -382,7 +391,7 @@ export default function ClinicStaffManagementPage() {
                                         required
                                         value={formData.password}
                                         onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                        helperText="Minimum 6 characters"
+                                        helperText={PASSWORD_REQUIREMENTS_TEXT}
                                     />
                                     <TextField
                                         select

@@ -17,6 +17,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import api from '@/lib/api';
 import { useAuth } from '@/lib/auth-context';
 import { COLORS, GRADIENTS } from '@/lib/constants/design-tokens';
+import { isValidPassword, PASSWORD_REQUIREMENTS_TEXT } from '@/lib/utils/validation';
 
 export default function ChangePasswordTab() {
     const { logout } = useAuth();
@@ -44,6 +45,12 @@ export default function ChangePasswordTab() {
 
         if (formData.newPassword !== formData.confirmPassword) {
             setError('New passwords do not match');
+            return;
+        }
+
+        const passwordValidation = isValidPassword(formData.newPassword);
+        if (!passwordValidation.isValid) {
+            setError(passwordValidation.error || 'Invalid password.');
             return;
         }
 
@@ -121,6 +128,7 @@ export default function ChangePasswordTab() {
                     value={formData.newPassword}
                     onChange={handleChange}
                     placeholder="Enter new password"
+                    helperText={PASSWORD_REQUIREMENTS_TEXT}
                     sx={{ '& .MuiOutlinedInput-root': { borderRadius: 3, bgcolor: '#F7FAFC' } }}
                     slotProps={{
                         input: {
