@@ -271,9 +271,9 @@ export default function ClinicStaffManagementPage() {
         },
         {
             header: 'Actions',
-            align: 'right',
+            align: 'center',
             render: (user) => (
-                <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
                     <IconButton size="small" onClick={() => handleOpenEdit(user)} sx={{ color: COLORS.text.secondary }}>
                         <EditIcon fontSize="small" />
                     </IconButton>
@@ -295,221 +295,221 @@ export default function ClinicStaffManagementPage() {
         <ProtectedRoute allowedRoles={[Role.CLINIC_ADMIN]}>
             <DashboardLayout title="Staff Management">
                 {/* <Box sx={{ p: 4 }}> */}
-                    {/* <PageHeader
+                {/* <PageHeader
                         title="Clinic Staff"
                         subtitle="Manage doctors and receptionists in your clinic."
                         actionLabel="Add Staff"
                         onAction={handleOpenAdd}
                     /> */}
 
-                    <AdvancedDataTable<User>
-                        columns={columns}
-                        data={users}
-                        isLoading={isLoading}
-                        emptyMessage="No staff found in this clinic."
-                        rowKey={(u) => u.id}
-                        onSearch={(v) => { setSearch(v); setPage(1); }}
-                        searchPlaceholder="Search by name or email..."
-                        statusOptions={[
-                            { value: 'active', label: 'Active' },
-                            { value: 'inactive', label: 'Inactive' }
-                        ]}
-                        statusValue={statusFilter}
-                        onStatusChange={(v) => { setStatusFilter(v); setPage(1); }}
-                        pagination={
-                            meta
-                                ? { page, totalPages: meta.totalPages, onPageChange: setPage }
-                                : undefined
+                <AdvancedDataTable<User>
+                    columns={columns}
+                    data={users}
+                    isLoading={isLoading}
+                    emptyMessage="No staff found in this clinic."
+                    rowKey={(u) => u.id}
+                    onSearch={(v) => { setSearch(v); setPage(1); }}
+                    searchPlaceholder="Search by name or email..."
+                    statusOptions={[
+                        { value: 'active', label: 'Active' },
+                        { value: 'inactive', label: 'Inactive' }
+                    ]}
+                    statusValue={statusFilter}
+                    onStatusChange={(v) => { setStatusFilter(v); setPage(1); }}
+                    pagination={
+                        meta
+                            ? { page, totalPages: meta.totalPages, onPageChange: setPage }
+                            : undefined
+                    }
+                />
+
+                {/* ── Add / Edit Dialog ──────────────────────────────────── */}
+                <Dialog
+                    open={openDialog}
+                    onClose={() => setOpenDialog(false)}
+                    maxWidth="sm"
+                    fullWidth
+                    PaperProps={{
+                        sx: {
+                            borderRadius: BORDER_RADIUS.lg,
+                            boxShadow: SHADOWS.premium
                         }
-                    />
-
-                    {/* ── Add / Edit Dialog ──────────────────────────────────── */}
-                    <Dialog
-                        open={openDialog}
-                        onClose={() => setOpenDialog(false)}
-                        maxWidth="sm"
-                        fullWidth
-                        PaperProps={{
-                            sx: {
-                                borderRadius: BORDER_RADIUS.lg,
-                                boxShadow: SHADOWS.premium
-                            }
-                        }}
-                    >
-                        <DialogTitle sx={{ color: COLORS.text.primary, pt: 4, px: 4 }}>
-                            {dialogMode === 'add' ? 'Add Clinic Staff' : 'Edit Staff'}
-                        </DialogTitle>
-                        <DialogContent sx={{ px: 4, py: 2 }}>
-                            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, mt: 1 }}>
-                                <Grid container spacing={2}>
-                                    <Grid size={{ xs: 12, sm: 6 }}>
-                                        <TextField
-                                            label="First Name"
-                                            fullWidth
-                                            required
-                                            value={formData.firstName}
-                                            onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                                        />
-                                    </Grid>
-                                    <Grid size={{ xs: 12, sm: 6 }}>
-                                        <TextField
-                                            label="Last Name"
-                                            fullWidth
-                                            required
-                                            value={formData.lastName}
-                                            onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                                        />
-                                    </Grid>
-                                </Grid>
-
-                                <TextField
-                                    label="Email Address"
-                                    type="email"
-                                    fullWidth
-                                    required
-                                    disabled={dialogMode === 'edit'}
-                                    value={formData.email}
-                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                    helperText={dialogMode === 'edit' ? 'Email cannot be changed.' : ''}
-                                />
-
-                                {dialogMode === 'add' && (
-                                    <>
-                                        <TextField
-                                            label="Password"
-                                            type="password"
-                                            fullWidth
-                                            required
-                                            value={formData.password}
-                                            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                            helperText="Minimum 6 characters"
-                                        />
-                                        <TextField
-                                            select
-                                            label="Staff Role"
-                                            fullWidth
-                                            required
-                                            value={formData.role}
-                                            onChange={(e) => setFormData({ ...formData, role: e.target.value as Role.DOCTOR | Role.RECEPTIONIST })}
-                                        >
-                                            <MenuItem value={Role.DOCTOR}>Doctor</MenuItem>
-                                            <MenuItem value={Role.RECEPTIONIST}>Receptionist</MenuItem>
-                                        </TextField>
-                                    </>
-                                )}
-
-                                <TextField
-                                    label="Phone Number"
-                                    fullWidth
-                                    value={formData.phone}
-                                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                />
-
-                                {formData.role === Role.DOCTOR && (
-                                    <>
-                                        <TextField
-                                            select
-                                            label="Specialty"
-                                            fullWidth
-                                            value={formData.specialty}
-                                            onChange={(e) => setFormData({ ...formData, specialty: e.target.value as Specialty | '' })}
-                                        >
-                                            <MenuItem value=""><em>None</em></MenuItem>
-                                            {Object.values(Specialty).map((val) => (
-                                                <MenuItem key={val} value={val}>{val}</MenuItem>
-                                            ))}
-                                        </TextField>
-                                        <Grid container spacing={2}>
-                                            <Grid size={{ xs: 12, sm: 6 }}>
-                                                <TextField
-                                                    label="Years of Experience"
-                                                    type="number"
-                                                    fullWidth
-                                                    value={formData.yearsOfExperience}
-                                                    onChange={(e) => setFormData({ ...formData, yearsOfExperience: e.target.value })}
-                                                />
-                                            </Grid>
-                                            <Grid size={{ xs: 12, sm: 6 }}>
-                                                <TextField
-                                                    select
-                                                    SelectProps={{
-                                                        multiple: true,
-                                                        renderValue: (selected: any) => (
-                                                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                                                                {(selected as string[]).map((value) => (
-                                                                    <Chip
-                                                                        key={value}
-                                                                        label={value}
-                                                                        size="small"
-                                                                        sx={{ borderRadius: BORDER_RADIUS.xs, bgcolor: COLORS.primary.subtle, color: COLORS.primary.main }}
-                                                                    />
-                                                                ))}
-                                                            </Box>
-                                                        ),
-                                                    }}
-                                                    label="Languages Spoken"
-                                                    fullWidth
-                                                    value={formData.languages}
-                                                    onChange={(e) => setFormData({ ...formData, languages: e.target.value as unknown as Language[] })}
-                                                >
-                                                    {Object.values(Language).map((val) => (
-                                                        <MenuItem key={val} value={val}>{val}</MenuItem>
-                                                    ))}
-                                                </TextField>
-                                            </Grid>
-                                        </Grid>
-                                    </>
-                                )}
-
-                                {dialogMode === 'edit' && (
-                                    <FormControlLabel
-                                        control={
-                                            <Switch
-                                                checked={formData.isActive}
-                                                onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                                                color="primary"
-                                            />
-                                        }
-                                        label="Active Status"
-                                        sx={{ color: COLORS.text.secondary }}
+                    }}
+                >
+                    <DialogTitle sx={{ color: COLORS.text.primary, pt: 4, px: 4 }}>
+                        {dialogMode === 'add' ? 'Add Clinic Staff' : 'Edit Staff'}
+                    </DialogTitle>
+                    <DialogContent sx={{ px: 4, py: 2 }}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2.5, mt: 1 }}>
+                            <Grid container spacing={2}>
+                                <Grid size={{ xs: 12, sm: 6 }}>
+                                    <TextField
+                                        label="First Name"
+                                        fullWidth
+                                        required
+                                        value={formData.firstName}
+                                        onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                                     />
-                                )}
-                            </Box>
-                        </DialogContent>
-                        <DialogActions sx={{ p: 4 }}>
-                            <Button onClick={() => setOpenDialog(false)} sx={{ color: COLORS.text.secondary }}>
-                                Cancel
-                            </Button>
-                            <Button
-                                onClick={handleSave}
-                                variant="contained"
-                                disabled={
-                                    isSaving ||
-                                    !formData.firstName ||
-                                    !formData.lastName ||
-                                    (dialogMode === 'add' && (!formData.email || !formData.password || !formData.role))
-                                }
-                                sx={{
-                                    borderRadius: BORDER_RADIUS.md,
-                                    px: 4,
-                                    boxShadow: SHADOWS.medium,
-                                }}
-                            >
-                                {isSaving ? <CircularProgress size={24} color="inherit" /> : 'Save Staff'}
-                            </Button>
-                        </DialogActions>
-                    </Dialog>
+                                </Grid>
+                                <Grid size={{ xs: 12, sm: 6 }}>
+                                    <TextField
+                                        label="Last Name"
+                                        fullWidth
+                                        required
+                                        value={formData.lastName}
+                                        onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                                    />
+                                </Grid>
+                            </Grid>
 
-                    {/* ── Confirm Deactivate Dialog ───────────────────────────── */}
-                    <ConfirmDialog
-                        open={confirmOpen}
-                        title="Deactivate Staff"
-                        message="Are you sure you want to deactivate this staff member? They will no longer be able to access the platform."
-                        confirmLabel="Deactivate"
-                        onConfirm={handleDeactivateConfirm}
-                        onCancel={() => setConfirmOpen(false)}
-                        isLoading={deactivateUser.isPending}
-                    />
+                            <TextField
+                                label="Email Address"
+                                type="email"
+                                fullWidth
+                                required
+                                disabled={dialogMode === 'edit'}
+                                value={formData.email}
+                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                helperText={dialogMode === 'edit' ? 'Email cannot be changed.' : ''}
+                            />
+
+                            {dialogMode === 'add' && (
+                                <>
+                                    <TextField
+                                        label="Password"
+                                        type="password"
+                                        fullWidth
+                                        required
+                                        value={formData.password}
+                                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                        helperText="Minimum 6 characters"
+                                    />
+                                    <TextField
+                                        select
+                                        label="Staff Role"
+                                        fullWidth
+                                        required
+                                        value={formData.role}
+                                        onChange={(e) => setFormData({ ...formData, role: e.target.value as Role.DOCTOR | Role.RECEPTIONIST })}
+                                    >
+                                        <MenuItem value={Role.DOCTOR}>Doctor</MenuItem>
+                                        <MenuItem value={Role.RECEPTIONIST}>Receptionist</MenuItem>
+                                    </TextField>
+                                </>
+                            )}
+
+                            <TextField
+                                label="Phone Number"
+                                fullWidth
+                                value={formData.phone}
+                                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                            />
+
+                            {formData.role === Role.DOCTOR && (
+                                <>
+                                    <TextField
+                                        select
+                                        label="Specialty"
+                                        fullWidth
+                                        value={formData.specialty}
+                                        onChange={(e) => setFormData({ ...formData, specialty: e.target.value as Specialty | '' })}
+                                    >
+                                        <MenuItem value=""><em>None</em></MenuItem>
+                                        {Object.values(Specialty).map((val) => (
+                                            <MenuItem key={val} value={val}>{val}</MenuItem>
+                                        ))}
+                                    </TextField>
+                                    <Grid container spacing={2}>
+                                        <Grid size={{ xs: 12, sm: 6 }}>
+                                            <TextField
+                                                label="Years of Experience"
+                                                type="number"
+                                                fullWidth
+                                                value={formData.yearsOfExperience}
+                                                onChange={(e) => setFormData({ ...formData, yearsOfExperience: e.target.value })}
+                                            />
+                                        </Grid>
+                                        <Grid size={{ xs: 12, sm: 6 }}>
+                                            <TextField
+                                                select
+                                                SelectProps={{
+                                                    multiple: true,
+                                                    renderValue: (selected: any) => (
+                                                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                                                            {(selected as string[]).map((value) => (
+                                                                <Chip
+                                                                    key={value}
+                                                                    label={value}
+                                                                    size="small"
+                                                                    sx={{ borderRadius: BORDER_RADIUS.xs, bgcolor: COLORS.primary.subtle, color: COLORS.primary.main }}
+                                                                />
+                                                            ))}
+                                                        </Box>
+                                                    ),
+                                                }}
+                                                label="Languages Spoken"
+                                                fullWidth
+                                                value={formData.languages}
+                                                onChange={(e) => setFormData({ ...formData, languages: e.target.value as unknown as Language[] })}
+                                            >
+                                                {Object.values(Language).map((val) => (
+                                                    <MenuItem key={val} value={val}>{val}</MenuItem>
+                                                ))}
+                                            </TextField>
+                                        </Grid>
+                                    </Grid>
+                                </>
+                            )}
+
+                            {dialogMode === 'edit' && (
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            checked={formData.isActive}
+                                            onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                                            color="primary"
+                                        />
+                                    }
+                                    label="Active Status"
+                                    sx={{ color: COLORS.text.secondary }}
+                                />
+                            )}
+                        </Box>
+                    </DialogContent>
+                    <DialogActions sx={{ p: 4 }}>
+                        <Button onClick={() => setOpenDialog(false)} sx={{ color: COLORS.text.secondary }}>
+                            Cancel
+                        </Button>
+                        <Button
+                            onClick={handleSave}
+                            variant="contained"
+                            disabled={
+                                isSaving ||
+                                !formData.firstName ||
+                                !formData.lastName ||
+                                (dialogMode === 'add' && (!formData.email || !formData.password || !formData.role))
+                            }
+                            sx={{
+                                borderRadius: BORDER_RADIUS.md,
+                                px: 4,
+                                boxShadow: SHADOWS.medium,
+                            }}
+                        >
+                            {isSaving ? <CircularProgress size={24} color="inherit" /> : 'Save Staff'}
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+
+                {/* ── Confirm Deactivate Dialog ───────────────────────────── */}
+                <ConfirmDialog
+                    open={confirmOpen}
+                    title="Deactivate Staff"
+                    message="Are you sure you want to deactivate this staff member? They will no longer be able to access the platform."
+                    confirmLabel="Deactivate"
+                    onConfirm={handleDeactivateConfirm}
+                    onCancel={() => setConfirmOpen(false)}
+                    isLoading={deactivateUser.isPending}
+                />
                 {/* </Box> */}
             </DashboardLayout>
         </ProtectedRoute>

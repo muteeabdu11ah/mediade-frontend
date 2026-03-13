@@ -70,7 +70,7 @@ export interface AdvancedDataTableProps<T> {
     onStatusChange?: (value: string) => void;
 
     // Date Filters
-    onDateChange?: (start?: string, end?: string) => void;
+    onDateChange?: (date?: string) => void;
 
     // Actions
     actions?: ActionDef<T>[];
@@ -102,7 +102,7 @@ export default function AdvancedDataTable<T>({
     const [anchorEl, setAnchorEl] = useState<{ element: HTMLElement; row: T } | null>(null);
 
     // Date Filter Type State
-    const [dateFilterType, setDateFilterType] = useState<'Date' | 'Date Range'>('Date');
+
 
     const handleActionClick = (event: React.MouseEvent<HTMLElement>, row: T) => {
         setAnchorEl({ element: event.currentTarget, row });
@@ -232,92 +232,25 @@ export default function AdvancedDataTable<T>({
                             alignItems: { xs: 'stretch', sm: 'center' },
                             width: { xs: '100%', sm: 'auto' }
                         }}>
-                            <Select
-                                value={dateFilterType}
-                                onChange={(e) => setDateFilterType(e.target.value as 'Date' | 'Date Range')}
-                                size="small"
-                                sx={{
-                                    bgcolor: COLORS.background.default,
+                            <input
+                                type="date"
+                                style={{
+                                    padding: '0 20px',
                                     borderRadius: BORDER_RADIUS.full,
                                     border: `1px solid ${COLORS.border.medium}`,
-                                    '& .MuiOutlinedInput-notchedOutline': {
-                                        border: 'none',
-                                    },
-                                    minWidth: { xs: '100%', sm: 110 },
-                                    height: 44,
-                                    '& .MuiSelect-select': {
-                                        py: 0,
-                                        pl: 3,
-                                        fontSize: '0.9rem',
-                                        fontWeight: 600,
-                                        color: COLORS.text.secondary,
-                                    }
+                                    outline: 'none',
+                                    color: COLORS.text.primary,
+                                    backgroundColor: COLORS.background.default,
+                                    fontFamily: 'inherit',
+                                    fontSize: '0.9rem',
+                                    fontWeight: 500,
+                                    height: '44px',
+                                    boxSizing: 'border-box',
+                                    width: '100%',
+                                    minWidth: '150px'
                                 }}
-                            >
-                                <MenuItem value="Date">Date</MenuItem>
-                                <MenuItem value="Date Range">Date Range</MenuItem>
-                            </Select>
-
-                            {dateFilterType === 'Date' ? (
-                                <input
-                                    type="date"
-                                    style={{
-                                        padding: '0 20px',
-                                        borderRadius: BORDER_RADIUS.full,
-                                        border: `1px solid ${COLORS.border.medium}`,
-                                        outline: 'none',
-                                        color: COLORS.text.primary,
-                                        backgroundColor: COLORS.background.default,
-                                        fontFamily: 'inherit',
-                                        fontSize: '0.9rem',
-                                        fontWeight: 500,
-                                        height: '44px',
-                                        boxSizing: 'border-box',
-                                        width: '100%'
-                                    }}
-                                    onChange={(e) => onDateChange(e.target.value, e.target.value)}
-                                />
-                            ) : (
-                                <>
-                                    <input
-                                        type="date"
-                                        style={{
-                                            padding: '0 20px',
-                                            borderRadius: BORDER_RADIUS.full,
-                                            border: `1px solid ${COLORS.border.medium}`,
-                                            outline: 'none',
-                                            color: COLORS.text.primary,
-                                            backgroundColor: COLORS.background.default,
-                                            fontFamily: 'inherit',
-                                            fontSize: '0.9rem',
-                                            fontWeight: 500,
-                                            height: '44px',
-                                            boxSizing: 'border-box',
-                                            width: '100%'
-                                        }}
-                                        onChange={(e) => onDateChange(e.target.value, undefined)}
-                                    />
-                                    <Typography variant="body2" color={COLORS.text.muted} sx={{ display: { xs: 'none', sm: 'block' } }}>-</Typography>
-                                    <input
-                                        type="date"
-                                        style={{
-                                            padding: '0 20px',
-                                            borderRadius: BORDER_RADIUS.full,
-                                            border: `1px solid ${COLORS.border.medium}`,
-                                            outline: 'none',
-                                            color: COLORS.text.primary,
-                                            backgroundColor: COLORS.background.default,
-                                            fontFamily: 'inherit',
-                                            fontSize: '0.9rem',
-                                            fontWeight: 500,
-                                            height: '44px',
-                                            boxSizing: 'border-box',
-                                            width: '100%'
-                                        }}
-                                        onChange={(e) => onDateChange(undefined, e.target.value)}
-                                    />
-                                </>
-                            )}
+                                onChange={(e) => onDateChange(e.target.value)}
+                            />
                         </Box>
                     )}
                 </Box>
@@ -341,7 +274,7 @@ export default function AdvancedDataTable<T>({
                             {columns.map((col, index) => (
                                 <TableCell
                                     key={col.header + index}
-                                    align={col.align || 'left'}
+                                    align={col.header === 'Actions' ? 'center' : (col.align || 'left')}
                                     sx={{
                                         fontWeight: 600,
                                         color: COLORS.text.primary,
@@ -423,7 +356,7 @@ export default function AdvancedDataTable<T>({
                                     }}
                                 >
                                     {columns.map((col, index) => (
-                                        <TableCell key={col.header + index} align={col.align || 'left'} sx={{
+                                        <TableCell key={col.header + index} align={col.header === 'Actions' ? 'center' : (col.align || 'left')} sx={{
                                             color: COLORS.text.secondary,
                                             fontSize: '0.9rem',
                                             fontWeight: 500,

@@ -39,9 +39,9 @@ export default function PatientHistoryPage() {
                     onPageChange={setPage}
                     onSearch={setSearchTerm}
                     onStatusChange={setStatusFilter}
-                    onDateChange={(start, end) => {
-                        setStartDate(start);
-                        setEndDate(end);
+                    onDateChange={(date) => {
+                        setStartDate(date);
+                        setEndDate(date);
                     }}
                     statusValue={statusFilter}
                     searchTerm={searchTerm}

@@ -128,7 +128,7 @@ export default function ClinicAppointmentsPage() {
         },
         {
             header: 'Actions',
-            align: 'right',
+            align: 'center',
             render: (appt) =>
                 appt.status === AppointmentStatus.UPCOMING ? (
                     <Tooltip title="Update Status">
@@ -165,8 +165,8 @@ export default function ClinicAppointmentsPage() {
                         setPage(1);
                     }}
                     // Date
-                    onDateChange={(start, end) => {
-                        setDateRange({ start, end });
+                    onDateChange={(date) => {
+                        setDateRange({ start: date, end: date });
                         setPage(1);
                     }}
                     // Pagination

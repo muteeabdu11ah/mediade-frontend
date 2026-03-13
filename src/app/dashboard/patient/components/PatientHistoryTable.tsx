@@ -15,7 +15,7 @@ interface PatientHistoryTableProps {
     onPageChange: (page: number) => void;
     onSearch?: (term: string) => void;
     onStatusChange?: (status: string) => void;
-    onDateChange?: (start: string | undefined, end: string | undefined) => void;
+    onDateChange?: (date?: string) => void;
     statusValue?: string;
     searchTerm?: string;
     showFilters?: boolean;

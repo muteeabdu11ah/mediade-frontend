@@ -133,9 +133,9 @@ export default function ClinicsPage() {
         },
         {
             header: 'Actions',
-            align: 'right',
+            align: 'center',
             render: (clinic) => (
-                <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
                     <IconButton size="small" onClick={() => handleOpen(clinic)} sx={{ color: COLORS.text.secondary }} title="Edit Clinic">
                         <EditIcon fontSize="small" />
                     </IconButton>
