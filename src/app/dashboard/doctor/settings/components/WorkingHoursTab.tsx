@@ -39,12 +39,16 @@ const defaultScheduleRow = (day: DayOfWeek): ScheduleFormData => ({
 export default function WorkingHoursTab() {
     const { schedules: serverSchedules, isLoading, updateSchedules, isSaving } = useSchedules();
     const [localSchedules, setLocalSchedules] = useState<Record<DayOfWeek, ScheduleFormData>>({} as any);
+    const [globalSlotDuration, setGlobalSlotDuration] = useState<number>(30);
     const [error, setError] = useState('');
     const [successMsg, setSuccessMsg] = useState('');
 
     useEffect(() => {
-        if (serverSchedules) {
+        if (serverSchedules && serverSchedules.length > 0) {
             const initial: Record<string, ScheduleFormData> = {};
+            // Use the slot duration from the first record as the global one
+            setGlobalSlotDuration(serverSchedules[0].slotDuration || 30);
+
             DAYS_ORDER.forEach((day) => {
                 const existing = serverSchedules.find((s) => s.dayOfWeek === day);
                 if (existing) {
@@ -78,8 +82,14 @@ export default function WorkingHoursTab() {
         setSuccessMsg('');
 
         try {
+            // Apply global slot duration to all schedules before saving
+            const schedulesToSave = Object.values(localSchedules).map(s => ({
+                ...s,
+                slotDuration: globalSlotDuration
+            }));
+
             await updateSchedules({
-                schedules: Object.values(localSchedules),
+                schedules: schedulesToSave,
             });
             setSuccessMsg('Schedule updated successfully!');
         } catch (err: unknown) {
@@ -100,127 +110,151 @@ export default function WorkingHoursTab() {
 
     return (
         <Box>
-            <Typography variant="h5" sx={{ mb: 1, color: COLORS.text.primary }}>
-                Working Hours
+            <Typography variant="h3" sx={{ mb: 1, color: COLORS.text.primary, fontWeight: 700 }}>
+                Appointment Schedule
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
-                Set your standard weekly availability and appointment slot durations.
+                Set your available hours for each day
             </Typography>
 
             {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
             {successMsg && <Alert severity="success" sx={{ mb: 3 }} onClose={() => setSuccessMsg('')}>{successMsg}</Alert>}
 
-            <Box sx={{ p: 0 }}>
-                {DAYS_ORDER.map((day, index) => {
+            {/* Global Slot Duration */}
+            <Box sx={{ mb: 4 }}>
+                <TextField
+                    label="Slot Duration"
+                    type="number"
+                    value={globalSlotDuration}
+                    onChange={(e) => setGlobalSlotDuration(Number(e.target.value))}
+                    InputProps={{
+                        endAdornment: <Typography sx={{ fontWeight: 600, color: COLORS.text.secondary }}>min</Typography>,
+                    }}
+                    sx={{
+                        '& .MuiOutlinedInput-root': {
+                            borderRadius: 1,
+                            bgcolor: COLORS.background.default,
+                            height: 48,
+                            width: 120,
+                            fontWeight: 600,
+                            '& fieldset': { borderColor: '#E2E8F0' },
+                            '&:hover fieldset': { borderColor: '#CBD5E1' },
+                            '&.Mui-focused fieldset': { borderColor: COLORS.primary.main },
+                        },
+                        '& input': { textAlign: 'center' },
+                        '& .MuiInputLabel-root': {
+                            fontWeight: 500,
+                            color: COLORS.text.secondary,
+                        }
+                    }}
+                />
+            </Box>
+
+            {/* Schedules List */}
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                {DAYS_ORDER.map((day) => {
                     const rowData = localSchedules[day];
                     if (!rowData) return null;
 
                     return (
-                        <Box key={day} sx={{ py: 2.5, borderBottom: index === DAYS_ORDER.length - 1 ? 'none' : '1px solid rgba(0,0,0,0.05)' }}>
-                            <Grid container spacing={2} alignItems="center">
-                                <Grid size={{ xs: 12, sm: 4, md: 2 }}>
-                                    <Typography variant="subtitle1" sx={{ textTransform: 'capitalize', color: COLORS.text.secondary }}>
-                                        {day}
-                                    </Typography>
-                                </Grid>
-                                <Grid size={{ xs: 12, sm: 8, md: 10 }}>
-                                    <Grid container spacing={2} alignItems="center">
-                                        <Grid size={{ xs: 5, sm: 3.5, md: 3 }}>
-                                            <TextField
-                                                type="time"
-                                                fullWidth
-                                                size="small"
-                                                disabled={!rowData.isAvailable}
-                                                value={rowData.startTime}
-                                                onChange={(e) => {
-                                                    const val = e.target.value;
-                                                    handleChange(day, 'startTime', val.length === 5 ? `${val}:00` : val);
-                                                }}
-                                                slotProps={{
-                                                    htmlInput: { step: 300 },
-                                                    input: {
-                                                        sx: {
-                                                            borderRadius: 3,
-                                                            bgcolor: rowData.isAvailable ? '#F7FAFC' : 'transparent'
-                                                        }
-                                                    }
-                                                }}
-                                            />
-                                        </Grid>
-                                        <Grid size={{ xs: 2, sm: 1, md: 0.5 }} sx={{ textAlign: 'center' }}>
-                                            <Box sx={{ width: 8, height: 2, bgcolor: 'divider', mx: 'auto' }} />
-                                        </Grid>
-                                        <Grid size={{ xs: 5, sm: 3.5, md: 3 }}>
-                                            <TextField
-                                                type="time"
-                                                fullWidth
-                                                size="small"
-                                                disabled={!rowData.isAvailable}
-                                                value={rowData.endTime}
-                                                onChange={(e) => {
-                                                    const val = e.target.value;
-                                                    handleChange(day, 'endTime', val.length === 5 ? `${val}:00` : val);
-                                                }}
-                                                slotProps={{
-                                                    htmlInput: { step: 300 },
-                                                    input: {
-                                                        sx: {
-                                                            borderRadius: 3,
-                                                            bgcolor: rowData.isAvailable ? '#F7FAFC' : 'transparent'
-                                                        }
-                                                    }
-                                                }}
-                                            />
-                                        </Grid>
-                                        <Grid size={{ xs: 8, sm: 3, md: 3.5 }}>
-                                            <TextField
-                                                type="number"
-                                                label="Slot (min)"
-                                                fullWidth
-                                                size="small"
-                                                disabled={!rowData.isAvailable}
-                                                value={rowData.slotDuration}
-                                                onChange={(e) => handleChange(day, 'slotDuration', Number(e.target.value))}
-                                                slotProps={{
-                                                    input: {
-                                                        sx: {
-                                                            borderRadius: 3,
-                                                            bgcolor: rowData.isAvailable ? '#F7FAFC' : 'transparent'
-                                                        }
-                                                    }
-                                                }}
-                                            />
-                                        </Grid>
-                                        <Grid size={{ xs: 4, sm: 1, md: 2 }} sx={{ textAlign: 'right' }}>
-                                            <FormControlLabel
-                                                control={
-                                                    <Switch
-                                                        color="primary"
-                                                        checked={rowData.isAvailable}
-                                                        onChange={(e) => handleChange(day, 'isAvailable', e.target.checked)}
-                                                    />
-                                                }
-                                                label=""
-                                                sx={{ m: 0 }}
-                                            />
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
+                        <Box
+                            key={day}
+                            sx={{
+                                py: 2,
+                                px: 3,
+                                borderRadius: 1,
+                                bgcolor: COLORS.background.default,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                transition: 'all 0.2s',
+                            }}
+                        >
+                            <Typography
+                                variant="subtitle1"
+                                sx={{
+                                    textTransform: 'capitalize',
+                                    color: COLORS.text.primary,
+                                    fontWeight: 600,
+                                    width: 120
+                                }}
+                            >
+                                {day.toLowerCase()}
+                            </Typography>
+
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: 1, justifyContent: 'center' }}>
+                                <TextField
+                                    type="time"
+                                    size="small"
+                                    disabled={!rowData.isAvailable}
+                                    value={rowData.startTime}
+                                    onChange={(e) => {
+                                        const val = e.target.value;
+                                        handleChange(day, 'startTime', val.length === 5 ? `${val}:00` : val);
+                                    }}
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            borderRadius: 1,
+                                            bgcolor: 'white',
+                                            height: 44,
+                                            width: 140, // Balanced width
+                                            '& fieldset': { borderColor: '#E2E8F0' },
+                                            '&:hover fieldset': { borderColor: '#CBD5E1' },
+                                            '&.Mui-focused fieldset': { borderColor: COLORS.primary.main },
+                                        },
+                                        '& input': { textAlign: 'center' }
+                                    }}
+                                />
+
+                                <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 500 }}>
+                                    to
+                                </Typography>
+
+                                <TextField
+                                    type="time"
+                                    size="small"
+                                    disabled={!rowData.isAvailable}
+                                    value={rowData.endTime}
+                                    onChange={(e) => {
+                                        const val = e.target.value;
+                                        handleChange(day, 'endTime', val.length === 5 ? `${val}:00` : val);
+                                    }}
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            borderRadius: 1,
+                                            bgcolor: 'white',
+                                            height: 44,
+                                            width: 140, // Balanced width
+                                            '& fieldset': { borderColor: '#E2E8F0' },
+                                            '&:hover fieldset': { borderColor: '#CBD5E1' },
+                                            '&.Mui-focused fieldset': { borderColor: COLORS.primary.main },
+                                        },
+                                        '& input': { textAlign: 'center' }
+                                    }}
+                                />
+                            </Box>
+
+                            <Box sx={{ width: 120, textAlign: 'right' }}>
+                                <Switch
+                                    color="primary"
+                                    checked={rowData.isAvailable}
+                                    onChange={(e) => handleChange(day, 'isAvailable', e.target.checked)}
+                                    sx={{
+                                        '& .MuiSwitch-switchBase.Mui-checked': {
+                                            color: '#00C9AB', // Teal from image
+                                            '& + .MuiSwitch-track': {
+                                                backgroundColor: '#00C9AB',
+                                            },
+                                        },
+                                    }}
+                                />
+                            </Box>
                         </Box>
                     );
                 })}
             </Box>
 
-            <Divider sx={{ my: 4 }} />
-
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-                <Button
-                    variant="outlined"
-                    sx={{ px: 4, py: 1, borderRadius: 3, textTransform: 'none' }}
-                >
-                    Cancel
-                </Button>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 4 }}>
                 <Button
                     variant="contained"
                     startIcon={isSaving ? <CircularProgress size={20} color="inherit" /> : <SaveIcon />}
@@ -228,13 +262,19 @@ export default function WorkingHoursTab() {
                     disabled={isLoading || isSaving}
                     sx={{
                         px: 4,
-                        py: 1,
-                        borderRadius: 3,
+                        py: 1.5,
+                        borderRadius: 1,
                         textTransform: 'none',
                         background: GRADIENTS.primary,
+                        fontWeight: 600,
+                        boxShadow: '0 4px 14px 0 rgba(0, 201, 171, 0.39)',
+                        '&:hover': {
+                            background: GRADIENTS.primary,
+                            opacity: 0.9,
+                        }
                     }}
                 >
-                    Save Changes
+                    Save
                 </Button>
             </Box>
         </Box>

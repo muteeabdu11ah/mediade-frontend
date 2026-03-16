@@ -75,7 +75,7 @@ export default function ChangePasswordTab() {
 
     return (
         <Box component="form" onSubmit={handleSubmit} sx={{ maxWidth: 500 }}>
-            <Typography variant="h5" sx={{ mb: 1, color: COLORS.text.primary }}>
+            <Typography variant="h3" sx={{ mb: 1, color: COLORS.text.primary }}>
                 Change Password
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>

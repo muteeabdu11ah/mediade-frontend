@@ -99,7 +99,7 @@ export default function PersonalInfoTab() {
                 onChange={handleImageChange}
                 accept="image/jpeg,image/png,image/webp"
             />
-            <Typography variant="h5" sx={{ mb: 1, color: COLORS.text.primary }}>
+            <Typography variant="h3" sx={{ mb: 1, color: COLORS.text.primary }}>
                 Profile Info
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>

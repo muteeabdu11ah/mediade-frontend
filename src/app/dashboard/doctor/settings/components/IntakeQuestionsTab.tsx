@@ -13,7 +13,7 @@ import { COLORS, GRADIENTS } from '@/lib/constants/design-tokens';
 export default function IntakeQuestionsTab() {
     return (
         <Box sx={{ maxWidth: 600 }}>
-            <Typography variant="h5" sx={{ mb: 1, color: COLORS.text.primary }}>
+            <Typography variant="h3" sx={{ mb: 1, color: COLORS.text.primary }}>
                 Intake Questions
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
