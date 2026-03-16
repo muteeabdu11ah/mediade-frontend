@@ -33,6 +33,7 @@ import PersonalInfoTab from './components/PersonalInfoTab';
 import WorkingHoursTab from './components/WorkingHoursTab';
 import ChangePasswordTab from './components/ChangePasswordTab';
 import IntakeQuestionsTab from './components/IntakeQuestionsTab';
+import { COLORS, GRADIENTS } from '@/lib/constants/design-tokens';
 
 type SettingsTab = 'personal' | 'hours' | 'password' | 'questions';
 
@@ -53,14 +54,17 @@ export default function DoctorSettingsPage() {
                 <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: { xs: 2, md: 4 }, mt: 2, alignItems: 'flex-start' }}>
 
                     {/* Inner Sidebar */}
-                    <Card sx={{ width: { xs: '100%', md: 280 }, borderRadius: 4, boxShadow: '0 4px 20px rgba(0,0,0,0.03)', border: '1px solid #f0f0f0', flexShrink: 0 }}>
+                    <Card sx={{
+                        width: { xs: '100%', md: 250 },
+                        borderRadius: 1, boxShadow: '0 4px 20px rgba(0,0,0,0.03)', border: `1px solid ${COLORS.border.light}`, flexShrink: 0
+                    }}>
                         <List sx={{ p: 1, display: { xs: 'flex', md: 'block' }, overflowX: { xs: 'auto', md: 'visible' }, gap: 1 }}>
                             {sidebarItems.map((item) => (
                                 <ListItem key={item.id} disablePadding sx={{ mb: { xs: 0, md: 1 }, minWidth: { xs: 'fit-content', md: 'auto' } }}>
                                     <ListItemButton
                                         onClick={() => setActiveTab(item.id as SettingsTab)}
                                         sx={{
-                                            borderRadius: 3,
+                                            borderRadius: 1,
                                             py: 1.5,
                                             px: { xs: 2, md: 2 },
                                             bgcolor: activeTab === item.id ? 'primary.main' : 'transparent',

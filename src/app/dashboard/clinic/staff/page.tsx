@@ -303,13 +303,12 @@ export default function ClinicStaffManagementPage() {
     return (
         <ProtectedRoute allowedRoles={[Role.CLINIC_ADMIN]}>
             <DashboardLayout title="Staff Management">
-                {/* <Box sx={{ p: 4 }}> */}
-                {/* <PageHeader
-                        title="Clinic Staff"
-                        subtitle="Manage doctors and receptionists in your clinic."
+                <PageHeader
+                        title=""
+                        subtitle=""
                         actionLabel="Add Staff"
                         onAction={handleOpenAdd}
-                    /> */}
+                    />
 
                 <AdvancedDataTable<User>
                     columns={columns}
