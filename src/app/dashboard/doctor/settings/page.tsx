@@ -33,6 +33,7 @@ import PersonalInfoTab from './components/PersonalInfoTab';
 import WorkingHoursTab from './components/WorkingHoursTab';
 import ChangePasswordTab from './components/ChangePasswordTab';
 import IntakeQuestionsTab from './components/IntakeQuestionsTab';
+import { COLORS, GRADIENTS } from '@/lib/constants/design-tokens';
 
 type SettingsTab = 'personal' | 'hours' | 'password' | 'questions';
 
@@ -42,7 +43,7 @@ export default function DoctorSettingsPage() {
 
     const sidebarItems = [
         { id: 'personal', label: 'Personal Information', icon: <PersonIcon /> },
-        { id: 'hours', label: 'Working Hours', icon: <AccessTimeIcon /> },
+        { id: 'hours', label: 'Appointment Schedule', icon: <AccessTimeIcon /> },
         { id: 'password', label: 'Change Password', icon: <LockIcon /> },
         { id: 'questions', label: 'Intake Questions', icon: <HelpOutlineIcon /> },
     ];
@@ -50,24 +51,27 @@ export default function DoctorSettingsPage() {
     return (
         <ProtectedRoute allowedRoles={[Role.DOCTOR]}>
             <DashboardLayout title="Settings">
-                <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: { xs: 2, md: 4 }, mt: 2, alignItems: 'flex-start' }}>
+                <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: { xs: 2, md: 1 }, mt: 2, alignItems: 'flex-start' }}>
 
                     {/* Inner Sidebar */}
-                    <Card sx={{ width: { xs: '100%', md: 280 }, borderRadius: 4, boxShadow: '0 4px 20px rgba(0,0,0,0.03)', border: '1px solid #f0f0f0', flexShrink: 0 }}>
+                    <Card sx={{
+                        width: { xs: '100%', md: 250 },
+                        borderRadius: 1, boxShadow: '0 4px 20px rgba(0,0,0,0.03)', border: `1px solid ${COLORS.border.light}`, flexShrink: 0
+                    }}>
                         <List sx={{ p: 1, display: { xs: 'flex', md: 'block' }, overflowX: { xs: 'auto', md: 'visible' }, gap: 1 }}>
                             {sidebarItems.map((item) => (
                                 <ListItem key={item.id} disablePadding sx={{ mb: { xs: 0, md: 1 }, minWidth: { xs: 'fit-content', md: 'auto' } }}>
                                     <ListItemButton
                                         onClick={() => setActiveTab(item.id as SettingsTab)}
                                         sx={{
-                                            borderRadius: 3,
+                                            borderRadius: 1,
                                             py: 1.5,
                                             px: { xs: 2, md: 2 },
-                                            bgcolor: activeTab === item.id ? 'primary.main' : 'transparent',
+                                            background: activeTab === item.id ? GRADIENTS.primary : 'transparent',
                                             color: activeTab === item.id ? 'white' : 'text.secondary',
                                             whiteSpace: 'nowrap',
                                             '&:hover': {
-                                                bgcolor: activeTab === item.id ? 'primary.main' : 'rgba(31,178,186,0.08)',
+                                                background: activeTab === item.id ? GRADIENTS.primary : 'rgba(31,178,186,0.08)',
                                             },
                                         }}
                                     >
@@ -89,7 +93,7 @@ export default function DoctorSettingsPage() {
                     </Card>
 
                     {/* Main Content Area */}
-                    <Card sx={{ width: '100%', flex: 1, borderRadius: 4, boxShadow: '0 4px 20px rgba(0,0,0,0.03)', border: '1px solid #f0f0f0', minHeight: { xs: 'auto', md: 600 } }}>
+                    <Card sx={{ width: '100%', flex: 1, borderRadius: 1, boxShadow: '0 4px 20px rgba(0,0,0,0.03)', border: `1px solid ${COLORS.border.light}`, minHeight: { xs: 'auto', md: 600 } }}>
                         <CardContent sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
                             {activeTab === 'personal' && <PersonalInfoTab />}
                             {activeTab === 'hours' && <WorkingHoursTab />}
