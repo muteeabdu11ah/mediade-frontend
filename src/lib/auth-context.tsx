@@ -6,6 +6,7 @@ import Cookies from 'js-cookie';
 import api from './api';
 import { API_ENDPOINTS } from './constants/api-endpoints';
 import { ROLE_DASHBOARD_ROUTES } from './constants/navigation';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
     Role,
     type AuthResponse,
@@ -24,6 +25,8 @@ interface AuthContextType {
     logout: () => void;
     refreshProfile: () => Promise<void>;
     getDashboardRoute: () => string;
+    loginMutation: any; // Type as needed or use generic
+    registerMutation: any;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -33,6 +36,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const [token, setToken] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
+    const queryClient = useQueryClient();
 
     const getDashboardRoute = useCallback(() => {
         if (!user) return '/login';
@@ -49,10 +53,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                     const response = await api.get<ProfileResponse>(API_ENDPOINTS.AUTH.ME);
                     setUser(response.data);
                 } catch {
-                    Cookies.remove('accessToken');
-                    Cookies.remove('userRole');
-                    setToken(null);
-                    setUser(null);
+                    handleLogoutLocal();
                 }
             }
             setIsLoading(false);
@@ -60,47 +61,65 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         initAuth();
     }, []);
 
-    const login = async (data: LoginRequest) => {
-        const response = await api.post<AuthResponse>(API_ENDPOINTS.AUTH.LOGIN, data);
-        const { accessToken, user: userData } = response.data;
-
-        Cookies.set('accessToken', accessToken, { expires: 7 });
-        Cookies.set('userRole', userData.role, { expires: 7 });
-        setToken(accessToken);
-
-        // Fetch full profile
-        const profileResponse = await api.get<ProfileResponse>(API_ENDPOINTS.AUTH.ME, {
-            headers: { Authorization: `Bearer ${accessToken}` },
-        });
-        setUser(profileResponse.data);
-
-        // Redirect based on role
-        const dashboardRoute = ROLE_DASHBOARD_ROUTES[userData.role as Role];
-        router.replace(dashboardRoute || '/dashboard/patient');
-    };
-
-    const register = async (data: RegisterRequest) => {
-        const response = await api.post<AuthResponse>(API_ENDPOINTS.AUTH.REGISTER, data);
-        const { accessToken } = response.data;
-
-        Cookies.set('accessToken', accessToken, { expires: 7 });
-        Cookies.set('userRole', response.data.user.role, { expires: 7 });
-        setToken(accessToken);
-
-        // Fetch full profile
-        const profileResponse = await api.get<ProfileResponse>(API_ENDPOINTS.AUTH.ME, {
-            headers: { Authorization: `Bearer ${accessToken}` },
-        });
-        setUser(profileResponse.data);
-
-        router.replace('/dashboard/patient');
-    };
-
-    const logout = () => {
+    const handleLogoutLocal = useCallback(() => {
         Cookies.remove('accessToken');
         Cookies.remove('userRole');
         setToken(null);
         setUser(null);
+        queryClient.clear();
+    }, [queryClient]);
+
+    const loginMutation = useMutation({
+        mutationFn: async (data: LoginRequest) => {
+            const response = await api.post<AuthResponse>(API_ENDPOINTS.AUTH.LOGIN, data);
+            return response.data;
+        },
+        onSuccess: async (data) => {
+            const { accessToken, user: userData } = data;
+            Cookies.set('accessToken', accessToken, { expires: 7 });
+            Cookies.set('userRole', userData.role, { expires: 7 });
+            setToken(accessToken);
+
+            // Fetch full profile immediately
+            try {
+                const profileResponse = await api.get<ProfileResponse>(API_ENDPOINTS.AUTH.ME, {
+                    headers: { Authorization: `Bearer ${accessToken}` },
+                });
+                setUser(profileResponse.data);
+
+                const dashboardRoute = ROLE_DASHBOARD_ROUTES[userData.role as Role] || '/dashboard/patient';
+                router.replace(dashboardRoute);
+            } catch (error) {
+                console.error('Failed to fetch profile after login:', error);
+            }
+        },
+    });
+
+    const registerMutation = useMutation({
+        mutationFn: async (data: RegisterRequest) => {
+            const response = await api.post<AuthResponse>(API_ENDPOINTS.AUTH.REGISTER, data);
+            return response.data;
+        },
+        onSuccess: async (data) => {
+            const { accessToken, user: userData } = data;
+            Cookies.set('accessToken', accessToken, { expires: 7 });
+            Cookies.set('userRole', userData.role, { expires: 7 });
+            setToken(accessToken);
+
+            try {
+                const profileResponse = await api.get<ProfileResponse>(API_ENDPOINTS.AUTH.ME, {
+                    headers: { Authorization: `Bearer ${accessToken}` },
+                });
+                setUser(profileResponse.data);
+                router.replace('/dashboard/patient');
+            } catch (error) {
+                console.error('Failed to fetch profile after registration:', error);
+            }
+        },
+    });
+
+    const logout = () => {
+        handleLogoutLocal();
         router.push('/login');
     };
 
@@ -120,11 +139,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 token,
                 isLoading,
                 isAuthenticated: !!user && !!token,
-                login,
-                register,
+                login: async (data) => { await loginMutation.mutateAsync(data); },
+                register: async (data) => { await registerMutation.mutateAsync(data); },
                 logout,
                 refreshProfile,
                 getDashboardRoute,
+                loginMutation,
+                registerMutation,
             }}
         >
             {children}

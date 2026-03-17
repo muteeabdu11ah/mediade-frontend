@@ -2,32 +2,21 @@
 
 import React, { useState } from 'react';
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Paper,
     Box,
     Typography,
     Pagination,
-    InputBase,
-    IconButton,
     Select,
     MenuItem,
-    SelectChangeEvent,
     Popover,
     MenuList,
     ListItemIcon,
     ListItemText,
-    Skeleton,
     useMediaQuery,
     useTheme
 } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { COLORS, BORDER_RADIUS, SHADOWS, TYPOGRAPHY } from '@/lib/constants/design-tokens';
+import { COLORS, BORDER_RADIUS, SHADOWS } from '@/lib/constants/design-tokens';
+import { DataTableFilters } from './DataTable/DataTableFilters';
+import { DataTableContent } from './DataTable/DataTableContent';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
@@ -96,13 +85,9 @@ export default function AdvancedDataTable<T>({
 
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-    const isTinyMobile = useMediaQuery(theme.breakpoints.down('xs'));
 
     // Actions Menu State
     const [anchorEl, setAnchorEl] = useState<{ element: HTMLElement; row: T } | null>(null);
-
-    // Date Filter Type State
-
 
     const handleActionClick = (event: React.MouseEvent<HTMLElement>, row: T) => {
         setAnchorEl({ element: event.currentTarget, row });
@@ -110,18 +95,6 @@ export default function AdvancedDataTable<T>({
 
     const handleCloseActionMenu = () => {
         setAnchorEl(null);
-    };
-
-    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (onSearch) {
-            onSearch(e.target.value);
-        }
-    };
-
-    const handleStatusChange = (e: SelectChangeEvent<string>) => {
-        if (onStatusChange) {
-            onStatusChange(e.target.value);
-        }
     };
 
     return (
@@ -134,261 +107,25 @@ export default function AdvancedDataTable<T>({
             boxShadow: SHADOWS.small
         }}>
             {/* Top Action Bar */}
-            <Box
-                sx={{
-                    display: 'flex',
-                    flexDirection: { xs: 'column', md: 'row' },
-                    justifyContent: 'space-between',
-                    alignItems: { xs: 'stretch', md: 'center' },
-                    mb: 4,
-                    gap: 3,
-                }}
-            >
-                {/* Search Input */}
-                {onSearch !== undefined && (
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            bgcolor: COLORS.background.default,
-                            border: `1px solid ${COLORS.border.medium}`,
-                            borderRadius: BORDER_RADIUS.full,
-                            px: 3,
-                            py: 0.8,
-                            flex: 1,
-                            maxWidth: { xs: '100%', md: '450px' },
-                            transition: 'all 0.2s ease',
-                            '&:focus-within': {
-                                borderColor: COLORS.primary.main,
-                                boxShadow: `0 0 0 4px ${COLORS.primary.subtle}`,
-                                bgcolor: COLORS.background.paper
-                            }
-                        }}
-                    >
-                        <SearchIcon sx={{ color: COLORS.text.muted, mr: 1.5, fontSize: 22 }} />
-                        <InputBase
-                            placeholder={searchPlaceholder}
-                            onChange={handleSearchChange}
-                            sx={{
-                                flex: 1,
-                                color: COLORS.text.primary,
-                                '& input::placeholder': {
-                                    color: COLORS.text.muted,
-                                    opacity: 1
-                                }
-                            }}
-                        />
-                    </Box>
-                )}
-
-                {/* Filters */}
-                <Box sx={{
-                    display: 'flex',
-                    flexDirection: { xs: 'column', sm: 'row' },
-                    gap: 2,
-                    alignItems: { xs: 'stretch', sm: 'center' },
-                    width: { xs: '100%', md: 'auto' },
-                    ml: { xs: 0, md: 'auto' }
-                }}>
-                    {statusOptions && onStatusChange && (
-                        <Select
-                            value={statusValue}
-                            onChange={handleStatusChange}
-                            size="small"
-                            displayEmpty
-                            sx={{
-                                bgcolor: COLORS.background.default,
-                                borderRadius: BORDER_RADIUS.full,
-                                border: `1px solid ${COLORS.border.medium}`,
-                                '& .MuiOutlinedInput-notchedOutline': {
-                                    border: 'none',
-                                },
-                                minWidth: { xs: '100%', sm: 140 },
-                                height: 44,
-                                '& .MuiSelect-select': {
-                                    py: 0,
-                                    pl: 3,
-                                    fontSize: '0.9rem',
-                                    fontWeight: 600,
-                                    color: COLORS.text.secondary,
-                                }
-                            }}
-                        >
-                            <MenuItem value="all"><em>All Status</em></MenuItem>
-                            {statusOptions.map((opt) => (
-                                <MenuItem key={opt.value} value={opt.value}>
-                                    {opt.label}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    )}
-
-                    {/* Date Filters (Dropdown + Inputs) */}
-                    {onDateChange !== undefined && (
-                        <Box sx={{
-                            display: 'flex',
-                            flexDirection: { xs: 'column', sm: 'row' },
-                            gap: 1.5,
-                            alignItems: { xs: 'stretch', sm: 'center' },
-                            width: { xs: '100%', sm: 'auto' }
-                        }}>
-                            <input
-                                type="date"
-                                style={{
-                                    padding: '0 20px',
-                                    borderRadius: BORDER_RADIUS.full,
-                                    border: `1px solid ${COLORS.border.medium}`,
-                                    outline: 'none',
-                                    color: COLORS.text.primary,
-                                    backgroundColor: COLORS.background.default,
-                                    fontFamily: 'inherit',
-                                    fontSize: '0.9rem',
-                                    fontWeight: 500,
-                                    height: '44px',
-                                    boxSizing: 'border-box',
-                                    width: '100%',
-                                    minWidth: '150px'
-                                }}
-                                onChange={(e) => onDateChange(e.target.value)}
-                            />
-                        </Box>
-                    )}
-                </Box>
-            </Box>
+            <DataTableFilters
+                onSearch={onSearch}
+                searchPlaceholder={searchPlaceholder}
+                statusOptions={statusOptions}
+                statusValue={statusValue}
+                onStatusChange={onStatusChange}
+                onDateChange={onDateChange}
+            />
 
             {/* Table Area */}
-            <TableContainer
-                component={Paper}
-                elevation={0}
-                sx={{
-                    borderRadius: BORDER_RADIUS.md,
-                    border: `1px solid ${COLORS.border.light}`,
-                    mb: 2,
-                    overflowX: 'auto',
-                    background: COLORS.background.paper
-                }}
-            >
-                <Table sx={{ minWidth: 700 }} aria-label="advanced data table">
-                    <TableHead sx={{ bgcolor: COLORS.background.default }}>
-                        <TableRow>
-                            {columns.map((col, index) => (
-                                <TableCell
-                                    key={col.header + index}
-                                    align={col.header === 'Actions' ? 'center' : (col.align || 'left')}
-                                    sx={{
-                                        fontWeight: 600,
-                                        color: COLORS.text.primary,
-                                        fontSize: '0.8rem',
-                                        textTransform: 'uppercase',
-                                        letterSpacing: '0.5px',
-                                        minWidth: col.minWidth,
-                                        py: 1.25,
-                                        borderBottom: `0px solid ${COLORS.border.medium}`,
-                                        borderRight: (index < columns.length - 1 || (actions && actions.length > 0)) ? `1px solid ${COLORS.border.light}` : 'none'
-                                    }}
-                                >
-                                    {col.header}
-                                </TableCell>
-                            ))}
-                            {actions && actions.length > 0 && (
-                                <TableCell
-                                    align="center"
-                                    sx={{
-                                        fontWeight: 600,
-                                        color: COLORS.text.primary,
-                                        fontSize: '0.8rem',
-                                        textTransform: 'uppercase',
-                                        letterSpacing: '0.5px',
-                                        py: 1.25,
-                                        borderBottom: `1px solid ${COLORS.border.light}`
-                                    }}
-                                >
-                                    Actions
-                                </TableCell>
-                            )}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {isLoading ? (
-                            [...Array(5)].map((_, rowIndex) => (
-                                <TableRow key={rowIndex}>
-                                    {columns.map((col, colIndex) => (
-                                        <TableCell
-                                            key={colIndex}
-                                            sx={{
-                                                py: 1.25,
-                                                borderRight: (colIndex < columns.length - 1 || (actions && actions.length > 0)) ? `1px solid ${COLORS.border.light}` : 'none',
-                                                borderBottom: `1px solid ${COLORS.border.light}`
-                                            }}
-                                        >
-                                            <Skeleton animation="wave" height={24} width={colIndex === 0 ? "80%" : "60%"} />
-                                        </TableCell>
-                                    ))}
-                                    {actions && actions.length > 0 && (
-                                        <TableCell align="center" sx={{ borderBottom: `1px solid ${COLORS.border.light}`, py: 1.25 }}>
-                                            <Skeleton animation="wave" variant="circular" width={24} height={24} sx={{ mx: 'auto' }} />
-                                        </TableCell>
-                                    )}
-                                </TableRow>
-                            ))
-                        ) : data.length === 0 ? (
-                            <TableRow>
-                                <TableCell
-                                    colSpan={columns.length + (actions ? 1 : 0)}
-                                    sx={{ textAlign: 'center', py: 10, color: COLORS.text.muted }}
-                                >
-                                    <Box sx={{ opacity: 0.5, mb: 1.5 }}>
-                                        <SearchIcon sx={{ fontSize: 48 }} />
-                                    </Box>
-                                    <Typography variant="body1">{emptyMessage}</Typography>
-                                </TableCell>
-                            </TableRow>
-                        ) : (
-                            data.map((row) => (
-                                <TableRow
-                                    key={rowKey(row)}
-                                    hover
-                                    sx={{
-                                        transition: 'background-color 0.2s',
-                                        '&:hover': { bgcolor: `${COLORS.primary.subtle}22 !important` },
-                                        '&:last-child td': { borderBottom: 0 },
-                                        '& td': { borderBottom: `1px solid ${COLORS.border.light}`, py: 1.25 }
-                                    }}
-                                >
-                                    {columns.map((col, index) => (
-                                        <TableCell key={col.header + index} align={col.header === 'Actions' ? 'center' : (col.align || 'left')} sx={{
-                                            color: COLORS.text.secondary,
-                                            fontSize: '0.9rem',
-                                            fontWeight: 500,
-                                            borderRight: (index < columns.length - 1 || (actions && actions.length > 0)) ? `1px solid ${COLORS.border.light}` : 'none'
-                                        }}>
-                                            {col.render
-                                                ? col.render(row)
-                                                : col.accessor
-                                                    ? String((row as Record<string, unknown>)[col.accessor as string] ?? '')
-                                                    : ''}
-                                        </TableCell>
-                                    ))}
-                                    {actions && actions.length > 0 && (
-                                        <TableCell align="center" sx={{ borderRight: 'none' }}>
-                                            <IconButton
-                                                size="small"
-                                                onClick={(e) => handleActionClick(e, row)}
-                                                sx={{
-                                                    color: COLORS.text.muted,
-                                                    '&:hover': { bgcolor: COLORS.primary.subtle, color: COLORS.primary.main }
-                                                }}
-                                            >
-                                                <MoreVertIcon fontSize="small" />
-                                            </IconButton>
-                                        </TableCell>
-                                    )}
-                                </TableRow>
-                            ))
-                        )}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+            <DataTableContent
+                columns={columns}
+                data={data}
+                isLoading={isLoading}
+                emptyMessage={emptyMessage}
+                rowKey={rowKey}
+                actions={actions}
+                onActionClick={handleActionClick}
+            />
 
             {/* Actions Popover Menu */}
             <Popover
