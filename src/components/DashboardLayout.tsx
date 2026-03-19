@@ -79,7 +79,7 @@ export default function DashboardLayout({ children, title }: DashboardLayoutProp
             <Box sx={{ p: 4, display: 'flex', justifyContent: 'center', mb: 1 }}>
                 <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 12 }}>
                     <Image
-                        src="/logo.svg"
+                        src="/logo2.svg"
                         alt="Logo"
                         width={170}
                         height={60}

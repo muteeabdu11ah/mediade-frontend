@@ -74,7 +74,7 @@ export default function Navbar() {
                     <Toolbar disableGutters sx={{ py: 1.5 }}>
                         {/* Logo */}
                         <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 14 }}>
-                            <Image src="/logo.svg" alt="Logo" width={150} height={50} />
+                            <Image src="/logo2.svg" alt="Logo" width={150} height={50} />
                         </Link>
 
                         <Box sx={{ flexGrow: 1 }} />

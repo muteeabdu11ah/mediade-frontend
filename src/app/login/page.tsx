@@ -100,7 +100,7 @@ export default function LoginPage() {
                         <Box sx={{ textAlign: 'center', mb: 4 }}>
 
                             <Image
-                                src="/logo.svg"
+                                src="/logo2.svg"
                                 alt="Logo"
                                 width={170}
                                 height={60}

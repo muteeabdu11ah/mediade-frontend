@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description: "Connect with top doctors, book appointments seamlessly, and manage your healthcare journey with Medaide's intelligent platform.",
   keywords: "healthcare, medical, appointments, doctors, clinic management, patient portal",
   icons: {
-    icon: '/logo.svg',
+    icon: '/logo2.svg',
   },
 };
 
