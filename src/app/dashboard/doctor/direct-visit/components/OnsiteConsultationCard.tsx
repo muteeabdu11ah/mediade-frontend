@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import {
     Box,
@@ -9,6 +11,7 @@ import {
 } from '@mui/material';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import { useRouter } from 'next/navigation';
 import { OnsiteConsultation } from '@/lib/types';
 import { GRADIENTS } from '@/lib/constants/design-tokens';
 
@@ -17,6 +20,12 @@ interface OnsiteConsultationCardProps {
 }
 
 const OnsiteConsultationCard: React.FC<OnsiteConsultationCardProps> = ({ consult }) => {
+    const router = useRouter();
+
+    const handleResumeConsult = () => {
+        router.push(`/dashboard/doctor/direct-visit/consultation/${consult.id}`);
+    };
+
     return (
         <Card sx={{
             borderRadius: 3,
@@ -65,6 +74,7 @@ const OnsiteConsultationCard: React.FC<OnsiteConsultationCardProps> = ({ consult
                         fullWidth
                         startIcon={<PlayArrowIcon />}
                         disableElevation
+                        onClick={handleResumeConsult}
                         sx={{ color: GRADIENTS.primary, borderRadius: 2, '&:hover': { color: GRADIENTS.primary } }}
                     >
                         Resume Consult
