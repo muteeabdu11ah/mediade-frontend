@@ -242,3 +242,36 @@ export interface PaginatedResponse<T> {
         totalPages: number;
     };
 }
+
+export interface ChatReference {
+    title: string;
+    url: string;
+    reason: string;
+}
+
+export interface ChatResponseData {
+    possible_conditions: string[];
+    reasoning: string;
+    references: ChatReference[];
+}
+
+export interface ChatResponse {
+    response: ChatResponseData;
+}
+
+// @/lib/types
+export interface ChatReference {
+    title: string;
+    url: string;
+    reason: string;
+}
+
+export interface RichContent {
+    reasoning: string;
+    possible_conditions: string[];
+    references: ChatReference[];
+}
+
+export interface ChatResponse {
+    response: RichContent;
+}

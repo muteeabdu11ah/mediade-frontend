@@ -75,7 +75,7 @@ Advise the patient to reduce salt intake, monitor fluid intake, and gradually in
 
 • Follow-up
 
-Schedule a follow-up appointment in 2 weeks to assess response to medication adjustments and symptom improvement.`
+Schedule a follow-up appointment in 2 weeks to assess response to medication adjustments and symptom improvement.`,
   );
   const [medications, setMedications] = useState<Medication[]>([
     {

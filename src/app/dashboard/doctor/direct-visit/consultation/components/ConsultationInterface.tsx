@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   Box,
   Paper,
@@ -28,6 +28,7 @@ import {
 } from "@/lib/constants/design-tokens";
 import axios from "axios";
 import ChatMessage from "@/app/dashboard/doctor/ai-assistant/components/ChatMessage";
+import { useTranscribe } from "@/hooks/use-transcribe";
 
 interface ConsultationInterfaceProps {
   consultationId: string;
@@ -41,6 +42,11 @@ interface TranscriptMessage {
   sender: string;
 }
 
+// Silence detection config
+const SILENCE_THRESHOLD = 0.015; // amplitude below this = silence
+const SILENCE_DURATION_MS = 1000; // pause duration to trigger send
+const MIN_CHUNK_MS = 1000; // minimum chunk length to bother sending
+
 const ConsultationInterface: React.FC<ConsultationInterfaceProps> = ({
   consultationId,
 }) => {
@@ -48,70 +54,218 @@ const ConsultationInterface: React.FC<ConsultationInterfaceProps> = ({
   const { user } = useAuth();
   const [isRecording, setIsRecording] = useState(true);
   const [recordingTime, setRecordingTime] = useState(0);
-  const [selectedLanguage, setSelectedLanguage] = useState("English");
+  const [selectedLanguage, setSelectedLanguage] = useState("en");
   const [transcriptExpanded, setTranscriptExpanded] = useState(true);
   const [consultation, setConsultation] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [waveformHeights, setWaveformHeights] = useState<number[]>(
     Array.from({ length: 50 }, () => Math.random() * 60 + 40),
   );
+  const [transcriptMessages, setTranscriptMessages] = useState<
+    TranscriptMessage[]
+  >([]);
 
-  // Mock transcript messages - in a real app, these would come from your backend
-  const [transcriptMessages] = useState<TranscriptMessage[]>([
-    {
-      id: "1",
-      content:
-        "Good morning, Sarah. How have you been feeling since our last visit?",
-      time: "00:15",
-      isAi: true,
-      sender: "Dr.",
-    },
-    {
-      id: "2",
-      content:
-        "Good morning, Doctor. I've been feeling better overall. The headaches have reduced significantly.",
-      time: "00:28",
-      isAi: false,
-      sender: "P",
-    },
-    {
-      id: "3",
-      content:
-        "That's great to hear. Have you been taking the Amlodipine regularly?",
-      time: "00:42",
-      isAi: true,
-      sender: "Dr.",
-    },
-    {
-      id: "4",
-      content:
-        "Yes, every morning with breakfast. I did notice some ankle swelling last week though.",
-      time: "00:55",
-      isAi: false,
-      sender: "P",
-    },
-    {
-      id: "5",
-      content:
-        "Ankle edema can be a side effect. Let me check your blood pressure today and we can discuss adjusting the dosage if needed.",
-      time: "01:12",
-      isAi: true,
-      sender: "Dr.",
-    },
-  ]);
+  // Refs for recording
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+  const streamRef = useRef<MediaStream | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const silenceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const chunkStartTimeRef = useRef<number>(Date.now());
+  const animationFrameRef = useRef<number | null>(null);
+  const isRecordingRef = useRef(isRecording);
 
+  // Speaker tracking — ref avoids re-renders on every turn flip
+  const currentSpeakerRef = useRef<"doctor" | "patient">("doctor");
+
+  const { mutate: transcribe } = useTranscribe();
+
+  // Keep ref in sync with state
   useEffect(() => {
-    // Fetch consultation details
+    isRecordingRef.current = isRecording;
+  }, [isRecording]);
+
+  // Send collected audio chunk to API
+  const sendAudioChunk = useCallback(
+    (audioBlob: Blob, langCode: string) => {
+      const chunkId = crypto.randomUUID();
+
+      // Capture the current speaker BEFORE the async call
+      const speaker = currentSpeakerRef.current;
+
+      const formData = new FormData();
+      formData.append("file", audioBlob, "chunk.webm");
+      formData.append("chunk_id", chunkId);
+      formData.append("language_code", langCode);
+
+      transcribe(formData, {
+        onSuccess: (data) => {
+          if (!data.transcript?.trim()) return;
+
+          const isDoctor = speaker === "doctor";
+
+          const newMessage: TranscriptMessage = {
+            id: data.chunk_id,
+            content: data.transcript,
+            time: new Date().toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            }),
+            // isAi: true  → right-aligned bubble (Doctor)
+            // isAi: false → left-aligned bubble  (Patient)
+            isAi: isDoctor,
+            sender: isDoctor ? "DR" : "P",
+          };
+
+          setTranscriptMessages((prev) => [...prev, newMessage]);
+
+          // Flip speaker AFTER a successful, non-empty transcription
+          currentSpeakerRef.current =
+            currentSpeakerRef.current === "doctor" ? "patient" : "doctor";
+        },
+      });
+    },
+    [transcribe],
+  );
+
+  // Silence detection loop
+  const startSilenceDetection = useCallback(
+    (stream: MediaStream, langCode: string) => {
+      const audioContext = new AudioContext();
+      const analyser = audioContext.createAnalyser();
+      const source = audioContext.createMediaStreamSource(stream);
+
+      analyser.fftSize = 512;
+      source.connect(analyser);
+
+      audioContextRef.current = audioContext;
+      analyserRef.current = analyser;
+
+      const dataArray = new Uint8Array(analyser.fftSize);
+
+      const checkSilence = () => {
+        if (!isRecordingRef.current) return;
+
+        analyser.getByteTimeDomainData(dataArray);
+
+        // Calculate RMS amplitude
+        const rms = Math.sqrt(
+          dataArray.reduce(
+            (sum, val) => sum + Math.pow((val - 128) / 128, 2),
+            0,
+          ) / dataArray.length,
+        );
+
+        const isSilent = rms < SILENCE_THRESHOLD;
+
+        if (isSilent) {
+          // Start silence timer if not already running
+          if (!silenceTimerRef.current) {
+            silenceTimerRef.current = setTimeout(() => {
+              const chunkDuration = Date.now() - chunkStartTimeRef.current;
+
+              if (
+                chunkDuration >= MIN_CHUNK_MS &&
+                mediaRecorderRef.current?.state === "recording"
+              ) {
+                // Stop current recorder — triggers ondataavailable
+                mediaRecorderRef.current.stop();
+              }
+              silenceTimerRef.current = null;
+            }, SILENCE_DURATION_MS);
+          }
+        } else {
+          // Speaking — clear silence timer
+          if (silenceTimerRef.current) {
+            clearTimeout(silenceTimerRef.current);
+            silenceTimerRef.current = null;
+          }
+        }
+
+        animationFrameRef.current = requestAnimationFrame(checkSilence);
+      };
+
+      checkSilence();
+    },
+    [],
+  );
+
+  // Start a new MediaRecorder segment
+  const startNewSegment = useCallback(
+    (stream: MediaStream, langCode: string) => {
+      audioChunksRef.current = [];
+      chunkStartTimeRef.current = Date.now();
+
+      const recorder = new MediaRecorder(stream, { mimeType: "audio/webm" });
+
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) audioChunksRef.current.push(e.data);
+      };
+
+      recorder.onstop = () => {
+        const blob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+        sendAudioChunk(blob, langCode);
+
+        // Restart a new segment if still recording
+        if (isRecordingRef.current && streamRef.current) {
+          startNewSegment(streamRef.current, langCode);
+        }
+      };
+
+      recorder.start();
+      mediaRecorderRef.current = recorder;
+    },
+    [sendAudioChunk],
+  );
+
+  // Initialize microphone
+  const initMicrophone = useCallback(
+    async (langCode: string) => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+        });
+        streamRef.current = stream;
+        startSilenceDetection(stream, langCode);
+        startNewSegment(stream, langCode);
+      } catch (err) {
+        console.error("Microphone access denied:", err);
+      }
+    },
+    [startSilenceDetection, startNewSegment],
+  );
+
+  // Cleanup microphone
+  const stopMicrophone = useCallback(() => {
+    if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
+    if (animationFrameRef.current)
+      cancelAnimationFrame(animationFrameRef.current);
+    if (mediaRecorderRef.current?.state === "recording")
+      mediaRecorderRef.current.stop();
+    if (audioContextRef.current) audioContextRef.current.close();
+    streamRef.current?.getTracks().forEach((t) => t.stop());
+    streamRef.current = null;
+  }, []);
+
+  // Start/stop recording based on isRecording state
+  useEffect(() => {
+    if (isRecording) {
+      initMicrophone(selectedLanguage);
+    } else {
+      stopMicrophone();
+    }
+    return () => stopMicrophone();
+  }, [isRecording]); // eslint-disable-line
+
+  // Fetch consultation
+  useEffect(() => {
     const fetchConsultation = async () => {
       try {
         const token = localStorage.getItem("accessToken");
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/onsite-consultations/${consultationId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
+          { headers: { Authorization: `Bearer ${token}` } },
         );
         setConsultation(response.data);
       } catch (error) {
@@ -120,23 +274,20 @@ const ConsultationInterface: React.FC<ConsultationInterfaceProps> = ({
         setLoading(false);
       }
     };
-
     fetchConsultation();
   }, [consultationId]);
 
+  // Recording timer
   useEffect(() => {
-    // Recording timer
     let interval: NodeJS.Timeout;
     if (isRecording) {
-      interval = setInterval(() => {
-        setRecordingTime((prev) => prev + 1);
-      }, 1000);
+      interval = setInterval(() => setRecordingTime((prev) => prev + 1), 1000);
     }
     return () => clearInterval(interval);
   }, [isRecording]);
 
+  // Waveform animation
   useEffect(() => {
-    // Smooth waveform animation
     let interval: NodeJS.Timeout;
     if (isRecording) {
       interval = setInterval(() => {
@@ -155,12 +306,11 @@ const ConsultationInterface: React.FC<ConsultationInterfaceProps> = ({
   };
 
   const handleEndConsultation = () => {
+    stopMicrophone();
     router.push(`/dashboard/doctor/direct-visit/soap-note/${consultationId}`);
   };
 
-  const handlePause = () => {
-    setIsRecording(!isRecording);
-  };
+  const handlePause = () => setIsRecording((prev) => !prev);
 
   if (loading) {
     return (
@@ -195,20 +345,13 @@ const ConsultationInterface: React.FC<ConsultationInterfaceProps> = ({
         flexDirection: "column",
         bgcolor: "white",
         borderRadius: 2,
-        width: "full",
         overflow: "hidden",
         border: "2px solid transparent",
-
         boxShadow: "0 4px 24px rgba(0,0,0,0.02)",
       }}
     >
-      {/* Header with Doctor and Patient Info */}
-      <Box
-        sx={{
-          p: 3,
-          bgcolor: COLORS.background.paper,
-        }}
-      >
+      {/* Header */}
+      <Box sx={{ p: 3, bgcolor: COLORS.background.paper }}>
         <Box
           sx={{
             display: "flex",
@@ -217,7 +360,6 @@ const ConsultationInterface: React.FC<ConsultationInterfaceProps> = ({
             gap: "40px",
           }}
         >
-          {/* Doctor Info */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
             <Avatar
               src={user?.profileImageUrl || undefined}
@@ -245,18 +387,15 @@ const ConsultationInterface: React.FC<ConsultationInterfaceProps> = ({
             </Box>
           </Box>
 
-          {/* Divider */}
           <Box
             sx={{
               width: "1px",
               height: 60,
               background: "linear-gradient(90deg, #009BE8 0%, #00C9AB 100%)",
               borderRadius: 1,
-              mx: 0,
             }}
           />
 
-          {/* Patient Info */}
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
             <Avatar
               sx={{
@@ -290,7 +429,7 @@ const ConsultationInterface: React.FC<ConsultationInterfaceProps> = ({
         </Box>
       </Box>
 
-      {/* Audio Waveform Section */}
+      {/* Waveform */}
       <Box
         sx={{
           py: 3,
@@ -301,37 +440,18 @@ const ConsultationInterface: React.FC<ConsultationInterfaceProps> = ({
           bgcolor: "white",
         }}
       >
-        {/* Waveform Container with background */}
         <Box
-          sx={{
-            width: 400,
-            bgcolor: "#F6FBFF",
-            borderRadius: 3,
-            py: 2,
-            px: 3,
-          }}
+          sx={{ width: 400, bgcolor: "#F6FBFF", borderRadius: 3, py: 2, px: 3 }}
         >
-          {/* Waveform Visualization */}
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 2,
-            }}
-          >
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
             <IconButton
               sx={{
                 color: isRecording ? COLORS.error.main : COLORS.text.muted,
                 bgcolor: isRecording ? "#FFE5E5" : COLORS.background.subtle,
-                "&:hover": {
-                  bgcolor: isRecording ? "#FFE5E5" : COLORS.background.paper,
-                },
               }}
             >
               {isRecording ? <MicIcon /> : <MicOffIcon />}
             </IconButton>
-
-            {/* Waveform bars */}
             <Box
               sx={{
                 display: "flex",
@@ -357,7 +477,6 @@ const ConsultationInterface: React.FC<ConsultationInterfaceProps> = ({
                 />
               ))}
             </Box>
-
             <Typography
               variant="h6"
               fontWeight={600}
@@ -370,7 +489,7 @@ const ConsultationInterface: React.FC<ConsultationInterfaceProps> = ({
         </Box>
       </Box>
 
-      {/* Live Transcription Section */}
+      {/* Live Transcription */}
       <Box
         sx={{
           flex: 1,
@@ -381,7 +500,6 @@ const ConsultationInterface: React.FC<ConsultationInterfaceProps> = ({
           overflow: "hidden",
         }}
       >
-        {/* Header */}
         <Box
           sx={{
             display: "flex",
@@ -402,9 +520,8 @@ const ConsultationInterface: React.FC<ConsultationInterfaceProps> = ({
               onChange={(e) => setSelectedLanguage(e.target.value)}
               sx={{ borderRadius: BORDER_RADIUS.sm }}
             >
-              <MenuItem value="English">English</MenuItem>
-              <MenuItem value="Spanish">Spanish</MenuItem>
-              <MenuItem value="French">French</MenuItem>
+              <MenuItem value="en">English</MenuItem>
+              <MenuItem value="ar">Arabic</MenuItem>
             </Select>
           </FormControl>
           <IconButton
@@ -420,7 +537,6 @@ const ConsultationInterface: React.FC<ConsultationInterfaceProps> = ({
           </IconButton>
         </Box>
 
-        {/* Messages */}
         {transcriptExpanded && (
           <Box
             sx={{
@@ -428,29 +544,39 @@ const ConsultationInterface: React.FC<ConsultationInterfaceProps> = ({
               overflowY: "auto",
               pr: 1,
               minHeight: 0,
-              "&::-webkit-scrollbar": {
-                width: "6px",
-              },
+              "&::-webkit-scrollbar": { width: "6px" },
               "&::-webkit-scrollbar-thumb": {
                 bgcolor: "rgba(0,0,0,0.05)",
                 borderRadius: "10px",
               },
             }}
           >
-            {transcriptMessages.map((msg) => (
-              <ChatMessage
-                key={msg.id}
-                content={msg.content}
-                time={msg.time}
-                isAi={msg.isAi}
-                sender={msg.sender}
-              />
-            ))}
+            {transcriptMessages.length === 0 ? (
+              <Typography
+                variant="body2"
+                color={COLORS.text.muted}
+                sx={{ textAlign: "center", mt: 4 }}
+              >
+                {isRecording
+                  ? "Listening... Start speaking to see transcription."
+                  : "Recording paused."}
+              </Typography>
+            ) : (
+              transcriptMessages.map((msg) => (
+                <ChatMessage
+                  key={msg.id}
+                  content={msg.content}
+                  time={msg.time}
+                  isAi={msg.isAi}
+                  sender={msg.sender}
+                />
+              ))
+            )}
           </Box>
         )}
       </Box>
 
-      {/* Action Buttons */}
+      {/* Actions */}
       <Box
         sx={{
           p: 2,
@@ -480,6 +606,7 @@ const ConsultationInterface: React.FC<ConsultationInterfaceProps> = ({
         >
           {isRecording ? "Pause" : "Resume"}
         </Button>
+
         <Button
           variant="contained"
           size="small"
@@ -490,9 +617,7 @@ const ConsultationInterface: React.FC<ConsultationInterfaceProps> = ({
             py: 0.75,
             bgcolor: COLORS.error.main,
             color: "white",
-            "&:hover": {
-              bgcolor: COLORS.error.main,
-            },
+            "&:hover": { bgcolor: COLORS.error.main },
           }}
         >
           End Consultation
