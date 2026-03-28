@@ -27,13 +27,13 @@ import {
   SHADOWS,
 } from "@/lib/constants/design-tokens";
 import axios from "axios";
+import { SoapNoteResponse } from "@/hooks/use-soap-note";
 
 interface Diagnosis {
   name: string;
   code: string;
   icon?: string;
 }
-
 interface Medication {
   name: string;
   dosage: string;
@@ -41,87 +41,78 @@ interface Medication {
   duration: string;
 }
 
+const formatPlan = (plan: SoapNoteResponse["plan"]): string =>
+  [
+    plan.medication_adjustment
+      ? `• Medication Adjustments\n\n${plan.medication_adjustment}`
+      : "",
+    plan.further_tests ? `• Further Tests\n\n${plan.further_tests}` : "",
+    plan.lifestyle_modifications
+      ? `• Lifestyle Modifications\n\n${plan.lifestyle_modifications}`
+      : "",
+    plan.follow_up ? `• Follow-up\n\n${plan.follow_up}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n\n");
+
 export default function SOAPNotePage() {
   const params = useParams();
   const router = useRouter();
   const consultationId = params.id as string;
+
   const [loading, setLoading] = useState(true);
   const [consultation, setConsultation] = useState<any>(null);
-
-  // SOAP Note State
-  const [summary, setSummary] = useState(
-    "The patient, a 58-year-old male, reports experiencing increasing shortness of breath and fatigue over the past 3 weeks. He states that these symptoms have been especially noticeable during physical exertion. The patient has a history of hypertension and is currently on medication for high blood pressure. He denies any chest pain or dizziness. He is concerned about the recent worsening of symptoms and requests an evaluation.",
-  );
-  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([
-    { name: "Essential Hypertension", code: "I10", icon: "✓" },
-    { name: "Localized Edema", code: "R60.0", icon: "" },
-    { name: "Localized Edema", code: "R60.0", icon: "" },
-    { name: "Adverse Effect of ACE Inhibitors", code: "T46.4", icon: "" },
-  ]);
-  const [plan] = useState(
-    `• Medication Adjustments
-
-Increase dosage of the current antihypertensive medication if blood pressure readings remain elevated.
-Switch ACE inhibitor to an alternative class of medications (e.g., ARB) if edema persists.
-
-• Further Tests
-
-Order an ECG and echocardiogram to rule out underlying heart conditions such as congestive heart failure.
-Recommend a kidney function test to monitor for any adverse effects due to medication.
-
-• Lifestyle Modifications
-
-Advise the patient to reduce salt intake, monitor fluid intake, and gradually increase physical activity as tolerated.
-
-• Follow-up
-
-Schedule a follow-up appointment in 2 weeks to assess response to medication adjustments and symptom improvement.`,
-  );
-  const [medications, setMedications] = useState<Medication[]>([
-    {
-      name: "Amlodipine 2.5mg",
-      dosage: "Oral",
-      frequency: "3 Times a day",
-      duration: "2 Weeks",
-    },
-    {
-      name: "Losartan 50mg",
-      dosage: "Oral",
-      frequency: "3 Times a day",
-      duration: "2 Weeks",
-    },
-    {
-      name: "Amlodipine 2.5mg",
-      dosage: "Oral",
-      frequency: "3 Times a day",
-      duration: "2 Weeks",
-    },
-  ]);
-
+  const [summary, setSummary] = useState("");
+  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
+  const [plan, setPlan] = useState("");
+  const [medications, setMedications] = useState<Medication[]>([]);
   const [newDiagnosis, setNewDiagnosis] = useState("");
 
+  // ── Load SOAP data from sessionStorage ───────────────────────────────────
   useEffect(() => {
-    // Fetch consultation details
-    const fetchConsultation = async () => {
+    const raw = sessionStorage.getItem(`soap-note-${consultationId}`);
+    console.log(raw);
+    if (raw) {
+      try {
+        const soap: SoapNoteResponse = JSON.parse(raw);
+        if (soap.summary) setSummary(soap.summary);
+        if (soap.diagnosis?.length)
+          setDiagnoses(
+            soap.diagnosis.map((name) => ({ name, code: "", icon: "" })),
+          );
+        if (soap.plan) setPlan(formatPlan(soap.plan));
+        if (soap.suggested_medications?.length)
+          setMedications(
+            soap.suggested_medications.map((name) => ({
+              name,
+              dosage: "Oral",
+              frequency: "As directed",
+              duration: "As directed",
+            })),
+          );
+        sessionStorage.removeItem(`soap-note-${consultationId}`);
+      } catch (e) {
+        console.error("Failed to parse soap note", e);
+      }
+    }
+  }, [consultationId]);
+
+  // ── Fetch consultation ────────────────────────────────────────────────────
+  useEffect(() => {
+    (async () => {
       try {
         const token = localStorage.getItem("accessToken");
-        const response = await axios.get(
+        const { data } = await axios.get(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/onsite-consultations/${consultationId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
+          { headers: { Authorization: `Bearer ${token}` } },
         );
-        setConsultation(response.data);
-      } catch (error) {
-        console.error("Failed to fetch consultation:", error);
+        setConsultation(data);
+      } catch (e) {
+        console.error(e);
       } finally {
         setLoading(false);
       }
-    };
-
-    fetchConsultation();
+    })();
   }, [consultationId]);
 
   const handleAddDiagnosis = () => {
@@ -130,23 +121,13 @@ Schedule a follow-up appointment in 2 weeks to assess response to medication adj
       setNewDiagnosis("");
     }
   };
+  const handleRemoveDiagnosis = (i: number) =>
+    setDiagnoses(diagnoses.filter((_, idx) => idx !== i));
+  const handleRemoveMedication = (i: number) =>
+    setMedications(medications.filter((_, idx) => idx !== i));
+  const handleSave = () => router.push("/dashboard/doctor/direct-visit");
 
-  const handleRemoveDiagnosis = (index: number) => {
-    setDiagnoses(diagnoses.filter((_, i) => i !== index));
-  };
-
-  const handleRemoveMedication = (index: number) => {
-    setMedications(medications.filter((_, i) => i !== index));
-  };
-
-  const handleSave = async () => {
-    // Here you would save the SOAP note to your backend
-    console.log("Saving SOAP note...");
-    // After saving, redirect back to direct visit page
-    router.push("/dashboard/doctor/direct-visit");
-  };
-
-  if (loading) {
+  if (loading)
     return (
       <ProtectedRoute allowedRoles={[Role.DOCTOR]}>
         <DashboardLayout title="SOAP Note">
@@ -163,7 +144,6 @@ Schedule a follow-up appointment in 2 weeks to assess response to medication adj
         </DashboardLayout>
       </ProtectedRoute>
     );
-  }
 
   return (
     <ProtectedRoute allowedRoles={[Role.DOCTOR]}>
@@ -191,7 +171,7 @@ Schedule a follow-up appointment in 2 weeks to assess response to medication adj
             </Typography>
           </Box>
 
-          {/* Summary Section */}
+          {/* Summary */}
           <Box sx={{ mb: 4 }}>
             <Box
               sx={{
@@ -218,6 +198,7 @@ Schedule a follow-up appointment in 2 weeks to assess response to medication adj
               rows={4}
               value={summary}
               onChange={(e) => setSummary(e.target.value)}
+              placeholder="No summary available."
               sx={{
                 "& .MuiOutlinedInput-root": {
                   borderRadius: BORDER_RADIUS.md,
@@ -229,7 +210,7 @@ Schedule a follow-up appointment in 2 weeks to assess response to medication adj
 
           <Divider sx={{ my: 4 }} />
 
-          {/* Diagnosis Section */}
+          {/* Diagnosis */}
           <Box sx={{ mb: 4 }}>
             <Box
               sx={{
@@ -251,24 +232,34 @@ Schedule a follow-up appointment in 2 weeks to assess response to medication adj
               </IconButton>
             </Box>
 
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5, mb: 3 }}>
-              {diagnoses.map((diagnosis, index) => (
-                <Chip
-                  key={index}
-                  label={`${diagnosis.icon ? diagnosis.icon + " " : ""}${diagnosis.name} ${diagnosis.code ? `(${diagnosis.code})` : ""}`}
-                  onDelete={() => handleRemoveDiagnosis(index)}
-                  deleteIcon={<RemoveIcon />}
-                  sx={{
-                    bgcolor: index === 0 ? COLORS.primary.subtle : "#F7FCFF",
-                    color:
-                      index === 0 ? COLORS.primary.main : COLORS.text.primary,
-                    fontWeight: 600,
-                    borderRadius: BORDER_RADIUS.md,
-                    border: `1px solid ${index === 0 ? COLORS.primary.light : COLORS.border.light}`,
-                  }}
-                />
-              ))}
-            </Box>
+            {diagnoses.length === 0 ? (
+              <Typography
+                variant="body2"
+                color={COLORS.text.muted}
+                sx={{ mb: 2 }}
+              >
+                No diagnoses recorded.
+              </Typography>
+            ) : (
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5, mb: 3 }}>
+                {diagnoses.map((d, i) => (
+                  <Chip
+                    key={i}
+                    label={`${d.icon ? d.icon + " " : ""}${d.name}${d.code ? ` (${d.code})` : ""}`}
+                    onDelete={() => handleRemoveDiagnosis(i)}
+                    deleteIcon={<RemoveIcon />}
+                    sx={{
+                      bgcolor: i === 0 ? COLORS.primary.subtle : "#F7FCFF",
+                      color:
+                        i === 0 ? COLORS.primary.main : COLORS.text.primary,
+                      fontWeight: 600,
+                      borderRadius: BORDER_RADIUS.md,
+                      border: `1px solid ${i === 0 ? COLORS.primary.light : COLORS.border.light}`,
+                    }}
+                  />
+                ))}
+              </Box>
+            )}
 
             <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
               <TextField
@@ -304,7 +295,7 @@ Schedule a follow-up appointment in 2 weeks to assess response to medication adj
 
           <Divider sx={{ my: 4 }} />
 
-          {/* Plan Section */}
+          {/* Plan */}
           <Box sx={{ mb: 4 }}>
             <Box
               sx={{
@@ -325,32 +316,25 @@ Schedule a follow-up appointment in 2 weeks to assess response to medication adj
                 <EditIcon fontSize="small" />
               </IconButton>
             </Box>
-
             <Box
-              sx={{
-                bgcolor: "#F7FCFF",
-                p: 3,
-                borderRadius: BORDER_RADIUS.md,
-                whiteSpace: "pre-line",
-                lineHeight: 1.8,
-              }}
+              sx={{ bgcolor: "#F7FCFF", p: 3, borderRadius: BORDER_RADIUS.md }}
             >
               <Typography
                 variant="body2"
                 sx={{
                   whiteSpace: "pre-line",
                   lineHeight: 1.8,
-                  color: COLORS.text.primary,
+                  color: plan ? COLORS.text.primary : COLORS.text.muted,
                 }}
               >
-                {plan}
+                {plan || "No plan recorded."}
               </Typography>
             </Box>
           </Box>
 
           <Divider sx={{ my: 4 }} />
 
-          {/* Suggested Medications Section */}
+          {/* Medications */}
           <Box sx={{ mb: 4 }}>
             <Typography
               variant="h6"
@@ -360,18 +344,22 @@ Schedule a follow-up appointment in 2 weeks to assess response to medication adj
             >
               Suggested Medications
             </Typography>
-
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2, mb: 3 }}>
-              {medications.map((med, index) => (
+              {medications.length === 0 && (
+                <Typography variant="body2" color={COLORS.text.muted}>
+                  No medications suggested.
+                </Typography>
+              )}
+              {medications.map((med, i) => (
                 <Paper
-                  key={index}
+                  key={i}
                   elevation={0}
                   sx={{
                     p: 2.5,
                     borderRadius: BORDER_RADIUS.md,
-                    border: `1px solid ${index === 0 ? COLORS.primary.light : COLORS.border.light}`,
+                    border: `1px solid ${i === 0 ? COLORS.primary.light : COLORS.border.light}`,
                     bgcolor:
-                      index === 0
+                      i === 0
                         ? COLORS.primary.subtle
                         : COLORS.background.subtle,
                     minWidth: 280,
@@ -380,7 +368,7 @@ Schedule a follow-up appointment in 2 weeks to assess response to medication adj
                 >
                   <IconButton
                     size="small"
-                    onClick={() => handleRemoveMedication(index)}
+                    onClick={() => handleRemoveMedication(i)}
                     sx={{
                       position: "absolute",
                       top: 8,
@@ -404,7 +392,7 @@ Schedule a follow-up appointment in 2 weeks to assess response to medication adj
                 </Paper>
               ))}
 
-              {/* Add New Medication Card */}
+              {/* Add card */}
               <Paper
                 elevation={0}
                 sx={{
@@ -424,9 +412,8 @@ Schedule a follow-up appointment in 2 weeks to assess response to medication adj
                   },
                 }}
                 onClick={() => {
-                  // You can open a dialog/modal here to add medication
                   const name = prompt("Medication name:");
-                  if (name) {
+                  if (name)
                     setMedications([
                       ...medications,
                       {
@@ -436,7 +423,6 @@ Schedule a follow-up appointment in 2 weeks to assess response to medication adj
                         duration: "2 Weeks",
                       },
                     ]);
-                  }
                 }}
               >
                 <Box sx={{ textAlign: "center" }}>
@@ -455,7 +441,7 @@ Schedule a follow-up appointment in 2 weeks to assess response to medication adj
             </Box>
           </Box>
 
-          {/* Save Button */}
+          {/* Save */}
           <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 4 }}>
             <Button
               variant="contained"
@@ -469,9 +455,7 @@ Schedule a follow-up appointment in 2 weeks to assess response to medication adj
                 color: "white",
                 fontWeight: 700,
                 boxShadow: SHADOWS.medium,
-                "&:hover": {
-                  boxShadow: SHADOWS.large,
-                },
+                "&:hover": { boxShadow: SHADOWS.large },
               }}
             >
               Save

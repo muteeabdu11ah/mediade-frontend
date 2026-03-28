@@ -29,6 +29,7 @@ import {
 import axios from "axios";
 import ChatMessage from "@/app/dashboard/doctor/ai-assistant/components/ChatMessage";
 import { useTranscribe } from "@/hooks/use-transcribe";
+import { useGenerateSoapNote } from "@/hooks/use-soap-note";
 
 interface ConsultationInterfaceProps {
   consultationId: string;
@@ -42,10 +43,9 @@ interface TranscriptMessage {
   sender: string;
 }
 
-// Silence detection config
-const SILENCE_THRESHOLD = 0.015; // amplitude below this = silence
-const SILENCE_DURATION_MS = 1000; // pause duration to trigger send
-const MIN_CHUNK_MS = 1000; // minimum chunk length to bother sending
+const SILENCE_THRESHOLD = 0.015;
+const SILENCE_DURATION_MS = 1000;
+const MIN_CHUNK_MS = 1000;
 
 const ConsultationInterface: React.FC<ConsultationInterfaceProps> = ({
   consultationId,
@@ -65,161 +65,125 @@ const ConsultationInterface: React.FC<ConsultationInterfaceProps> = ({
     TranscriptMessage[]
   >([]);
 
-  // Refs for recording
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const streamRef = useRef<MediaStream | null>(null);
-  const analyserRef = useRef<AnalyserNode | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const silenceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const chunkStartTimeRef = useRef<number>(Date.now());
   const animationFrameRef = useRef<number | null>(null);
   const isRecordingRef = useRef(isRecording);
-
-  // Speaker tracking — ref avoids re-renders on every turn flip
   const currentSpeakerRef = useRef<"doctor" | "patient">("doctor");
+  const transcriptRef = useRef<TranscriptMessage[]>([]);
 
   const { mutate: transcribe } = useTranscribe();
+  const { mutate: generateSoapNote, isPending: isGenerating } =
+    useGenerateSoapNote();
 
-  // Keep ref in sync with state
   useEffect(() => {
     isRecordingRef.current = isRecording;
   }, [isRecording]);
+  useEffect(() => {
+    transcriptRef.current = transcriptMessages;
+  }, [transcriptMessages]);
 
-  // Send collected audio chunk to API
   const sendAudioChunk = useCallback(
     (audioBlob: Blob, langCode: string) => {
-      const chunkId = crypto.randomUUID();
-
-      // Capture the current speaker BEFORE the async call
       const speaker = currentSpeakerRef.current;
-
       const formData = new FormData();
       formData.append("file", audioBlob, "chunk.webm");
-      formData.append("chunk_id", chunkId);
+      formData.append("chunk_id", crypto.randomUUID());
       formData.append("language_code", langCode);
 
       transcribe(formData, {
         onSuccess: (data) => {
           if (!data.transcript?.trim()) return;
-
           const isDoctor = speaker === "doctor";
-
-          const newMessage: TranscriptMessage = {
-            id: data.chunk_id,
-            content: data.transcript,
-            time: new Date().toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-            }),
-            // isAi: true  → right-aligned bubble (Doctor)
-            // isAi: false → left-aligned bubble  (Patient)
-            isAi: isDoctor,
-            sender: isDoctor ? "DR" : "P",
-          };
-
-          setTranscriptMessages((prev) => [...prev, newMessage]);
-
-          // Flip speaker AFTER a successful, non-empty transcription
+          setTranscriptMessages((prev) => [
+            ...prev,
+            {
+              id: data.chunk_id,
+              content: data.transcript,
+              time: new Date().toLocaleTimeString([], {
+                hour: "2-digit",
+                minute: "2-digit",
+              }),
+              isAi: isDoctor,
+              sender: isDoctor ? "DR" : "P",
+            },
+          ]);
           currentSpeakerRef.current =
-            currentSpeakerRef.current === "doctor" ? "patient" : "doctor";
+            speaker === "doctor" ? "patient" : "doctor";
         },
       });
     },
     [transcribe],
   );
 
-  // Silence detection loop
   const startSilenceDetection = useCallback(
     (stream: MediaStream, langCode: string) => {
       const audioContext = new AudioContext();
       const analyser = audioContext.createAnalyser();
-      const source = audioContext.createMediaStreamSource(stream);
-
       analyser.fftSize = 512;
-      source.connect(analyser);
-
+      audioContext.createMediaStreamSource(stream).connect(analyser);
       audioContextRef.current = audioContext;
-      analyserRef.current = analyser;
 
       const dataArray = new Uint8Array(analyser.fftSize);
-
-      const checkSilence = () => {
+      const loop = () => {
         if (!isRecordingRef.current) return;
-
         analyser.getByteTimeDomainData(dataArray);
-
-        // Calculate RMS amplitude
         const rms = Math.sqrt(
-          dataArray.reduce(
-            (sum, val) => sum + Math.pow((val - 128) / 128, 2),
-            0,
-          ) / dataArray.length,
+          dataArray.reduce((s, v) => s + Math.pow((v - 128) / 128, 2), 0) /
+            dataArray.length,
         );
 
-        const isSilent = rms < SILENCE_THRESHOLD;
-
-        if (isSilent) {
-          // Start silence timer if not already running
+        if (rms < SILENCE_THRESHOLD) {
           if (!silenceTimerRef.current) {
             silenceTimerRef.current = setTimeout(() => {
-              const chunkDuration = Date.now() - chunkStartTimeRef.current;
-
+              const elapsed = Date.now() - chunkStartTimeRef.current;
               if (
-                chunkDuration >= MIN_CHUNK_MS &&
+                elapsed >= MIN_CHUNK_MS &&
                 mediaRecorderRef.current?.state === "recording"
               ) {
-                // Stop current recorder — triggers ondataavailable
                 mediaRecorderRef.current.stop();
               }
               silenceTimerRef.current = null;
             }, SILENCE_DURATION_MS);
           }
         } else {
-          // Speaking — clear silence timer
           if (silenceTimerRef.current) {
             clearTimeout(silenceTimerRef.current);
             silenceTimerRef.current = null;
           }
         }
-
-        animationFrameRef.current = requestAnimationFrame(checkSilence);
+        animationFrameRef.current = requestAnimationFrame(loop);
       };
-
-      checkSilence();
+      loop();
     },
     [],
   );
 
-  // Start a new MediaRecorder segment
   const startNewSegment = useCallback(
     (stream: MediaStream, langCode: string) => {
       audioChunksRef.current = [];
       chunkStartTimeRef.current = Date.now();
 
       const recorder = new MediaRecorder(stream, { mimeType: "audio/webm" });
-
       recorder.ondataavailable = (e) => {
         if (e.data.size > 0) audioChunksRef.current.push(e.data);
       };
-
       recorder.onstop = () => {
         const blob = new Blob(audioChunksRef.current, { type: "audio/webm" });
         sendAudioChunk(blob, langCode);
-
-        // Restart a new segment if still recording
-        if (isRecordingRef.current && streamRef.current) {
+        if (isRecordingRef.current && streamRef.current)
           startNewSegment(streamRef.current, langCode);
-        }
       };
-
       recorder.start();
       mediaRecorderRef.current = recorder;
     },
     [sendAudioChunk],
   );
 
-  // Initialize microphone
   const initMicrophone = useCallback(
     async (langCode: string) => {
       try {
@@ -230,89 +194,106 @@ const ConsultationInterface: React.FC<ConsultationInterfaceProps> = ({
         startSilenceDetection(stream, langCode);
         startNewSegment(stream, langCode);
       } catch (err) {
-        console.error("Microphone access denied:", err);
+        console.error("Mic denied:", err);
       }
     },
     [startSilenceDetection, startNewSegment],
   );
 
-  // Cleanup microphone
   const stopMicrophone = useCallback(() => {
     if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
     if (animationFrameRef.current)
       cancelAnimationFrame(animationFrameRef.current);
     if (mediaRecorderRef.current?.state === "recording")
       mediaRecorderRef.current.stop();
-    if (audioContextRef.current) audioContextRef.current.close();
+    audioContextRef.current?.close();
     streamRef.current?.getTracks().forEach((t) => t.stop());
     streamRef.current = null;
   }, []);
 
-  // Start/stop recording based on isRecording state
   useEffect(() => {
-    if (isRecording) {
-      initMicrophone(selectedLanguage);
-    } else {
-      stopMicrophone();
-    }
+    if (isRecording) initMicrophone(selectedLanguage);
+    else stopMicrophone();
     return () => stopMicrophone();
   }, [isRecording]); // eslint-disable-line
 
-  // Fetch consultation
   useEffect(() => {
-    const fetchConsultation = async () => {
+    (async () => {
       try {
         const token = localStorage.getItem("accessToken");
-        const response = await axios.get(
+        const { data } = await axios.get(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/onsite-consultations/${consultationId}`,
           { headers: { Authorization: `Bearer ${token}` } },
         );
-        setConsultation(response.data);
-      } catch (error) {
-        console.error("Failed to fetch consultation:", error);
+        setConsultation(data);
+      } catch (e) {
+        console.error(e);
       } finally {
         setLoading(false);
       }
-    };
-    fetchConsultation();
+    })();
   }, [consultationId]);
 
-  // Recording timer
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isRecording) {
-      interval = setInterval(() => setRecordingTime((prev) => prev + 1), 1000);
-    }
-    return () => clearInterval(interval);
+    let id: NodeJS.Timeout;
+    if (isRecording)
+      id = setInterval(() => setRecordingTime((p) => p + 1), 1000);
+    return () => clearInterval(id);
   }, [isRecording]);
 
-  // Waveform animation
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isRecording) {
-      interval = setInterval(() => {
-        setWaveformHeights(
-          Array.from({ length: 50 }, () => Math.random() * 60 + 40),
-        );
-      }, 150);
-    }
-    return () => clearInterval(interval);
+    let id: NodeJS.Timeout;
+    if (isRecording)
+      id = setInterval(
+        () =>
+          setWaveformHeights(
+            Array.from({ length: 50 }, () => Math.random() * 60 + 40),
+          ),
+        150,
+      );
+    return () => clearInterval(id);
   }, [isRecording]);
 
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
-  };
+  const formatTime = (s: number) =>
+    `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
+
+  const handlePause = () => setIsRecording((p) => !p);
 
   const handleEndConsultation = () => {
     stopMicrophone();
-    router.push(`/dashboard/doctor/direct-visit/soap-note/${consultationId}`);
+
+    // ── Single plain string — just all transcript content joined with spaces ──
+    const fullTranscript = transcriptRef.current
+      .map((msg) => msg.content.trim())
+      .filter(Boolean)
+      .join(" ");
+
+    // if (!fullTranscript.trim()) {
+    //   router.push(`/dashboard/doctor/direct-visit/soap-note/${consultationId}`);
+    //   return;
+    // }
+    console.log(fullTranscript);
+
+    generateSoapNote(fullTranscript, {
+      onSuccess: (data) => {
+        console.log("data for soap", data);
+        window.sessionStorage.setItem(
+          `soap-note-${consultationId}`,
+          JSON.stringify(data),
+        );
+        router.push(
+          `/dashboard/doctor/direct-visit/soap-note/${consultationId}`,
+        );
+      },
+      onError: () => {
+        router.push(
+          `/dashboard/doctor/direct-visit/soap-note/${consultationId}`,
+        );
+      },
+    });
   };
 
-  const handlePause = () => setIsRecording((prev) => !prev);
-
-  if (loading) {
+  if (loading)
     return (
       <Box
         sx={{
@@ -325,7 +306,6 @@ const ConsultationInterface: React.FC<ConsultationInterfaceProps> = ({
         <CircularProgress />
       </Box>
     );
-  }
 
   const doctorName = user
     ? `Dr. ${user.firstName} ${user.lastName}`
@@ -386,7 +366,6 @@ const ConsultationInterface: React.FC<ConsultationInterfaceProps> = ({
               </Typography>
             </Box>
           </Box>
-
           <Box
             sx={{
               width: "1px",
@@ -395,7 +374,6 @@ const ConsultationInterface: React.FC<ConsultationInterfaceProps> = ({
               borderRadius: 1,
             }}
           />
-
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
             <Avatar
               sx={{
@@ -410,7 +388,7 @@ const ConsultationInterface: React.FC<ConsultationInterfaceProps> = ({
             >
               {patientName
                 .split(" ")
-                .map((n) => n[0])
+                .map((n: string) => n[0])
                 .join("")}
             </Avatar>
             <Box>
@@ -461,13 +439,13 @@ const ConsultationInterface: React.FC<ConsultationInterfaceProps> = ({
                 height: 34,
               }}
             >
-              {waveformHeights.map((height, i) => (
+              {waveformHeights.map((h, i) => (
                 <Box
                   key={i}
                   sx={{
                     flex: 1,
                     minWidth: 2,
-                    height: `${height}%`,
+                    height: `${h}%`,
                     background:
                       "linear-gradient(180deg, #009BE8 0%, #00C9AB 100%)",
                     borderRadius: 1,
@@ -606,11 +584,11 @@ const ConsultationInterface: React.FC<ConsultationInterfaceProps> = ({
         >
           {isRecording ? "Pause" : "Resume"}
         </Button>
-
         <Button
           variant="contained"
           size="small"
           onClick={handleEndConsultation}
+          disabled={isGenerating}
           sx={{
             borderRadius: BORDER_RADIUS.md,
             px: 3,
@@ -618,9 +596,14 @@ const ConsultationInterface: React.FC<ConsultationInterfaceProps> = ({
             bgcolor: COLORS.error.main,
             color: "white",
             "&:hover": { bgcolor: COLORS.error.main },
+            "&.Mui-disabled": {
+              bgcolor: COLORS.error.main,
+              opacity: 0.7,
+              color: "white",
+            },
           }}
         >
-          End Consultation
+          {isGenerating ? "Generating..." : "End Consultation"}
         </Button>
       </Box>
     </Paper>
