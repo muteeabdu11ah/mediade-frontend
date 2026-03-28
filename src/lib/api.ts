@@ -2,7 +2,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
-const AI_API_BASE_URL = process.env.NEXT_PUBLIC_AI_API_URL || '/api/v1';
+const AI_API_BASE_URL = process.env.NEXT_PUBLIC_AI_API_URL || 'https://5dc3-2407-d000-1a-e92e-e530-9096-144a-a7fa.ngrok-free.app';
 
 
 const api = axios.create({

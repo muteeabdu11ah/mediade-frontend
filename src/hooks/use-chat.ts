@@ -10,7 +10,7 @@ export interface ChatParams {
 export function useChat() {
     return useMutation<ChatResponse, Error, ChatParams>({
         mutationFn: async (params: ChatParams) => {
-            const { data } = await ai_api.post(API_ENDPOINTS.CHAT.BASE, params);
+            const { data } = await ai_api.post("https://5dc3-2407-d000-1a-e92e-e530-9096-144a-a7fa.ngrok-free.app/chat", params);
             return data;
         },
     });
