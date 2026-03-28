@@ -29,6 +29,9 @@ export const API_ENDPOINTS = {
         PATIENT_UPCOMING_LIST: '/appointments/me/upcoming-list',
         PATIENT_TOTAL_CHART: '/appointments/me/total-chart',
     },
+    CHAT: {
+        BASE: '/chat',
+    },
     FILES: {
         UPLOAD: '/files/upload',
     },
@@ -69,4 +72,5 @@ export const QUERY_KEYS = {
     DOCTOR_SCHEDULES: ['doctor_schedules'],
     CLINICS: ['clinics'],
     USERS: ['users'],
+    CHAT: ['chat'],
 } as const;

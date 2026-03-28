@@ -2,6 +2,8 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
+const AI_API_BASE_URL = process.env.NEXT_PUBLIC_AI_API_URL || '/api/v1';
+
 
 const api = axios.create({
     baseURL: API_BASE_URL,
@@ -10,6 +12,12 @@ const api = axios.create({
     },
 });
 
+const ai_api = axios.create({
+    baseURL: AI_API_BASE_URL,
+    headers: {
+        'Content-Type': 'application/json',
+    },
+});
 // ─── Request Interceptor: attach JWT ────────────────────────────────────────
 
 api.interceptors.request.use(
@@ -40,3 +48,4 @@ api.interceptors.response.use(
 );
 
 export default api;
+export { ai_api };
